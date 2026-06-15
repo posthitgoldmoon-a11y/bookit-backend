@@ -51,6 +51,117 @@ const mainQuickReplies = [
   { label: "⏰ 진료시간", action: "message", messageText: "진료시간" }
 ];
 
+function getQuickReplies(lang = 'ko') {
+  const qr = {
+    ko: [
+      { label: "📅 예약하기", action: "message", messageText: "예약하기" },
+      { label: "💬 상담하기", action: "message", messageText: "상담하기" },
+      { label: "🌍 언어선택", action: "message", messageText: "언어선택" },
+      { label: "💰 가격안내", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ 의료진 보기", action: "message", messageText: "의료진보기" },
+      { label: "📍 오시는 길", action: "message", messageText: "오시는길" },
+      { label: "⏰ 진료시간", action: "message", messageText: "진료시간" }
+    ],
+    en: [
+      { label: "📅 Book", action: "message", messageText: "예약하기" },
+      { label: "💬 Consult", action: "message", messageText: "상담하기" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
+      { label: "💰 Prices", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ Doctors", action: "message", messageText: "의료진보기" },
+      { label: "📍 Location", action: "message", messageText: "오시는길" },
+      { label: "⏰ Hours", action: "message", messageText: "진료시간" }
+    ],
+    zh: [
+      { label: "📅 预约", action: "message", messageText: "예약하기" },
+      { label: "💬 咨询", action: "message", messageText: "상담하기" },
+      { label: "🌍 语言", action: "message", messageText: "언어선택" },
+      { label: "💰 价格", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ 医生", action: "message", messageText: "의료진보기" },
+      { label: "📍 地址", action: "message", messageText: "오시는길" },
+      { label: "⏰ 营业时间", action: "message", messageText: "진료시간" }
+    ],
+    ja: [
+      { label: "📅 予約", action: "message", messageText: "예약하기" },
+      { label: "💬 相談", action: "message", messageText: "상담하기" },
+      { label: "🌍 言語", action: "message", messageText: "언어선택" },
+      { label: "💰 料金", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ 医師", action: "message", messageText: "의료진보기" },
+      { label: "📍 アクセス", action: "message", messageText: "오시는길" },
+      { label: "⏰ 診療時間", action: "message", messageText: "진료시간" }
+    ],
+    th: [
+      { label: "📅 จอง", action: "message", messageText: "예약하기" },
+      { label: "💬 ปรึกษา", action: "message", messageText: "상담하기" },
+      { label: "🌍 ภาษา", action: "message", messageText: "언어선택" },
+      { label: "💰 ราคา", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ แพทย์", action: "message", messageText: "의료진보기" },
+      { label: "📍 ที่อยู่", action: "message", messageText: "오시는길" },
+      { label: "⏰ เวลา", action: "message", messageText: "진료시간" }
+    ],
+    vi: [
+      { label: "📅 Đặt lịch", action: "message", messageText: "예약하기" },
+      { label: "💬 Tư vấn", action: "message", messageText: "상담하기" },
+      { label: "🌍 Ngôn ngữ", action: "message", messageText: "언어선택" },
+      { label: "💰 Giá cả", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ Bác sĩ", action: "message", messageText: "의료진보기" },
+      { label: "📍 Địa chỉ", action: "message", messageText: "오시는길" },
+      { label: "⏰ Giờ làm", action: "message", messageText: "진료시간" }
+    ],
+    ar: [
+      { label: "📅 حجز", action: "message", messageText: "예약하기" },
+      { label: "💬 استشارة", action: "message", messageText: "상담하기" },
+      { label: "🌍 اللغة", action: "message", messageText: "언어선택" },
+      { label: "💰 الأسعار", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ الأطباء", action: "message", messageText: "의료진보기" },
+      { label: "📍 الموقع", action: "message", messageText: "오시는길" },
+      { label: "⏰ المواعيد", action: "message", messageText: "진료시간" }
+    ],
+    ru: [
+      { label: "📅 Запись", action: "message", messageText: "예약하기" },
+      { label: "💬 Консультация", action: "message", messageText: "상담하기" },
+      { label: "🌍 Язык", action: "message", messageText: "언어선택" },
+      { label: "💰 Цены", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ Врачи", action: "message", messageText: "의료진보기" },
+      { label: "📍 Адрес", action: "message", messageText: "오시는길" },
+      { label: "⏰ Часы работы", action: "message", messageText: "진료시간" }
+    ],
+    fr: [
+      { label: "📅 Réserver", action: "message", messageText: "예약하기" },
+      { label: "💬 Consulter", action: "message", messageText: "상담하기" },
+      { label: "🌍 Langue", action: "message", messageText: "언어선택" },
+      { label: "💰 Tarifs", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ Médecins", action: "message", messageText: "의료진보기" },
+      { label: "📍 Adresse", action: "message", messageText: "오시는길" },
+      { label: "⏰ Horaires", action: "message", messageText: "진료시간" }
+    ],
+    es: [
+      { label: "📅 Reservar", action: "message", messageText: "예약하기" },
+      { label: "💬 Consultar", action: "message", messageText: "상담하기" },
+      { label: "🌍 Idioma", action: "message", messageText: "언어선택" },
+      { label: "💰 Precios", action: "message", messageText: "가격안내" },
+      { label: "👨‍⚕️ Médicos", action: "message", messageText: "의료진보기" },
+      { label: "📍 Dirección", action: "message", messageText: "오시는길" },
+      { label: "⏰ Horario", action: "message", messageText: "진료시간" }
+    ]
+  };
+  return qr[lang] || qr.ko;
+}
+
+
+// 공통 다국어 텍스트
+const LANG_TEXTS = {
+  ko: { home: "🏠 처음으로", homeMsg: "처음으로", error: "잠시 오류가 발생했습니다. 다시 시도해주세요 😊", calError: "캘린더에서 날짜를 먼저 선택해주세요! 📅", calRetry: "✅ 날짜선택완료", dateSelected: (dt) => `📅 ${dt} 선택하셨습니다!\n\n고객님 성함을 알려주세요 😊` },
+  en: { home: "🏠 Home", homeMsg: "처음으로", error: "An error occurred. Please try again 😊", calError: "Please select a date from the calendar first! 📅", calRetry: "✅ Done", dateSelected: (dt) => `📅 ${dt} selected!\n\nMay I have your name please? 😊` },
+  zh: { home: "🏠 首页", homeMsg: "처음으로", error: "发生错误，请重试 😊", calError: "请先从日历中选择日期！📅", calRetry: "✅ 完成", dateSelected: (dt) => `📅 已选择 ${dt}！\n\n请告诉我您的姓名 😊` },
+  ja: { home: "🏠 ホーム", homeMsg: "처음으로", error: "エラーが発生しました。もう一度お試しください 😊", calError: "カレンダーから日付を選択してください！📅", calRetry: "✅ 選択完了", dateSelected: (dt) => `📅 ${dt} を選択しました！\n\nお名前を教えてください 😊` },
+  th: { home: "🏠 หน้าหลัก", homeMsg: "처음으로", error: "เกิดข้อผิดพลาด กรุณาลองใหม่ 😊", calError: "กรุณาเลือกวันที่จากปฏิทินก่อน！📅", calRetry: "✅ เสร็จสิ้น", dateSelected: (dt) => `📅 เลือก ${dt} แล้ว！\n\nกรุณาแจ้งชื่อของคุณ 😊` },
+  vi: { home: "🏠 Trang chủ", homeMsg: "처음으로", error: "Đã xảy ra lỗi. Vui lòng thử lại 😊", calError: "Vui lòng chọn ngày từ lịch trước！📅", calRetry: "✅ Hoàn thành", dateSelected: (dt) => `📅 Đã chọn ${dt}！\n\nCho tôi biết tên của bạn nhé 😊` },
+  ar: { home: "🏠 الرئيسية", homeMsg: "처음으로", error: "حدث خطأ. يرجى المحاولة مرة أخرى 😊", calError: "يرجى اختيار تاريخ من التقويم أولاً！📅", calRetry: "✅ تم", dateSelected: (dt) => `📅 تم اختيار ${dt}！\n\nما اسمك من فضلك؟ 😊` },
+  ru: { home: "🏠 Главная", homeMsg: "처음으로", error: "Произошла ошибка. Попробуйте снова 😊", calError: "Сначала выберите дату в календаре！📅", calRetry: "✅ Готово", dateSelected: (dt) => `📅 Выбрано ${dt}！\n\nКак вас зовут? 😊` },
+  fr: { home: "🏠 Accueil", homeMsg: "처음으로", error: "Une erreur s'est produite. Veuillez réessayer 😊", calError: "Veuillez d'abord sélectionner une date！📅", calRetry: "✅ Terminé", dateSelected: (dt) => `📅 ${dt} sélectionné！\n\nPuis-je avoir votre nom? 😊` },
+  es: { home: "🏠 Inicio", homeMsg: "처음으로", error: "Ocurrió un error. Por favor intente de nuevo 😊", calError: "¡Por favor seleccione una fecha del calendario primero！📅", calRetry: "✅ Listo", dateSelected: (dt) => `📅 ${dt} seleccionado！\n\n¿Me puede dar su nombre? 😊` }
+};
+
 router.post('/skill', handleMain);
 router.post('/', handleMain);
 
@@ -106,7 +217,7 @@ async function handleMain(req, res) {
       } else if (session.data.pendingMenu === "예약하기") {
         await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang);
       } else {
-        await showMainMenu(callbackUrl, session.data.lang);
+        await showWelcome(callbackUrl, session.data.lang);
       }
       return;
     }
@@ -139,6 +250,15 @@ async function handleMain(req, res) {
 
     if (userMessage === "예약하기" || userMessage === "상담하기") {
       session.data.pendingMenu = userMessage;
+      // 언어가 이미 선택된 경우 바로 메뉴로
+      if (session.data.lang) {
+        if (userMessage === "상담하기") {
+          await sendConsultMenu(callbackUrl, session.data.lang);
+        } else {
+          await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang);
+        }
+        return;
+      }
       await fetch(callbackUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -248,46 +368,79 @@ async function handleMain(req, res) {
     }
 
     if (userMessage === '오시는길') {
+      const lang = session.data.lang || 'ko';
+      const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
+      const dirTexts = {
+        ko: '📍 연세푸르미피부과 오시는 길\n\n📌 서울 강남구 강남대로 123 푸르미빌딩 5층\n\n🚇 강남역 2번 출구 도보 3분\n🚗 건물 내 주차 1시간 무료\n📞 02-1234-5678',
+        en: '📍 Directions to Yonsei Purmi Dermatology\n\n📌 5F Purmi Bldg, 123 Gangnam-daero, Gangnam-gu, Seoul\n\n🚇 3 min walk from Gangnam Station Exit 2\n🚗 1 hour free parking\n📞 02-1234-5678',
+        zh: '📍 前往延世普尔美皮肤科\n\n📌 首尔江南区江南大路123号普尔美大厦5楼\n\n🚇 江南站2号出口步行3分钟\n🚗 楼内停车1小时免费\n📞 02-1234-5678',
+        ja: '📍 延世プルミ皮膚科へのアクセス\n\n📌 ソウル江南区江南大路123 プルミビル5階\n\n🚇 江南駅2番出口から徒歩3分\n🚗 館内駐車場1時間無料\n📞 02-1234-5678',
+        th: '📍 เส้นทางไป Yonsei Purmi Dermatology\n\n📌 ชั้น 5 Purmi Bldg, 123 Gangnam-daero, Seoul\n\n🚇 เดิน 3 นาทีจากทางออก 2 สถานี Gangnam\n🚗 จอดรถฟรี 1 ชั่วโมง\n📞 02-1234-5678',
+        vi: '📍 Đường đến Yonsei Purmi Dermatology\n\n📌 Tầng 5, Tòa nhà Purmi, 123 Gangnam-daero, Seoul\n\n🚇 Đi bộ 3 phút từ cửa số 2 ga Gangnam\n🚗 Đậu xe miễn phí 1 giờ\n📞 02-1234-5678',
+        ar: '📍 الاتجاهات إلى عيادة يونسي بورومي\n\n📌 الطابق 5، مبنى بورومي، 123 شارع غانغنام، سيول\n\n🚇 3 دقائق سيرًا من مخرج 2 محطة غانغنام\n🚗 ساعة واحدة مجانية للانتظار\n📞 02-1234-5678',
+        ru: '📍 Как добраться до Yonsei Purmi Dermatology\n\n📌 5 этаж, здание Purmi, 123 Gangnam-daero, Сеул\n\n🚇 3 минуты пешком от выхода 2 станции Gangnam\n🚗 Бесплатная парковка 1 час\n📞 02-1234-5678',
+        fr: '📍 Comment se rendre à Yonsei Purmi Dermatology\n\n📌 5ème étage, Purmi Bldg, 123 Gangnam-daero, Séoul\n\n🚇 3 min à pied de la sortie 2 de la station Gangnam\n🚗 1 heure de stationnement gratuit\n📞 02-1234-5678',
+        es: '📍 Cómo llegar a Yonsei Purmi Dermatology\n\n📌 Piso 5, Purmi Bldg, 123 Gangnam-daero, Seúl\n\n🚇 3 min a pie desde la salida 2 de la estación Gangnam\n🚗 1 hora de estacionamiento gratuito\n📞 02-1234-5678'
+      };
+      const mapLabels = {
+        ko: '🗺️ 카카오맵 보기', en: '🗺️ View on Map', zh: '🗺️ 查看地图',
+        ja: '🗺️ 地図を見る', th: '🗺️ ดูแผนที่', vi: '🗺️ Xem bản đồ',
+        ar: '🗺️ عرض الخريطة', ru: '🗺️ Открыть карту', fr: '🗺️ Voir la carte', es: '🗺️ Ver mapa'
+      };
       await sendCallback(callbackUrl,
-        "📍 연세푸르미피부과 오시는 길\n\n📌 서울 강남구 강남대로 123 푸르미빌딩 5층\n\n🚇 강남역 2번 출구 도보 3분\n🚗 건물 내 주차 1시간 무료\n📞 02-1234-5678",
+        dirTexts[lang] || dirTexts.ko,
         [
-          { label: "🗺️ 카카오맵 보기", action: "webLink", webLinkUrl: "https://map.kakao.com/?q=강남역피부과" },
-          { label: "🏠 처음으로", action: "message", messageText: "처음으로" }
+          { label: mapLabels[lang] || mapLabels.ko, action: 'webLink', webLinkUrl: 'https://map.kakao.com/?q=강남역피부과' },
+          { label: lt.home, action: 'message', messageText: '처음으로' }
         ]
       );
       return;
     }
 
     if (userMessage === '진료시간') {
-      await sendCallback(callbackUrl,
-        "⏰ 진료 시간 안내\n\n🗓️ 평일 (월~금): 10:00 ~ 19:00\n🗓️ 토요일: 10:00 ~ 16:00\n🗓️ 일·공휴일: 휴진\n⚠️ 점심: 13:00 ~ 14:00\n\n📞 02-1234-5678\n💡 카카오 예약 시 대기 없이 진료!",
-        mainQuickReplies
+      const lang = session.data.lang || 'ko';
+      const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
+      const hoursTexts = {
+        ko: "⏰ 진료시간 안내\n\n월~금: 09:00 - 18:00\n토요일: 09:00 - 15:00\n일/공휴일: 휴진\n\n점심시간: 13:00 - 14:00\n\n📞 전화예약: 02-1234-5678",
+        en: "⏰ Business Hours\n\nMon-Fri: 09:00 - 18:00\nSaturday: 09:00 - 15:00\nSun/Holidays: Closed\n\nLunch: 13:00 - 14:00\n\n📞 Phone: 02-1234-5678",
+        zh: "⏰ 营业时间\n\n周一至周五: 09:00 - 18:00\n周六: 09:00 - 15:00\n周日/节假日: 休息\n\n午休: 13:00 - 14:00\n\n📞 电话: 02-1234-5678",
+        ja: "⏰ 診療時間\n\n月〜金: 09:00 - 18:00\n土曜日: 09:00 - 15:00\n日/祝日: 休診\n\nランチ: 13:00 - 14:00\n\n📞 電話: 02-1234-5678",
+        th: "⏰ เวลาทำการ\n\nจ-ศ: 09:00 - 18:00\nเสาร์: 09:00 - 15:00\nอาทิตย์/วันหยุด: ปิด\n\nพักกลางวัน: 13:00 - 14:00\n\n📞 โทร: 02-1234-5678",
+        vi: "⏰ Giờ làm việc\n\nT2-T6: 09:00 - 18:00\nThứ 7: 09:00 - 15:00\nCN/Lễ: Nghỉ\n\nNghỉ trưa: 13:00 - 14:00\n\n📞 Điện thoại: 02-1234-5678",
+        ar: "⏰ ساعات العمل\n\nإثنين-جمعة: 09:00 - 18:00\nالسبت: 09:00 - 15:00\nأحد/عطلات: مغلق\n\nاستراحة الغداء: 13:00 - 14:00\n\n📞 هاتف: 02-1234-5678",
+        ru: "⏰ Часы работы\n\nПн-Пт: 09:00 - 18:00\nСуббота: 09:00 - 15:00\nВс/праздники: Закрыто\n\nОбед: 13:00 - 14:00\n\n📞 Телефон: 02-1234-5678",
+        fr: "⏰ Heures d'ouverture\n\nLun-Ven: 09:00 - 18:00\nSamedi: 09:00 - 15:00\nDim/Fériés: Fermé\n\nDéjeuner: 13:00 - 14:00\n\n📞 Tél: 02-1234-5678",
+        es: "⏰ Horario\n\nLun-Vie: 09:00 - 18:00\nSábado: 09:00 - 15:00\nDom/Festivos: Cerrado\n\nAlmuerzo: 13:00 - 14:00\n\n📞 Tel: 02-1234-5678"
+      };
+      await sendCallback(callbackUrl, hoursTexts[lang] || hoursTexts.ko,
+        [{ label: lt.home, action: "message", messageText: "처음으로" }]
       );
       return;
     }
 
     if (userMessage === '의료진보기') {
-      await showDoctors(callbackUrl, null);
+      await showDoctors(callbackUrl, session.data.lang || 'ko');
       return;
     }
 
     if (userMessage === '날짜선택완료') {
+      const lt = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
       try {
         const r = await fetch(`http://localhost:3002/calendar-result/${kakaoUserId}`);
         const data = await r.json();
         if (!data.success || !data.datetime) {
-          await sendCallback(callbackUrl, "캘린더에서 날짜를 먼저 선택해주세요! 📅",
-            [{ label: "✅ 날짜선택완료", action: "message", messageText: "날짜선택완료" }]
+          await sendCallback(callbackUrl, lt.calError,
+            [{ label: lt.calRetry, action: "message", messageText: "날짜선택완료" }]
           );
           return;
         }
         session.data.date = data.datetime;
-        const dateMsg = `📅 ${data.datetime} 선택하셨습니다!\n\n고객님 성함을 알려주세요 😊`;
+        const dateMsg = lt.dateSelected(data.datetime);
         session.history.push({ role: "user", content: `날짜 ${data.datetime} 선택` });
         session.history.push({ role: "model", content: dateMsg });
-        await sendCallback(callbackUrl, dateMsg);
+        await sendCallback(callbackUrl, dateMsg, [{ label: lt.home, action: "message", messageText: "처음으로" }]);
       } catch(e) {
-        await sendCallback(callbackUrl, "오류가 발생했습니다. 다시 시도해주세요 😊");
+        await sendCallback(callbackUrl, lt.error);
       }
       return;
     }
@@ -320,22 +473,35 @@ async function handleMain(req, res) {
       }
     }
 
+    const lt2 = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
     await sendCallback(callbackUrl, geminiReply.message,
-      [{ label: "🏠 처음으로", action: "message", messageText: "처음으로" }]
+      [{ label: lt2.home, action: "message", messageText: "처음으로" }]
     );
 
   } catch(err) {
     console.error('❌ 전체오류:', err.message);
     console.error(err.stack);
-    await sendCallback(callbackUrl, "잠시 오류가 발생했습니다. 다시 시도해주세요 😊");
+    const ltErr = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
+    await sendCallback(callbackUrl, ltErr.error);
   }
 }
 
-async function showWelcome(callbackUrl) {
+async function showWelcome(callbackUrl, lang = 'ko') {
   console.log('showWelcome 시작');
-  // 세션 초기화 방지
   try {
     const bannerUrl = `${BASE_URL}/banner_hospital.jpg`;
+    const welcomeTexts = {
+      ko: "안녕하세요! 연세푸르미피부과입니다 😊\n\n👨‍⚕️ 피부과 전문의 3인 운영\n🏆 강남 레이저 시술 1위 병원\n🌍 외국인 다국어 상담 가능\n💡 첫 방문 고객 무료 피부 분석\n\n무엇을 도와드릴까요?",
+      en: "Hello! Welcome to Yonsei Purumi Skin Clinic 😊\n\n👨‍⚕️ 3 specialist doctors\n🏆 #1 Laser clinic in Gangnam\n🌍 Multilingual consultation\n💡 Free skin analysis for first visit\n\nHow can we help you?",
+      zh: "您好！欢迎来到延世푸르미皮肤科 😊\n\n👨‍⚕️ 3位专业皮肤科医生\n🏆 江南激光治疗第一\n🌍 多语言咨询\n💡 首次就诊免费皮肤分析\n\n请问有什么可以帮您？",
+      ja: "こんにちは！延世プルミ皮膚科へようこそ 😊\n\n👨‍⚕️ 皮膚科専門医3名\n🏆 江南レーザー施術No.1\n🌍 多言語対応\n💡 初回無料肌分析\n\nどのようなご用件でしょうか？",
+      th: "สวัสดี! ยินดีต้อนรับสู่คลินิก Yonsei Purumi 😊\n\n👨‍⚕️ แพทย์ผิวหนัง 3 ท่าน\n🏆 คลินิกเลเซอร์อันดับ 1\n🌍 ให้คำปรึกษาหลายภาษา\n💡 วิเคราะห์ผิวฟรีครั้งแรก\n\nเราช่วยอะไรคุณได้บ้าง?",
+      vi: "Xin chào! Chào mừng đến với Yonsei Purumi 😊\n\n👨‍⚕️ 3 bác sĩ chuyên khoa\n🏆 Phòng khám laser #1 Gangnam\n🌍 Tư vấn đa ngôn ngữ\n💡 Phân tích da miễn phí lần đầu\n\nChúng tôi có thể giúp gì?",
+      ar: "مرحباً! أهلاً بكم في عيادة يونسي 😊\n\n👨‍⚕️ 3 أطباء متخصصون\n🏆 عيادة الليزر الأولى\n🌍 استشارة متعددة اللغات\n💡 تحليل مجاني للبشرة\n\nكيف يمكننا مساعدتك؟",
+      ru: "Здравствуйте! Добро пожаловать в Yonsei Purumi 😊\n\n👨‍⚕️ 3 врача-дерматолога\n🏆 Клиника №1 в Каннаме\n🌍 Консультация на нескольких языках\n💡 Бесплатный анализ кожи\n\nЧем мы можем помочь?",
+      fr: "Bonjour! Bienvenue à Yonsei Purumi 😊\n\n👨‍⚕️ 3 médecins spécialistes\n🏆 Clinique laser #1 à Gangnam\n🌍 Consultation multilingue\n💡 Analyse de peau gratuite\n\nComment pouvons-nous vous aider?",
+      es: "¡Hola! Bienvenido a Yonsei Purumi 😊\n\n👨‍⚕️ 3 médicos especialistas\n🏆 Clínica láser #1 en Gangnam\n🌍 Consulta multilingüe\n💡 Análisis de piel gratis\n\n¿En qué podemos ayudarte?"
+    };
     const payload = {
       version: "2.0",
       template: {
@@ -345,9 +511,9 @@ async function showWelcome(callbackUrl) {
             description: "강남 대표 피부과 | 개원 20년",
             thumbnail: { imageUrl: bannerUrl, fixedRatio: false }
           }},
-          { simpleText: { text: "안녕하세요! 연세푸르미피부과입니다 😊\n\n👨‍⚕️ 피부과 전문의 3인 운영\n🏆 강남 레이저 시술 1위 병원\n🌍 외국인 다국어 상담 가능\n💡 첫 방문 고객 무료 피부 분석\n\n무엇을 도와드릴까요?" } }
+          { simpleText: { text: welcomeTexts[lang] || welcomeTexts.ko } }
         ],
-        quickReplies: mainQuickReplies
+        quickReplies: getQuickReplies(lang)
       }
     };
     console.log('페이로드 생성완료, 전송시작');
@@ -389,7 +555,7 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
             ]
           }}
         ],
-        quickReplies: [{ label: "🏠 처음으로", action: "message", messageText: "처음으로" }]
+        quickReplies: [{ label: (LANG_TEXTS[lang] || LANG_TEXTS.ko).home, action: "message", messageText: "처음으로" }]
       }
     };
     const res = await fetch(callbackUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -593,6 +759,71 @@ async function sendPriceMenu(callbackUrl) {
   }
 }
 
+async function showDoctors(callbackUrl, lang) {
+  lang = lang || 'ko';
+  const doctorLang = lang;
+  const titles = {
+    ko: '👨‍⚕️ 의료진 소개', en: '👨‍⚕️ Our Doctors', zh: '👨‍⚕️ 医师介绍',
+    ja: '👨‍⚕️ 医師紹介', th: '👨‍⚕️ แพทย์ของเรา', vi: '👨‍⚕️ Bác sĩ của chúng tôi',
+    ar: '👨‍⚕️ أطباؤنا', ru: '👨‍⚕️ Наши врачи', fr: '👨‍⚕️ Nos médecins', es: '👨‍⚕️ Nuestros médicos'
+  };
+  const doctors = {
+    ko: [
+      { name: '김연세 원장', spec: '피부과 전문의\n경력 20년\n레이저 시술 전문', btn: '김연세 원장으로 예약하기' },
+      { name: '박푸르미 원장', spec: '피부과 전문의\n경력 15년\n보톡스·필러 전문', btn: '박푸르미 원장으로 예약하기' },
+      { name: '이미소 원장', spec: '피부과 전문의\n경력 10년\n피부 관리 전문', btn: '이미소 원장으로 예약하기' }
+    ],
+    en: [
+      { name: 'Dr. Kim Yonsei', spec: 'Dermatologist\n20 years experience\nLaser treatment specialist', btn: '김연세 원장으로 예약하기' },
+      { name: 'Dr. Park Purumi', spec: 'Dermatologist\n15 years experience\nBotox & Filler specialist', btn: '박푸르미 원장으로 예약하기' },
+      { name: 'Dr. Lee Miso', spec: 'Dermatologist\n10 years experience\nSkin care specialist', btn: '이미소 원장으로 예약하기' }
+    ],
+    zh: [
+      { name: '金延世院长', spec: '皮肤科专科医师\n20年经验\n激光治疗专家', btn: '김연세 원장으로 예약하기' },
+      { name: '朴普鲁美院长', spec: '皮肤科专科医师\n15年经验\n肉毒杆菌·填充专家', btn: '박푸르미 원장으로 예약하기' },
+      { name: '李美笑院长', spec: '皮肤科专科医师\n10年经验\n皮肤护理专家', btn: '이미소 원장으로 예약하기' }
+    ],
+    ja: [
+      { name: 'キム・ヨンセ院長', spec: '皮膚科専門医\n経歴20年\nレーザー治療専門', btn: '김연세 원장으로 예약하기' },
+      { name: 'パク・プルミ院長', spec: '皮膚科専門医\n経歴15年\nボトックス・フィラー専門', btn: '박푸르미 원장으로 예약하기' },
+      { name: 'イ・ミソ院長', spec: '皮膚科専門医\n経歴10年\nスキンケア専門', btn: '이미소 원장으로 예약하기' }
+    ]
+  };
+  const bookBtnLabels = {
+    ko: '📅 예약하기', en: '📅 Book', zh: '📅 预约', ja: '📅 予約する',
+    th: '📅 จอง', vi: '📅 Đặt lịch', ar: '📅 حجز', ru: '📅 Записаться', fr: '📅 Réserver', es: '📅 Reservar'
+  };
+  const docList = doctors[lang] || doctors.en;
+  const bookLabel = bookBtnLabels[lang] || bookBtnLabels.en;
+  const outputs = [
+    { simpleText: { text: titles[lang] || titles.en } },
+    { carousel: {
+      type: 'basicCard',
+      items: docList.map(d => ({
+        title: d.name,
+        description: d.spec,
+        buttons: [{ action: 'message', label: bookLabel, messageText: d.btn }]
+      }))
+    }}
+  ];
+  try {
+    const res = await fetch(callbackUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        version: '2.0',
+        template: {
+          outputs,
+          quickReplies: getQuickReplies(doctorLang)
+        }
+      })
+    });
+    const resText = await res.text();
+    console.log('showDoctors 응답:', res.status, resText);
+  } catch(e) {
+    console.error('showDoctors 오류:', e.message);
+  }
+}
 async function showDoctors(callbackUrl, message) {
   console.log('showDoctors 시작');
   try {
@@ -636,10 +867,7 @@ async function showDoctors(callbackUrl, message) {
         version: "2.0",
         template: {
           outputs,
-          quickReplies: [
-            { label: "📅 예약하기", action: "message", messageText: "예약하기" },
-            { label: "🏠 처음으로", action: "message", messageText: "처음으로" }
-          ]
+          quickReplies: getQuickReplies(doctorLang)
         }
       })
     });
