@@ -177,7 +177,21 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: userId, datetime: result })
       }).then(() => {
-        document.body.innerHTML = '<div style="text-align:center;padding:50px;font-family:sans-serif;"><h2>✅ 선택 완료</h2><p style="font-size:18px;color:#666;">' + result + '</p><p style="margin-top:20px;">카카오톡으로 돌아가서<br><b>날짜선택완료</b> 버튼을 눌러주세요 😊</p></div>';
+        const lang = getUrlParam('lang') || 'ko';
+        const msgs = {
+          ko: { title: '✅ 선택 완료', body: '카카오톡으로 돌아가서 <b>날짜선택완료</b> 버튼을 눌러주세요 😊' },
+          en: { title: '✅ Selection Complete', body: 'Go back to KakaoTalk and tap the <b>Done</b> button 😊' },
+          zh: { title: '✅ 选择完成', body: '返回KakaoTalk并点击<b>完成</b>按钮 😊' },
+          ja: { title: '✅ 選択完了', body: 'KakaoTalkに戻って<b>選択完了</b>ボタンを押してください 😊' },
+          th: { title: '✅ เลือกเสร็จแล้ว', body: 'กลับไปที่ KakaoTalk และกดปุ่ม <b>เสร็จสิ้น</b> 😊' },
+          vi: { title: '✅ Đã chọn xong', body: 'Quay lại KakaoTalk và nhấn nút <b>Hoàn thành</b> 😊' },
+          ar: { title: '✅ اكتمل الاختيار', body: 'عد إلى KakaoTalk واضغط على زر <b>تم</b> 😊' },
+          ru: { title: '✅ Выбор завершён', body: 'Вернитесь в KakaoTalk и нажмите кнопку <b>Готово</b> 😊' },
+          fr: { title: '✅ Sélection terminée', body: 'Retournez sur KakaoTalk et appuyez sur <b>Terminé</b> 😊' },
+          es: { title: '✅ Selección completa', body: 'Vuelve a KakaoTalk y toca el botón <b>Listo</b> 😊' }
+        };
+        const m = msgs[lang] || msgs.ko;
+        document.body.innerHTML = '<div style="text-align:center;padding:50px;font-family:sans-serif;"><h2>' + m.title + '</h2><p style="font-size:18px;color:#666;">' + result + '</p><p style="margin-top:20px;">' + m.body + '</p></div>';
       });
   }
 

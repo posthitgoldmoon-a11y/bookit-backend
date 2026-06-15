@@ -166,8 +166,23 @@ async function handleMain(req, res) {
 
     // 시술 선택 → 바로 캘린더
     const bookingKeywords = ["레이저토닝 예약하기", "보톡스 예약하기", "수분리프팅 예약하기", "피부클리닉 예약하기", "무료상담 예약하기", "김연세 원장으로 예약하기", "박푸르미 원장으로 예약하기", "이미소 원장으로 예약하기"];
+    // 예약 방식 선택
+    const bookingTypeLabels = {
+      ko: { title: "📋 예약 방법 선택", desc: "편하신 방법으로 예약해주세요!", naver: "🟢 네이버 예약", kakao: "🟡 카카오 채널 예약" },
+      en: { title: "📋 Select Booking Method", desc: "Please choose your preferred booking method!", naver: "🟢 Naver Booking", kakao: "🟡 KakaoTalk Booking" },
+      zh: { title: "📋 选择预约方式", desc: "请选择您方便的预约方式！", naver: "🟢 Naver预约", kakao: "🟡 KakaoTalk预约" },
+      ja: { title: "📋 予約方法を選択", desc: "ご希望の予約方法をお選びください！", naver: "🟢 Naver予約", kakao: "🟡 KakaoTalk予約" },
+      th: { title: "📋 เลือกวิธีการจอง", desc: "กรุณาเลือกวิธีการจองที่สะดวก!", naver: "🟢 จองผ่าน Naver", kakao: "🟡 จองผ่าน KakaoTalk" },
+      vi: { title: "📋 Chọn phương thức đặt lịch", desc: "Vui lòng chọn phương thức đặt lịch!", naver: "🟢 Đặt qua Naver", kakao: "🟡 Đặt qua KakaoTalk" },
+      ar: { title: "📋 اختر طريقة الحجز", desc: "يرجى اختيار طريقة الحجز المفضلة!", naver: "🟢 حجز عبر Naver", kakao: "🟡 حجز عبر KakaoTalk" },
+      ru: { title: "📋 Выберите способ бронирования", desc: "Выберите удобный способ бронирования!", naver: "🟢 Бронирование через Naver", kakao: "🟡 Бронирование через KakaoTalk" },
+      fr: { title: "📋 Choisir la méthode de réservation", desc: "Veuillez choisir votre méthode de réservation!", naver: "🟢 Réservation Naver", kakao: "🟡 Réservation KakaoTalk" },
+      es: { title: "📋 Seleccionar método de reserva", desc: "¡Por favor seleccione su método de reserva!", naver: "🟢 Reserva por Naver", kakao: "🟡 Reserva por KakaoTalk" }
+    };
+
     if (bookingKeywords.includes(userMessage)) {
       session.data.service = userMessage.replace(" 예약하기", "").replace("으로 예약하기", "");
+      const bl = bookingTypeLabels[session.data.lang] || bookingTypeLabels.ko;
       await fetch(callbackUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -175,15 +190,12 @@ async function handleMain(req, res) {
           version: "2.0",
           template: {
             outputs: [
-              { simpleText: { text: `${session.data.service} 예약을 진행할게요! 😊
-
-날짜와 시간을 선택해주세요!` } },
               { basicCard: {
-                title: "📅 날짜/시간 선택",
-                description: "아래 버튼을 눌러 날짜와 시간을 선택해주세요!",
+                title: bl.title,
+                description: bl.desc,
                 buttons: [
-                  { action: "webLink", label: "📅 날짜/시간 선택하기", webLinkUrl: `${BASE_URL}/calendar.html?userId=${kakaoUserId}` },
-                  { action: "message", label: "✅ 날짜선택완료", messageText: "날짜선택완료" }
+                  { action: "webLink", label: bl.naver, webLinkUrl: "https://booking.naver.com/booking/13/bizes/1234567" },
+                  { action: "message", label: bl.kakao, messageText: "카카오예약하기" }
                 ]
               }}
             ]
@@ -193,9 +205,44 @@ async function handleMain(req, res) {
       return;
     }
 
+    if (userMessage === "카카오예약하기") {
+      const cl = {
+        ko: { msg: `${session.data.service} 예약을 진행할게요! 😊\n\n날짜와 시간을 선택해주세요!`, title: "📅 날짜/시간 선택", desc: "아래 버튼을 눌러 날짜와 시간을 선택해주세요!", btn1: "📅 날짜/시간 선택하기", btn2: "✅ 날짜선택완료" },
+        en: { msg: `Proceeding with ${session.data.service} booking! 😊\n\nPlease select a date and time!`, title: "📅 Select Date/Time", desc: "Tap the button below to select!", btn1: "📅 Select Date/Time", btn2: "✅ Done" },
+        zh: { msg: `正在预约${session.data.service}！ 😊\n\n请选择日期和时间！`, title: "📅 选择日期/时间", desc: "请点击下方按钮！", btn1: "📅 选择日期/时间", btn2: "✅ 完成" },
+        ja: { msg: `${session.data.service}のご予約を進めます！ 😊\n\n日付と時間をお選びください！`, title: "📅 日付/時間を選択", desc: "下のボタンを押してください！", btn1: "📅 日付/時間を選択", btn2: "✅ 選択完了" },
+        th: { msg: `กำลังดำเนินการจอง ${session.data.service}! 😊\n\nกรุณาเลือกวันและเวลา!`, title: "📅 เลือกวันและเวลา", desc: "กดปุ่มด้านล่าง!", btn1: "📅 เลือกวันและเวลา", btn2: "✅ เสร็จสิ้น" },
+        vi: { msg: `Đang tiến hành đặt lịch ${session.data.service}! 😊\n\nVui lòng chọn ngày và giờ!`, title: "📅 Chọn ngày/giờ", desc: "Nhấn nút bên dưới!", btn1: "📅 Chọn ngày/giờ", btn2: "✅ Hoàn thành" },
+        ar: { msg: `جارٍ حجز ${session.data.service}! 😊\n\nيرجى اختيار التاريخ والوقت!`, title: "📅 اختر التاريخ/الوقت", desc: "اضغط الزر أدناه!", btn1: "📅 اختر التاريخ/الوقت", btn2: "✅ تم" },
+        ru: { msg: `Оформляем запись ${session.data.service}! 😊\n\nВыберите дату и время!`, title: "📅 Выбор даты/времени", desc: "Нажмите кнопку ниже!", btn1: "📅 Выбрать дату/время", btn2: "✅ Готово" },
+        fr: { msg: `Réservation ${session.data.service} en cours! 😊\n\nVeuillez sélectionner une date et une heure!`, title: "📅 Sélectionner date/heure", desc: "Appuyez sur le bouton ci-dessous!", btn1: "📅 Sélectionner date/heure", btn2: "✅ Terminé" },
+        es: { msg: `Procesando reserva de ${session.data.service}! 😊\n\n¡Por favor seleccione fecha y hora!`, title: "📅 Seleccionar fecha/hora", desc: "¡Toca el botón de abajo!", btn1: "📅 Seleccionar fecha/hora", btn2: "✅ Listo" }
+      };
+      const c = cl[session.data.lang] || cl.ko;
+      await fetch(callbackUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          version: "2.0",
+          template: {
+            outputs: [
+              { simpleText: { text: c.msg } },
+              { basicCard: {
+                title: c.title,
+                description: c.desc,
+                buttons: [
+                  { action: "webLink", label: c.btn1, webLinkUrl: `${BASE_URL}/calendar.html?userId=${kakaoUserId}&lang=${session.data.lang || "ko"}` },
+                  { action: "message", label: c.btn2, messageText: "날짜선택완료" }
+                ]
+              }}
+            ]
+          }
+        })
+      });
+      return;
+    }
 
-
-    if (userMessage === '가격안내') {
+        if (userMessage === '가격안내') {
       await sendPriceMenu(callbackUrl, session.data.lang || 'ko');
       return;
     }
