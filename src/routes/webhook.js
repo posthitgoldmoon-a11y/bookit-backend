@@ -24,10 +24,17 @@ async function sendTelegram(text) {
   } catch(e) { console.error('텔레그램 오류:', e.message); }
 }
 
-async function sendCallback(callbackUrl, text, quickReplies = null) {
+async function sendCallback(callbackUrl, text, quickReplies = null, buttons = null) {
+  // buttons가 있으면 basicCard로, 없으면 simpleText로
+  let outputs;
+  if (buttons) {
+    outputs = [{ basicCard: { title: text, buttons: buttons } }];
+  } else {
+    outputs = [{ simpleText: { text } }];
+  }
   const body = {
     version: "2.0",
-    template: { outputs: [{ simpleText: { text } }] }
+    template: { outputs }
   };
   if (quickReplies) body.template.quickReplies = quickReplies;
   try {
@@ -389,9 +396,10 @@ async function handleMain(req, res) {
       };
       await sendCallback(callbackUrl,
         dirTexts[lang] || dirTexts.ko,
+        getQuickReplies(lang),
         [
-          { label: mapLabels[lang] || mapLabels.ko, action: 'webLink', webLinkUrl: 'https://map.kakao.com/?q=강남역피부과' },
-          { label: lt.home, action: 'message', messageText: '처음으로' }
+          { action: 'webLink', label: mapLabels[lang] || mapLabels.ko, webLinkUrl: 'https://map.kakao.com/?q=강남역피부과' },
+          { action: 'message', label: lt.home, messageText: '처음으로' }
         ]
       );
       return;
@@ -413,7 +421,8 @@ async function handleMain(req, res) {
         es: "⏰ Horario\n\nLun-Vie: 09:00 - 18:00\nSábado: 09:00 - 15:00\nDom/Festivos: Cerrado\n\nAlmuerzo: 13:00 - 14:00\n\n📞 Tel: 02-1234-5678"
       };
       await sendCallback(callbackUrl, hoursTexts[lang] || hoursTexts.ko,
-        [{ label: lt.home, action: "message", messageText: "처음으로" }]
+        getQuickReplies(lang),
+        [{ action: "message", label: lt.home, messageText: "처음으로" }]
       );
       return;
     }
@@ -787,27 +796,27 @@ async function showDoctors(callbackUrl, lang) {
     ja: '👨‍⚕️ 医師紹介', th: '👨‍⚕️ แพทย์ของเรา', vi: '👨‍⚕️ Bác sĩ của chúng tôi',
     ar: '👨‍⚕️ أطباؤنا', ru: '👨‍⚕️ Наши врачи', fr: '👨‍⚕️ Nos médecins', es: '👨‍⚕️ Nuestros médicos'
   };
-  const BASE_URL2 = process.env.BASE_URL || 'https://your-server.com';
+  
   const doctors = {
     ko: [
-      { name: '김연세 원장', spec: '피부과 전문의\n경력 20년\n레이저 시술 전문', btn: '김연세 원장으로 예약하기', img: BASE_URL2+'/doctor_1.jpg' },
-      { name: '박푸르미 원장', spec: '피부과 전문의\n경력 15년\n보톡스·필러 전문', btn: '박푸르미 원장으로 예약하기', img: BASE_URL2+'/doctor_2.jpg' },
-      { name: '이미소 원장', spec: '피부과 전문의\n경력 10년\n피부 관리 전문', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
+      { name: '김연세 원장', spec: '피부과 전문의\n경력 20년\n레이저 시술 전문', btn: '김연세 원장으로 예약하기', img: BASE_URL+'/doctor_1.jpg' },
+      { name: '박푸르미 원장', spec: '피부과 전문의\n경력 15년\n보톡스·필러 전문', btn: '박푸르미 원장으로 예약하기', img: BASE_URL+'/doctor_2.jpg' },
+      { name: '이미소 원장', spec: '피부과 전문의\n경력 10년\n피부 관리 전문', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
     ],
     en: [
       { name: 'Dr. Kim Yonsei', spec: 'Dermatologist\n20 years experience\nLaser treatment specialist', btn: '김연세 원장으로 예약하기' },
       { name: 'Dr. Park Purumi', spec: 'Dermatologist\n15 years experience\nBotox & Filler specialist', btn: '박푸르미 원장으로 예약하기' },
-      { name: 'Dr. Lee Miso', spec: 'Dermatologist\n10 years experience\nSkin care specialist', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
+      { name: 'Dr. Lee Miso', spec: 'Dermatologist\n10 years experience\nSkin care specialist', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
     ],
     zh: [
-      { name: '金延世院长', spec: '皮肤科专科医师\n20年经验\n激光治疗专家', btn: '김연세 원장으로 예약하기', img: BASE_URL2+'/doctor_1.jpg' },
-      { name: '朴普鲁美院长', spec: '皮肤科专科医师\n15年经验\n肉毒杆菌·填充专家', btn: '박푸르미 원장으로 예약하기', img: BASE_URL2+'/doctor_2.jpg' },
-      { name: '李美笑院长', spec: '皮肤科专科医师\n10年经验\n皮肤护理专家', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
+      { name: '金延世院长', spec: '皮肤科专科医师\n20年经验\n激光治疗专家', btn: '김연세 원장으로 예약하기', img: BASE_URL+'/doctor_1.jpg' },
+      { name: '朴普鲁美院长', spec: '皮肤科专科医师\n15年经验\n肉毒杆菌·填充专家', btn: '박푸르미 원장으로 예약하기', img: BASE_URL+'/doctor_2.jpg' },
+      { name: '李美笑院长', spec: '皮肤科专科医师\n10年经验\n皮肤护理专家', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
     ],
     ja: [
-      { name: 'キム・ヨンセ院長', spec: '皮膚科専門医\n経歴20年\nレーザー治療専門', btn: '김연세 원장으로 예약하기', img: BASE_URL2+'/doctor_1.jpg' },
-      { name: 'パク・プルミ院長', spec: '皮膚科専門医\n経歴15年\nボトックス・フィラー専門', btn: '박푸르미 원장으로 예약하기', img: BASE_URL2+'/doctor_2.jpg' },
-      { name: 'イ・ミソ院長', spec: '皮膚科専門医\n経歴10年\nスキンケア専門', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
+      { name: 'キム・ヨンセ院長', spec: '皮膚科専門医\n経歴20年\nレーザー治療専門', btn: '김연세 원장으로 예약하기', img: BASE_URL+'/doctor_1.jpg' },
+      { name: 'パク・プルミ院長', spec: '皮膚科専門医\n経歴15年\nボトックス・フィラー専門', btn: '박푸르미 원장으로 예약하기', img: BASE_URL+'/doctor_2.jpg' },
+      { name: 'イ・ミソ院長', spec: '皮膚科専門医\n経歴10年\nスキンケア専門', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
     ]
   };
   const bookBtnLabels = {
