@@ -316,71 +316,36 @@ async function showWelcome(callbackUrl) {
   }
 }
 
-async function sendBookingMenu(callbackUrl, kakaoUserId) {
-  console.log('sendBookingMenu 시작');
+async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
+  console.log('sendBookingMenu 시작, 언어:', lang);
+  const labels = {
+    ko: { intro: "📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!", book: "이 시술로 예약", detail: "자세히 알아보기", t1: "✨ 레이저 토닝", d1: "기미·잡티·모공 개선\n시술시간: 약 30분", t2: "💉 보톡스", d2: "이마·눈가·팔자주름\n시술시간: 약 15분", t3: "💧 수분 리프팅", d3: "피부 탄력·수분 개선\n시술시간: 약 40분", t4: "🌟 피부 클리닉", d4: "여드름·모공·피부결 개선\n시술시간: 약 60분", t5: "🎁 무료 상담", d5: "첫 방문 무료 피부 분석\n전문의 1:1 상담", q1: "레이저토닝 설명해줘", q2: "보톡스 설명해줘", q3: "수분리프팅 설명해줘", q4: "피부클리닉 설명해줘", q5: "무료상담 설명해줘" },
+    en: { intro: "📅 Which treatment would you like to book?\nPlease select a treatment!", book: "Book this", detail: "Learn more", t1: "✨ Laser Toning", d1: "Pigmentation & pore care\nDuration: ~30 min", t2: "💉 Botox", d2: "Forehead, eye, nasolabial\nDuration: ~15 min", t3: "💧 Moisture Lifting", d3: "Elasticity & hydration\nDuration: ~40 min", t4: "🌟 Skin Clinic", d4: "Acne, pores, skin texture\nDuration: ~60 min", t5: "🎁 Free Consultation", d5: "Free skin analysis\n1:1 doctor consultation", q1: "Tell me about laser toning", q2: "Tell me about botox", q3: "Tell me about moisture lifting", q4: "Tell me about skin clinic", q5: "Tell me about free consultation" },
+    zh: { intro: "📅 您想预约哪种治疗？\n请选择治疗项目！", book: "预约此项目", detail: "了解更多", t1: "✨ 激光调肤", d1: "改善色斑·毛孔\n时间: 约30分钟", t2: "💉 肉毒素", d2: "额头·眼角·法令纹\n时间: 约15分钟", t3: "💧 水光针", d3: "改善弹力·水分\n时间: 约40分钟", t4: "🌟 皮肤诊疗", d4: "痤疮·毛孔·肤质\n时间: 约60分钟", t5: "🎁 免费咨询", d5: "首次免费皮肤分析\n专科医生1:1咨询", q1: "介绍激光调肤", q2: "介绍肉毒素", q3: "介绍水光针", q4: "介绍皮肤诊疗", q5: "介绍免费咨询" },
+    ja: { intro: "📅 どの施術をご予約されますか？\n施術をお選びください！", book: "この施術を予約", detail: "詳しく見る", t1: "✨ レーザートーニング", d1: "シミ・毛穴ケア\n施術時間: 約30分", t2: "💉 ボトックス", d2: "額・目元・ほうれい線\n施術時間: 約15分", t3: "💧 水分リフティング", d3: "弾力・保湿改善\n施術時間: 約40分", t4: "🌟 スキンクリニック", d4: "ニキビ・毛穴・肌質\n施術時間: 約60分", t5: "🎁 無料カウンセリング", d5: "初回無料肌分析\n専門医1:1相談", q1: "レーザートーニングについて", q2: "ボトックスについて", q3: "水分リフティングについて", q4: "スキンクリニックについて", q5: "無料カウンセリングについて" }
+  };
+  const l = labels[lang] || labels.ko;
   try {
     const payload = {
       version: "2.0",
       template: {
         outputs: [
-          { simpleText: { text: "📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!" } },
+          { simpleText: { text: l.intro } },
           { carousel: {
             type: "basicCard",
             items: [
-              {
-                title: "✨ 레이저 토닝",
-                description: "기미·잡티·모공 개선\n시술시간: 약 30분\n마취크림 도포 후 진행",
-                buttons: [
-                  { action: "message", label: "이 시술로 예약", messageText: "레이저토닝 예약하기" },
-                  { action: "message", label: "자세히 알아보기", messageText: "레이저토닝 설명해줘" }
-                ]
-              },
-              {
-                title: "💉 보톡스",
-                description: "이마·눈가·팔자주름\n시술시간: 약 15분\n즉시 일상생활 가능",
-                buttons: [
-                  { action: "message", label: "이 시술로 예약", messageText: "보톡스 예약하기" },
-                  { action: "message", label: "자세히 알아보기", messageText: "보톡스 설명해줘" }
-                ]
-              },
-              {
-                title: "💧 수분 리프팅",
-                description: "피부 탄력·볼륨 개선\n시술시간: 약 40분\n즉각적인 광채 효과",
-                buttons: [
-                  { action: "message", label: "이 시술로 예약", messageText: "수분리프팅 예약하기" },
-                  { action: "message", label: "자세히 알아보기", messageText: "수분리프팅 설명해줘" }
-                ]
-              },
-              {
-                title: "🔬 피부 클리닉",
-                description: "여드름·흉터·색소 치료\n시술시간: 약 30~60분\n맞춤형 복합 시술",
-                buttons: [
-                  { action: "message", label: "이 시술로 예약", messageText: "피부클리닉 예약하기" },
-                  { action: "message", label: "자세히 알아보기", messageText: "피부클리닉 설명해줘" }
-                ]
-              },
-              {
-                title: "🌟 첫 방문 무료 상담",
-                description: "전문의 1:1 피부 분석\n피부 타입 진단 무료\n맞춤 시술 추천",
-                buttons: [
-                  { action: "message", label: "무료 상담 예약", messageText: "무료상담 예약하기" },
-                  { action: "message", label: "자세히 알아보기", messageText: "무료상담 설명해줘" }
-                ]
-              }
+              { title: l.t1, description: l.d1, buttons: [{ action: "message", label: l.book, messageText: "레이저토닝 예약하기" }, { action: "message", label: l.detail, messageText: l.q1 }] },
+              { title: l.t2, description: l.d2, buttons: [{ action: "message", label: l.book, messageText: "보톡스 예약하기" }, { action: "message", label: l.detail, messageText: l.q2 }] },
+              { title: l.t3, description: l.d3, buttons: [{ action: "message", label: l.book, messageText: "수분리프팅 예약하기" }, { action: "message", label: l.detail, messageText: l.q3 }] },
+              { title: l.t4, description: l.d4, buttons: [{ action: "message", label: l.book, messageText: "피부클리닉 예약하기" }, { action: "message", label: l.detail, messageText: l.q4 }] },
+              { title: l.t5, description: l.d5, buttons: [{ action: "message", label: l.book, messageText: "무료상담 예약하기" }, { action: "message", label: l.detail, messageText: l.q5 }] }
             ]
           }}
         ],
-        quickReplies: [
-          { label: "🏠 처음으로", action: "message", messageText: "처음으로" },
-          { label: "📞 전화 문의", action: "message", messageText: "전화번호 알려줘" }
-        ]
+        quickReplies: [{ label: "🏠 처음으로", action: "message", messageText: "처음으로" }]
       }
     };
-    const res = await fetch(callbackUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    const res = await fetch(callbackUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     const resText = await res.text();
     console.log('sendBookingMenu 응답:', res.status, resText);
   } catch(e) {
