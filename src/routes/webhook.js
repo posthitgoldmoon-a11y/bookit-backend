@@ -482,7 +482,7 @@ async function handleMain(req, res) {
     console.error('❌ 전체오류:', err.message);
     console.error(err.stack);
     const ltErr = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
-    await sendCallback(callbackUrl, ltErr.error);
+    try { await sendCallback(callbackUrl, ltErr.error); } catch(e2) { console.error('❌ 콜백 응답도 실패:', e2.message); }
   }
 }
 
@@ -781,8 +781,7 @@ async function sendPriceMenu(callbackUrl, lang) {
 }
 
 async function showDoctors(callbackUrl, lang) {
-  lang = lang || 'ko';
-  const doctorLang = lang;
+  const doctorLang = lang || 'ko';
   const titles = {
     ko: '👨‍⚕️ 의료진 소개', en: '👨‍⚕️ Our Doctors', zh: '👨‍⚕️ 医师介绍',
     ja: '👨‍⚕️ 医師紹介', th: '👨‍⚕️ แพทย์ของเรา', vi: '👨‍⚕️ Bác sĩ của chúng tôi',
