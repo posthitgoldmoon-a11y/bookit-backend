@@ -800,14 +800,14 @@ async function showDoctors(callbackUrl, lang) {
       { name: 'Dr. Lee Miso', spec: 'Dermatologist\n10 years experience\nSkin care specialist', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
     ],
     zh: [
-      { name: '金延世院长', spec: '皮肤科专科医师\n20年经验\n激光治疗专家', btn: '김연세 원장으로 예약하기' },
-      { name: '朴普鲁美院长', spec: '皮肤科专科医师\n15年经验\n肉毒杆菌·填充专家', btn: '박푸르미 원장으로 예약하기' },
-      { name: '李美笑院长', spec: '皮肤科专科医师\n10年经验\n皮肤护理专家', btn: '이미소 원장으로 예약하기' }
+      { name: '金延世院长', spec: '皮肤科专科医师\n20年经验\n激光治疗专家', btn: '김연세 원장으로 예약하기', img: BASE_URL2+'/doctor_1.jpg' },
+      { name: '朴普鲁美院长', spec: '皮肤科专科医师\n15年经验\n肉毒杆菌·填充专家', btn: '박푸르미 원장으로 예약하기', img: BASE_URL2+'/doctor_2.jpg' },
+      { name: '李美笑院长', spec: '皮肤科专科医师\n10年经验\n皮肤护理专家', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
     ],
     ja: [
-      { name: 'キム・ヨンセ院長', spec: '皮膚科専門医\n経歴20年\nレーザー治療専門', btn: '김연세 원장으로 예약하기' },
-      { name: 'パク・プルミ院長', spec: '皮膚科専門医\n経歴15年\nボトックス・フィラー専門', btn: '박푸르미 원장으로 예약하기' },
-      { name: 'イ・ミソ院長', spec: '皮膚科専門医\n経歴10年\nスキンケア専門', btn: '이미소 원장으로 예약하기' }
+      { name: 'キム・ヨンセ院長', spec: '皮膚科専門医\n経歴20年\nレーザー治療専門', btn: '김연세 원장으로 예약하기', img: BASE_URL2+'/doctor_1.jpg' },
+      { name: 'パク・プルミ院長', spec: '皮膚科専門医\n経歴15年\nボトックス・フィラー専門', btn: '박푸르미 원장으로 예약하기', img: BASE_URL2+'/doctor_2.jpg' },
+      { name: 'イ・ミソ院長', spec: '皮膚科専門医\n経歴10年\nスキンケア専門', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
     ]
   };
   const bookBtnLabels = {
