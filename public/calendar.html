@@ -172,7 +172,13 @@
       window.ReactNativeWebView.postMessage(JSON.stringify({ type: "datetime", value: result }));
     }
     const userId = getUrlParam('userId') || '';
-    window.location.href = `/webhook/calendar-select?date=${encodeURIComponent(result)}&userId=${encodeURIComponent(userId)}`;
+    fetch('/calendar-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userId, datetime: result })
+      }).then(() => {
+        document.body.innerHTML = '<div style="text-align:center;padding:50px;font-family:sans-serif;"><h2>✅ 선택 완료</h2><p style="font-size:18px;color:#666;">' + result + '</p><p style="margin-top:20px;">카카오톡으로 돌아가서<br><b>날짜선택완료</b> 버튼을 눌러주세요 😊</p></div>';
+      });
   }
 
   renderCalendar();
