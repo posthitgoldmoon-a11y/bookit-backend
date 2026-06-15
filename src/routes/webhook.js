@@ -787,16 +787,17 @@ async function showDoctors(callbackUrl, lang) {
     ja: '👨‍⚕️ 医師紹介', th: '👨‍⚕️ แพทย์ของเรา', vi: '👨‍⚕️ Bác sĩ của chúng tôi',
     ar: '👨‍⚕️ أطباؤنا', ru: '👨‍⚕️ Наши врачи', fr: '👨‍⚕️ Nos médecins', es: '👨‍⚕️ Nuestros médicos'
   };
+  const BASE_URL2 = process.env.BASE_URL || 'https://your-server.com';
   const doctors = {
     ko: [
-      { name: '김연세 원장', spec: '피부과 전문의\n경력 20년\n레이저 시술 전문', btn: '김연세 원장으로 예약하기' },
-      { name: '박푸르미 원장', spec: '피부과 전문의\n경력 15년\n보톡스·필러 전문', btn: '박푸르미 원장으로 예약하기' },
-      { name: '이미소 원장', spec: '피부과 전문의\n경력 10년\n피부 관리 전문', btn: '이미소 원장으로 예약하기' }
+      { name: '김연세 원장', spec: '피부과 전문의\n경력 20년\n레이저 시술 전문', btn: '김연세 원장으로 예약하기', img: BASE_URL2+'/doctor_1.jpg' },
+      { name: '박푸르미 원장', spec: '피부과 전문의\n경력 15년\n보톡스·필러 전문', btn: '박푸르미 원장으로 예약하기', img: BASE_URL2+'/doctor_2.jpg' },
+      { name: '이미소 원장', spec: '피부과 전문의\n경력 10년\n피부 관리 전문', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
     ],
     en: [
       { name: 'Dr. Kim Yonsei', spec: 'Dermatologist\n20 years experience\nLaser treatment specialist', btn: '김연세 원장으로 예약하기' },
       { name: 'Dr. Park Purumi', spec: 'Dermatologist\n15 years experience\nBotox & Filler specialist', btn: '박푸르미 원장으로 예약하기' },
-      { name: 'Dr. Lee Miso', spec: 'Dermatologist\n10 years experience\nSkin care specialist', btn: '이미소 원장으로 예약하기' }
+      { name: 'Dr. Lee Miso', spec: 'Dermatologist\n10 years experience\nSkin care specialist', btn: '이미소 원장으로 예약하기', img: BASE_URL2+'/doctor_3.jpg' }
     ],
     zh: [
       { name: '金延世院长', spec: '皮肤科专科医师\n20年经验\n激光治疗专家', btn: '김연세 원장으로 예약하기' },
@@ -822,6 +823,7 @@ async function showDoctors(callbackUrl, lang) {
       items: docList.map(d => ({
         title: d.name,
         description: d.spec,
+        thumbnail: d.img ? { imageUrl: d.img, fixedRatio: false } : undefined,
         buttons: [{ action: 'message', label: bookLabel, messageText: d.btn }]
       }))
     }}
@@ -832,59 +834,6 @@ async function showDoctors(callbackUrl, lang) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         version: '2.0',
-        template: {
-          outputs,
-          quickReplies: getQuickReplies(doctorLang)
-        }
-      })
-    });
-    const resText = await res.text();
-    console.log('showDoctors 응답:', res.status, resText);
-  } catch(e) {
-    console.error('showDoctors 오류:', e.message);
-  }
-}
-async function showDoctors(callbackUrl, message) {
-  console.log('showDoctors 시작');
-  try {
-    const doctors = [
-      {
-        name: "김연세 원장",
-        desc: "前 서울대병원 피부과\n레이저 토닝·기미 전문\n경력 20년 | 누적 시술 50,000건",
-        img: "doctor_1.jpg",
-        msg: "김연세 원장으로 예약하기"
-      },
-      {
-        name: "박푸르미 원장",
-        desc: "前 강남세브란스 피부과\n여드름·흉터·모공 전문\n경력 15년 | SCI 논문 12편",
-        img: "doctor_2.jpg",
-        msg: "박푸르미 원장으로 예약하기"
-      },
-      {
-        name: "이미소 원장",
-        desc: "前 아산병원 피부과\n안티에이징·리프팅 전문\n경력 10년 | 외국어 상담 가능",
-        img: "doctor_3.jpg",
-        msg: "이미소 원장으로 예약하기"
-      }
-    ];
-    const carouselItems = doctors.map(d => ({
-      title: d.name,
-      description: d.desc,
-      thumbnail: { imageUrl: `${BASE_URL}/${d.img}`, link: { web: `${BASE_URL}/${d.img}` } },
-      buttons: [
-        { action: "message", label: "이 원장으로 예약하기", messageText: d.msg },
-        { action: "webLink", label: "프로필 크게 보기", webLinkUrl: `${BASE_URL}/${d.img}` }
-      ]
-    }));
-    const outputs = [];
-    if (message) outputs.push({ simpleText: { text: message } });
-    outputs.push({ simpleText: { text: "👨‍⚕️ 의료진을 소개합니다!\n원하시는 원장님을 선택하시면 예약 가능해요 😊" } });
-    outputs.push({ carousel: { type: "basicCard", items: carouselItems } });
-    const res = await fetch(callbackUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        version: "2.0",
         template: {
           outputs,
           quickReplies: getQuickReplies(doctorLang)
