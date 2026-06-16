@@ -406,6 +406,10 @@ async function handleMain(req, res) {
             outputs: [
               { basicCard: { title: '', thumbnail: { imageUrl: bannerImg } } },
               { simpleText: { text: geminiReply.message } }
+            ],
+            quickReplies: [
+              { label: '🏠 처음으로', action: 'message', messageText: '처음으로' },
+              { label: '🔄 업종변경', action: 'message', messageText: '처음으로' }
             ]
           }
         })
