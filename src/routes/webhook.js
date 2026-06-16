@@ -171,7 +171,14 @@ const mainQuickReplies = [
   { label: "⏰ 진료시간", action: "message", messageText: "진료시간" }
 ];
 
-function getQuickReplies(lang = 'ko') {
+function getQuickReplies(lang = 'ko', industry = 'hospital') {
+  // 병원이 아닌 업종은 기본 퀵리플라이만
+  if (industry && industry !== 'hospital') {
+    return [
+      { label: '🏠 처음으로', action: 'message', messageText: '처음으로' },
+      { label: '🔄 업종변경', action: 'message', messageText: '처음으로' }
+    ];
+  }
   const qr = {
     ko: [
       { label: "📅 예약하기", action: "message", messageText: "예약하기" },
@@ -307,13 +314,13 @@ async function handleMain(req, res) {
       session.data = {};
       session.booted = false;
       session.visited = true;
-      await showWelcome(callbackUrl);
+      await showWelcome(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
       return;
     }
 
     if (!session.visited) {
       session.visited = true;
-      await showWelcome(callbackUrl);
+      await showWelcome(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
       return;
     }
 
@@ -688,7 +695,7 @@ async function handleMain(req, res) {
       };
       await sendCallback(callbackUrl,
         dirTexts[lang] || dirTexts.ko,
-        getQuickReplies(lang),
+        getQuickReplies(lang, session.industry || 'hospital'),
         [
           { action: 'webLink', label: mapLabels[lang] || mapLabels.ko, webLinkUrl: 'https://map.kakao.com/?q=강남역피부과' },
           { action: 'message', label: lt.home, messageText: '처음으로' }
@@ -713,7 +720,7 @@ async function handleMain(req, res) {
         es: "⏰ Horario\n\nLun-Vie: 09:00 - 18:00\nSábado: 09:00 - 15:00\nDom/Festivos: Cerrado\n\nAlmuerzo: 13:00 - 14:00\n\n📞 Tel: 02-1234-5678"
       };
       await sendCallback(callbackUrl, hoursTexts[lang] || hoursTexts.ko,
-        getQuickReplies(lang),
+        getQuickReplies(lang, session.industry || 'hospital'),
         [{ action: "message", label: lt.home, messageText: "처음으로" }]
       );
       return;
@@ -866,7 +873,7 @@ async function handleMain(req, res) {
   }
 }
 
-async function showWelcome(callbackUrl, lang = 'ko') {
+async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
   console.log('showWelcome 시작');
   try {
     const bannerUrl = `${BASE_URL}/banner_hospital.jpg`;
@@ -893,7 +900,7 @@ async function showWelcome(callbackUrl, lang = 'ko') {
           }},
           { simpleText: { text: welcomeTexts[lang] || welcomeTexts.ko } }
         ],
-        quickReplies: getQuickReplies(lang)
+        quickReplies: getQuickReplies(lang, industry)
       }
     };
     console.log('페이로드 생성완료, 전송시작');
@@ -1149,7 +1156,7 @@ async function sendPriceMenu(callbackUrl, lang) {
               }))
             }}
           ],
-          quickReplies: getQuickReplies(lang)
+          quickReplies: getQuickReplies(lang, industry)
         }
       })
     });
@@ -1216,7 +1223,7 @@ async function showDoctors(callbackUrl, lang) {
         version: '2.0',
         template: {
           outputs,
-          quickReplies: getQuickReplies(doctorLang)
+          quickReplies: getQuickReplies(doctorLang, session.industry || 'hospital')
         }
       })
     });
