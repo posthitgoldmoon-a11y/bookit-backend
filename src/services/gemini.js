@@ -24,6 +24,12 @@ function getSystemPrompt(industry, booted, lang = 'ko') {
     };
     return `${bootedMsg[lang] || bootedMsg.ko}
 
+## 절대 금지 (반드시 준수)
+- "새로 예약하시겠어요?" 절대 사용 금지
+- "예약이 완료되었습니다" 절대 사용 금지
+- "예약하시겠어요?" 절대 사용 금지
+- 답변 끝에 예약 유도 문구 붙이는 것 금지
+
 응답 형식:
 MESSAGE:
 [답변 내용]
