@@ -147,3 +147,30 @@ TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 - sendBookingMenu 시술 추가 시 10개 언어 모두 수정 필요
 - bookingKeywords 배열에도 새 시술 키워드 추가 필요
 - 새 시술 messageText 형식: "시술명 예약하기" (한국어 고정)
+
+## 📁 프롬프트 라이브러리 (~/prompts-library/)
+- _template.txt → 모든 업종 공통 뼈대
+- hospital/dermatology.txt → 피부과 ✅ 완성
+- lawyer/ → 변호사 (예정)
+- hair_salon/ → 미용실 (예정)
+- nail/ → 네일샵 (예정)
+- massage/ → 마사지 (예정)
+- beauty/ → 뷰티 (예정)
+
+## 🆕 새 고객 세팅 순서 (5단계)
+1. prompts-library에서 업종 프롬프트 복사
+   cp ~/prompts-library/_template.txt ~/prompts-library/[업종]/[상호].txt
+2. 고객 정보 교체 (상호명, 가격, 주소, 전화번호, 운영시간)
+3. .env 파일 세팅 (포트, 카카오봇ID, GEMINI_API_KEY)
+4. webhook.js 업종별 템플릿 복사 후 포트/봇ID 수정
+5. node --check → pm2 start → 카카오 스킬 등록
+
+## 🔑 SSH 접속
+- 사무실: ssh -i "F:\병원동행\ssh-key-2026-06-09.key" ubuntu@158.180.83.78
+- 집: ssh -i "D:\병원동행\ssh-key-2026-06-09.key" ubuntu@158.180.83.78
+
+## 💰 요금제
+- 라이트 (소상공인): 월 29,800원
+- 스탠다드 (외국인 소상공인): 월 99,000원
+- 병원 베이직 (국내 전용): 월 149,000원
+- 병원 프리미엄 (외국인 병원): 월 390,000원
