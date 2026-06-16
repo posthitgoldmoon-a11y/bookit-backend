@@ -126,7 +126,7 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
     message = text.split("BOOKING_JSON:")[0].trim();
     if (!message) message = text;
   }
-  message = message.replace(/SHOW_BUTTONS:.*$/gm, "").replace(/HUMAN_AGENT_REQUEST:.*$/gm, "").replace(/SHOW_STYLISTS:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/SHOW_DOCTORS:.*$/gm, "").replace(/SHOW_CALENDAR:.*$/gm, "").replace(/SHOW_CALENDAR_RETRY:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/RESET:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/RESET:.*$/gm, "").trim();
+  message = message.replace(/SHOW_BUTTONS:.*$/gm, "").replace(/HUMAN_AGENT_REQUEST:.*$/gm, "").replace(/SHOW_STYLISTS:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/SHOW_DOCTORS:.*$/gm, "").replace(/SHOW_CALENDAR:.*$/gm, "").replace(/SHOW_CALENDAR_RETRY:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/RESET:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/RESET:.*$/gm, "").replace(/새로 예약하시겠어요\?/g, "").replace(/새로운 예약을 도와드릴까요\?/g, "").replace(/다른 예약을 도와드릴까요\?/g, "").replace(/예약을 도와드릴까요\?/g, "").replace(/Would you like to make a new booking\?/gi, "").replace(/Would you like to book again\?/gi, "").replace(/새로 예약.*?\?/g, "").trim();
 
   let bookingData = null;
   if (jsonMatch) {
