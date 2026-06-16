@@ -771,6 +771,14 @@ async function handleMain(req, res) {
     if (geminiReply.showDoctors) { await showDoctors(callbackUrl, session.data.lang || 'ko'); return; }
     if (geminiReply.showPrice) { await sendPriceMenu(callbackUrl, session.data.lang || 'ko'); return; }
     if (geminiReply.showCalendar) { await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang || 'ko'); return; }
+    // 가격/설명 문의 시 showBookingType 강제 무시
+    const priceKeywords = ['얼마', '가격', '요금', '비용', '금액', '할인', '패키지', '코스', '설명', '어떤', '뭐야', '뭔가요', '알려줘', '알려주세요', '어떻게', '소개', 'price', 'cost', 'how much', 'what is'];
+    const isPriceQuery = priceKeywords.some(k => userMessage.includes(k));
+    if (isPriceQuery && geminiReply.showBookingType) {
+      console.log('⚠️ 가격/설명 문의로 showBookingType 무시:', userMessage);
+      geminiReply.showBookingType = false;
+    }
+
     if (geminiReply.showBookingType) {
       const lang = session.data.lang || 'ko';
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
