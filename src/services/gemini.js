@@ -11,10 +11,16 @@ function getSystemPrompt(industry, booted, lang = 'ko') {
 
   if (booted) {
     const bootedMsg = {
-      ko: '고객의 예약이 완료된 상태입니다. 추가 문의에 친절하게 한국어로 답변하세요. 새 예약을 원하면 "새로 예약하시겠어요?" 라고 물어보세요.',
-      en: 'The customer has completed a booking. Respond kindly in English. If they want a new booking, ask "Would you like to make a new booking?"',
-      zh: '客户已完成预约。请用中文友好地回答。如果想要新预约，请问"您想要重新预约吗？"',
-      ja: 'お客様の予約が完了しました。日本語で丁寧にお答えください。新しい予約をご希望の場合は「新しいご予約をされますか？」とお聞きください。'
+      ko: '고객의 예약이 완료된 상태입니다. 추가 문의에 친절하게 한국어로 답변하세요.',
+      en: 'The customer has completed a booking. Respond kindly in English to any further inquiries.',
+      zh: '客户已完成预约。请用中文友好地回答任何进一步的询问。',
+      ja: 'お客様の予約が完了しました。日本語で丁寧に追加のお問い合わせにお答えください。',
+      th: 'ลูกค้าทำการจองเสร็จสิ้นแล้ว กรุณาตอบคำถามเพิ่มเติมอย่างสุภาพเป็นภาษาไทย',
+      vi: 'Khách hàng đã hoàn tất đặt lịch. Vui lòng trả lời các câu hỏi thêm bằng tiếng Việt.',
+      ar: 'أكمل العميل الحجز. يرجى الرد على أي استفسارات إضافية بلطف باللغة العربية.',
+      ru: 'Клиент завершил бронирование. Пожалуйста, вежливо отвечайте на дополнительные вопросы на русском языке.',
+      fr: 'Le client a terminé sa réservation. Veuillez répondre aimablement à toute question supplémentaire en français.',
+      es: 'El cliente ha completado la reserva. Por favor, responda amablemente a cualquier consulta adicional en español.'
     };
     return `${bootedMsg[lang] || bootedMsg.ko}
 
