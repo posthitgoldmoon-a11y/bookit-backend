@@ -11,6 +11,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 const webhookRouter = require('./routes/webhook');
 app.use('/webhook', webhookRouter);
 
+const chatdemoRouter = require('./routes/chatdemo');
+app.use('/chat-demo', chatdemoRouter);
+
 // 캘린더 결과 저장
 const calendarResults = {};
 app.post('/calendar-result', (req, res) => {

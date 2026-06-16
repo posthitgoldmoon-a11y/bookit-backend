@@ -95,6 +95,7 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
   });
 
   const text = result.response.text().trim();
+  require("fs").appendFileSync("/home/ubuntu/gemini_debug.log", text + "\n===\n");
 
   const messageMatch = text.match(/MESSAGE:\s*([\s\S]*?)(?=BOOKING_JSON:|SHOW_BUTTONS:|HUMAN_AGENT_REQUEST:|$)/);
   const jsonMatch = text.match(/BOOKING_JSON:\s*(\{[\s\S]*\})/);
@@ -130,3 +131,4 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
 }
 
 module.exports = { chat };
+// 임시 디버그 - 나중에 삭제
