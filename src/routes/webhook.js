@@ -24,6 +24,25 @@ async function sendTelegram(text) {
   } catch(e) { console.error('텔레그램 오류:', e.message); }
 }
 
+
+function extractPhone(text) {
+  if (!text) return null;
+  // 국제번호 +로 시작
+  const intl = text.match(/\+[0-9][\d\s\-]{7,14}/);
+  if (intl) return intl[0].trim();
+  // 한국 번호 010-xxxx-xxxx
+  const kr = text.match(/01[0-9][\-\s]?[0-9]{3,4}[\-\s]?[0-9]{4}/);
+  if (kr) {
+    const digits = kr[0].replace(/[\-\s]/g, '');
+    if (digits.length === 11) return digits.slice(0,3)+'-'+digits.slice(3,7)+'-'+digits.slice(7);
+    return digits.slice(0,3)+'-'+digits.slice(3,6)+'-'+digits.slice(6);
+  }
+  // 외국 번호 8-12자리 숫자
+  const foreign = text.match(/[0-9][\d\s\-]{7,11}[0-9]/);
+  if (foreign) return foreign[0].trim();
+  return null;
+}
+
 async function sendCallback(callbackUrl, text, quickReplies = null, buttons = null) {
   // buttons가 있으면 basicCard로, 없으면 simpleText로
   let outputs;
@@ -204,6 +223,66 @@ async function handleMain(req, res) {
       return;
     }
 
+
+    // 전화번호 감지
+    const phone = extractPhone(userMessage);
+    if (phone && session.contactRequested && !session.phone) {
+      session.phone = phone;
+      const lang = session.data.lang || 'ko';
+      const confirmMsgs = {
+        ko: `📞 전화번호 ${phone} 가 접수되었습니다!\n담당자가 곧 연락드릴게요 😊\n\n아래 버튼으로 예약을 직접 진행하실 수도 있어요!`,
+        en: `📞 Phone number ${phone} received!\nOur staff will contact you soon 😊\n\nYou can also book directly using the buttons below!`,
+        zh: `📞 电话号码 ${phone} 已收到！\n工作人员将很快与您联系 😊\n\n您也可以直接点击下方按钮预约！`,
+        ja: `📞 電話番号 ${phone} を受け付けました！\n担当者がすぐにご連絡いたします 😊\n\n下のボタンから直接ご予約もできます！`,
+        th: `📞 ได้รับเบอร์โทรศัพท์ ${phone} แล้ว!\nเจ้าหน้าที่จะติดต่อกลับเร็วๆ นี้ 😊`,
+        vi: `📞 Đã nhận số điện thoại ${phone}!\nNhân viên sẽ liên hệ với bạn sớm 😊`,
+        ar: `📞 تم استلام رقم الهاتف ${phone}!\nسيتصل بك موظفونا قريباً 😊`,
+        ru: `📞 Номер телефона ${phone} получен!\nНаш сотрудник скоро свяжется с вами 😊`,
+        fr: `📞 Numéro ${phone} reçu!\nNotre équipe vous contactera bientôt 😊`,
+        es: `📞 Número ${phone} recibido!\nNuestro personal se pondrá en contacto pronto 😊`
+      };
+      const confirmMsg = confirmMsgs[lang] || confirmMsgs.ko;
+      const bl = {
+        ko: { naver: "🟢 네이버 예약", kakao: "🟡 카카오 채널 예약" },
+        en: { naver: "🟢 Naver Booking", kakao: "🟡 KakaoTalk Booking" }
+      };
+      const b = bl[lang] || bl.ko;
+      // 텔레그램 전송
+      const historyText = session.history.slice(-4).map(h => (h.role === 'user' ? '👤 ' : '🤖 ') + h.content.substring(0, 50)).join('\n');
+      await sendTelegram([
+        '📱 전화번호 수집!',
+        '━━━━━━━━━━━━━━',
+        '📞 전화번호: ' + phone,
+        '🏥 시술: ' + (session.data.service || '미선택'),
+        '🌍 언어: ' + lang,
+        '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
+        '━━━━━━━━━━━━━━',
+        '💬 최근 상담:',
+        historyText,
+        '━━━━━━━━━━━━━━',
+        '📞 빠른 연락 부탁드립니다!'
+      ].join('\n'));
+      await fetch(callbackUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          version: "2.0",
+          template: {
+            outputs: [
+              { simpleText: { text: confirmMsg } },
+              { basicCard: {
+                title: "📋 예약 진행하기",
+                buttons: [
+                  { action: "webLink", label: b.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || "https://booking.naver.com" },
+                  { action: "message", label: b.kakao, messageText: "카카오예약하기" }
+                ]
+              }}
+            ]
+          }
+        })
+      });
+      return;
+    }
     // 언어 선택
     const langMap = {
       "언어_한국어": "ko", "한국어": "ko",
@@ -309,7 +388,36 @@ async function handleMain(req, res) {
 
     if (bookingKeywords.includes(userMessage)) {
       session.data.service = userMessage.replace(" 예약하기", "").replace("으로 예약하기", "");
-      const bl = bookingTypeLabels[session.data.lang] || bookingTypeLabels.ko;
+      session.contactRequested = true;
+      const lang = session.data.lang || 'ko';
+      const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
+      const contactMsgs = {
+        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊 (선택사항)',
+        en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
+        zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
+        ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
+        th: '📞 ฝากเบอร์โทรศัพท์ไว้ เจ้าหน้าที่จะยืนยันการจองให้คุณโดยตรง 😊 (ไม่บังคับ)',
+        vi: '📞 Để lại số điện thoại, nhân viên sẽ xác nhận đặt lịch trực tiếp cho bạn 😊 (Tùy chọn)',
+        ar: '📞 اترك رقم هاتفك وسيقوم موظفونا بتأكيد حجزك مباشرة 😊 (اختياري)',
+        ru: '📞 Оставьте номер телефона, и сотрудник подтвердит вашу запись напрямую 😊 (Необязательно)',
+        fr: '📞 Laissez votre numéro et notre équipe confirmera votre réservation directement 😊 (Optionnel)',
+        es: '📞 Deje su número y nuestro personal confirmará su reserva directamente 😊 (Opcional)'
+      };
+      const contactMsg = contactMsgs[lang] || contactMsgs.ko;
+      // 텔레그램 알림
+      const historyText = session.history.slice(-4).map(h => (h.role === 'user' ? '👤 ' : '🤖 ') + h.content.substring(0, 50)).join('\n');
+      await sendTelegram([
+        '🔔 예약 버튼 클릭!',
+        '━━━━━━━━━━━━━━',
+        '🏥 시술: ' + session.data.service,
+        '🌍 언어: ' + lang,
+        '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
+        '━━━━━━━━━━━━━━',
+        '💬 최근 상담:',
+        historyText,
+        '━━━━━━━━━━━━━━',
+        '📞 전화번호: 대기중'
+      ].join('\n'));
       await fetch(callbackUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -317,11 +425,12 @@ async function handleMain(req, res) {
           version: "2.0",
           template: {
             outputs: [
+              { simpleText: { text: contactMsg } },
               { basicCard: {
                 title: bl.title,
                 description: bl.desc,
                 buttons: [
-                  { action: "webLink", label: bl.naver, webLinkUrl: "https://booking.naver.com/booking/13/bizes/1234567" },
+                  { action: "webLink", label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || "https://booking.naver.com" },
                   { action: "message", label: bl.kakao, messageText: "카카오예약하기" }
                 ]
               }}
@@ -455,7 +564,15 @@ async function handleMain(req, res) {
     }
 
     console.log('🌍 언어값:', session.data.lang, '/ 사용언어:', session.data.lang || 'ko');
-    const geminiReply = await chat(session.history, userMessage, session.booted, 'hospital', session.data.lang || 'ko');
+    let geminiReply;
+    try {
+      geminiReply = await chat(session.history, userMessage, session.booted, 'hospital', session.data.lang || 'ko');
+      console.log('✅ Gemini 응답:', JSON.stringify(geminiReply).substring(0, 100));
+    } catch(e) {
+      console.error('❌ Gemini 오류:', e.message);
+      await sendCallback(callbackUrl, '잠시 오류가 발생했습니다. 다시 시도해주세요 😊');
+      return;
+    }
     session.history.push({ role: "user", content: userMessage });
     session.history.push({ role: "model", content: geminiReply.message });
     if (session.history.length > 20) session.history = session.history.slice(-20);
@@ -466,22 +583,53 @@ async function handleMain(req, res) {
     if (geminiReply.showBookingType) {
       const lang = session.data.lang || 'ko';
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
+      session.contactRequested = true;
+      const contactMsgs = {
+        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊 (선택사항)',
+        en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
+        zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
+        ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
+        th: '📞 ฝากเบอร์โทรศัพท์ไว้ เจ้าหน้าที่จะยืนยันการจองให้คุณโดยตรง 😊 (ไม่บังคับ)',
+        vi: '📞 Để lại số điện thoại, nhân viên sẽ xác nhận đặt lịch trực tiếp cho bạn 😊 (Tùy chọn)',
+        ar: '📞 اترك رقم هاتفك وسيقوم موظفونا بتأكيد حجزك مباشرة 😊 (اختياري)',
+        ru: '📞 Оставьте номер телефона, и сотрудник подтвердит вашу запись напрямую 😊 (Необязательно)',
+        fr: '📞 Laissez votre numéro et notre équipe confirmera votre réservation directement 😊 (Optionnel)',
+        es: '📞 Deje su número y nuestro personal confirmará su reserva directamente 😊 (Opcional)'
+      };
+      const contactMsg = contactMsgs[lang] || contactMsgs.ko;
+      // 텔레그램 알림
+      const historyText = session.history.slice(-4).map(h => (h.role === 'user' ? '👤 ' : '🤖 ') + h.content.substring(0, 50)).join('\n');
+      await sendTelegram([
+        '🔔 예약 의사 확인!',
+        '━━━━━━━━━━━━━━',
+        '🏥 병원: 연세푸르미피부과',
+        '🌍 언어: ' + lang,
+        '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
+        '━━━━━━━━━━━━━━',
+        '💬 최근 상담:',
+        historyText,
+        '━━━━━━━━━━━━━━',
+        '📞 전화번호: 대기중'
+      ].join('\n'));
       await fetch(callbackUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           version: "2.0",
           template: {
-            outputs: [{
-              basicCard: {
-                title: bl.title,
-                description: bl.desc,
-                buttons: [
-                  { action: "webLink", label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || "https://booking.naver.com" },
-                  { action: "message", label: bl.kakao, messageText: "카카오예약하기" }
-                ]
+            outputs: [
+              { simpleText: { text: contactMsg } },
+              {
+                basicCard: {
+                  title: bl.title,
+                  description: bl.desc,
+                  buttons: [
+                    { action: "webLink", label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || "https://booking.naver.com" },
+                    { action: "message", label: bl.kakao, messageText: "카카오예약하기" }
+                  ]
+                }
               }
-            }]
+            ]
           }
         })
       });
