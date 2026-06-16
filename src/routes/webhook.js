@@ -793,7 +793,7 @@ async function handleMain(req, res) {
       await sendTelegram([
         '🔔 예약 의사 확인!',
         '━━━━━━━━━━━━━━',
-        '🏥 병원: 연세푸르미피부과',
+        '🏢 업종: ' + (session.industry || 'hospital'),
         '🌍 언어: ' + lang,
         '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
         '━━━━━━━━━━━━━━',
