@@ -424,10 +424,9 @@ async function handleMain(req, res) {
       return;
     }
 
-    // 업종 미선택 시 캐러셀 표시
+    // 업종 미선택 시 hospital 기본값 설정
     if (!session.industry) {
-      await showIndustryCarousel(callbackUrl, session.data.lang || 'ko');
-      return;
+      session.industry = 'hospital';
     }
 
     const langMap = {
