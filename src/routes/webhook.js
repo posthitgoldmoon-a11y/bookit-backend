@@ -7,9 +7,103 @@ require('dotenv').config();
 const sessions = {};
 const BASE_URL = `http://${process.env.SERVER_IP}:3002`;
 
+const INDUSTRIES = {
+  ko: [
+    { title: '🏥 병원동행', desc: '접수부터 수납까지 보호자처럼', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
+    { title: '🏨 병원', desc: '전문의와 함께하는 진료 예약', msg: '병원', img: 'banner_hospital.jpg' },
+    { title: '🍽️ 식당', desc: '특별한 날을 위한 레스토랑', msg: '식당', img: 'banner_restaurant.jpg' },
+    { title: '💇 미용실', desc: '나만의 스타일을 찾아드려요', msg: '미용실', img: 'banner_beauty.jpg' },
+    { title: '🏨 숙박', desc: '편안한 휴식을 위한 숙소', msg: '숙박', img: 'banner_accommodation.jpg' },
+    { title: '💆 마사지', desc: '몸과 마음의 힐링', msg: '마사지', img: 'banner_massage.jpg' },
+    { title: '✈️ 공항택시', desc: '안전하고 편안한 공항 이동', msg: '공항택시', img: 'banner_airport_taxi.jpg' },
+    { title: '🐾 동물병원', desc: '소중한 반려동물의 건강', msg: '동물병원', img: 'banner_vet.jpg' },
+    { title: '🏯 템플스테이', desc: '마음을 치유하는 사찰 체험', msg: '템플스테이', img: 'banner_templestay.jpg' },
+    { title: '✨ 피부관리', desc: '빛나는 피부를 위한 케어', msg: '피부관리', img: 'banner_skincare.jpg' },
+    { title: '⛳ 골프', desc: '그린 위의 특별한 라운드', msg: '골프', img: 'banner_golf.jpg' },
+    { title: '🚗 렌트카', desc: '자유로운 여행을 위한 렌터카', msg: '렌트카', img: 'banner_rentcar.jpg' },
+    { title: '🧗 액티비티', desc: '짜릿한 야외 액티비티', msg: '액티비티', img: 'banner_activity.jpg' },
+    { title: '🏋️ 체육시설', desc: '건강한 몸을 위한 운동', msg: '체육시설', img: 'banner_sports.jpg' },
+    { title: '🎉 파티룸', desc: '특별한 파티를 위한 공간', msg: '파티룸', img: 'banner_partyroom.jpg' },
+    { title: '💅 네일샵', desc: '아름다운 손끝을 위한 케어', msg: '네일샵', img: 'banner_nail.jpg' },
+    { title: '📸 사진스튜디오', desc: '소중한 순간을 담아드려요', msg: '사진스튜디오', img: 'banner_studio.jpg' },
+    { title: '📚 스터디카페', desc: '집중할 수 있는 공간', msg: '스터디카페', img: 'banner_studycafe.jpg' },
+    { title: '🧘 요가/필라테스', desc: '몸과 마음의 균형', msg: '요가', img: 'banner_yoga.jpg' },
+    { title: '🏊 수영/볼링', desc: '즐거운 스포츠 활동', msg: '수영', img: 'banner_swimming.jpg' }
+  ],
+  en: [
+    { title: '🏥 Hospital Companion', desc: 'From registration to payment', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
+    { title: '🏨 Hospital', desc: 'Medical appointment booking', msg: '병원', img: 'banner_hospital.jpg' },
+    { title: '🍽️ Restaurant', desc: 'Special dining experiences', msg: '식당', img: 'banner_restaurant.jpg' },
+    { title: '💇 Hair Salon', desc: 'Find your perfect style', msg: '미용실', img: 'banner_beauty.jpg' },
+    { title: '🏨 Accommodation', desc: 'Comfortable stay options', msg: '숙박', img: 'banner_accommodation.jpg' },
+    { title: '💆 Massage', desc: 'Healing body and mind', msg: '마사지', img: 'banner_massage.jpg' },
+    { title: '✈️ Airport Taxi', desc: 'Safe airport transfers', msg: '공항택시', img: 'banner_airport_taxi.jpg' },
+    { title: '🐾 Vet Clinic', desc: 'Pet health care', msg: '동물병원', img: 'banner_vet.jpg' },
+    { title: '🏯 Temple Stay', desc: 'Healing temple experience', msg: '템플스테이', img: 'banner_templestay.jpg' },
+    { title: '✨ Skin Care', desc: 'Glowing skin treatments', msg: '피부관리', img: 'banner_skincare.jpg' },
+    { title: '⛳ Golf', desc: 'Special rounds on the green', msg: '골프', img: 'banner_golf.jpg' },
+    { title: '🚗 Car Rental', desc: 'Freedom to explore', msg: '렌트카', img: 'banner_rentcar.jpg' },
+    { title: '🧗 Activity', desc: 'Thrilling outdoor activities', msg: '액티비티', img: 'banner_activity.jpg' },
+    { title: '🏋️ Sports Facility', desc: 'Stay fit and healthy', msg: '체육시설', img: 'banner_sports.jpg' },
+    { title: '🎉 Party Room', desc: 'Perfect party spaces', msg: '파티룸', img: 'banner_partyroom.jpg' },
+    { title: '💅 Nail Shop', desc: 'Beautiful nail care', msg: '네일샵', img: 'banner_nail.jpg' },
+    { title: '📸 Photo Studio', desc: 'Capture precious moments', msg: '사진스튜디오', img: 'banner_studio.jpg' },
+    { title: '📚 Study Cafe', desc: 'Focus and study space', msg: '스터디카페', img: 'banner_studycafe.jpg' },
+    { title: '🧘 Yoga/Pilates', desc: 'Balance body and mind', msg: '요가', img: 'banner_yoga.jpg' },
+    { title: '🏊 Swimming/Bowling', desc: 'Fun sports activities', msg: '수영', img: 'banner_swimming.jpg' }
+  ]
+};
+
+const INDUSTRY_MAP = {
+  '병원동행': 'hospital_companion', '병원': 'hospital', '식당': 'restaurant',
+  '미용실': 'beauty', '숙박': 'accommodation', '마사지': 'massage',
+  '공항택시': 'airport_taxi', '동물병원': 'vet', '템플스테이': 'templestay',
+  '피부관리': 'skincare', '골프': 'golf', '렌트카': 'rentcar',
+  '액티비티': 'activity', '체육시설': 'sports', '파티룸': 'partyroom',
+  '네일샵': 'nail', '사진스튜디오': 'studio', '스터디카페': 'studycafe',
+  '요가': 'yoga', '수영': 'swimming'
+};
+
+async function showIndustryCarousel(callbackUrl, lang = 'ko') {
+  const list = INDUSTRIES[lang] || INDUSTRIES.ko;
+  const row1 = list.slice(0, 10);
+  const row2 = list.slice(10);
+  const titles = {
+    ko: '어떤 업종을 시연할까요? 😊\n업종을 선택해주세요!',
+    en: 'Which industry would you like to demo? 😊\nPlease select!',
+    zh: '您想演示哪个行业？😊\n请选择！',
+    ja: 'どの業種をデモしますか？😊\n選択してください！'
+  };
+  const selectLabels = { ko: '선택하기', en: 'Select', zh: '选择', ja: '選択' };
+  const titleText = titles[lang] || titles.ko;
+  const selectLabel = selectLabels[lang] || selectLabels.ko;
+  const makeItems = arr => arr.map(item => ({
+    title: item.title,
+    description: item.desc,
+    thumbnail: { imageUrl: `${BASE_URL}/${item.img}` },
+    buttons: [{ action: 'message', label: selectLabel, messageText: item.msg }]
+  }));
+  await fetch(callbackUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: titleText } },
+          { carousel: { type: 'basicCard', items: makeItems(row1) } },
+          { carousel: { type: 'basicCard', items: makeItems(row2) } }
+        ]
+      }
+    })
+  });
+}
+
+
+
 function getSession(userId) {
   if (!sessions[userId]) {
-    sessions[userId] = { history: [], data: {}, booted: false, visited: false };
+    sessions[userId] = { history: [], data: {}, booted: false, visited: false, industry: null };
   }
   return sessions[userId];
 }
@@ -284,6 +378,47 @@ async function handleMain(req, res) {
       return;
     }
     // 언어 선택
+
+    // 업종 선택 처리
+    const selectedIndustry = INDUSTRY_MAP[userMessage];
+    if (selectedIndustry) {
+      session.industry = selectedIndustry;
+      session.history = [];
+      session.booted = false;
+      const lang = session.data.lang || 'ko';
+      let geminiReply;
+      try {
+        geminiReply = await chat([], userMessage, false, selectedIndustry, lang);
+      } catch(e) {
+        await sendCallback(callbackUrl, '잠시 오류가 발생했습니다. 다시 시도해주세요 😊');
+        return;
+      }
+      session.booted = true;
+      session.history.push({ role: 'user', content: userMessage });
+      session.history.push({ role: 'model', content: geminiReply.message });
+      const bannerImg = `${BASE_URL}/banner_${selectedIndustry}.jpg`;
+      await fetch(callbackUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          version: '2.0',
+          template: {
+            outputs: [
+              { basicCard: { title: '', thumbnail: { imageUrl: bannerImg } } },
+              { simpleText: { text: geminiReply.message } }
+            ]
+          }
+        })
+      });
+      return;
+    }
+
+    // 업종 미선택 시 캐러셀 표시
+    if (!session.industry) {
+      await showIndustryCarousel(callbackUrl, session.data.lang || 'ko');
+      return;
+    }
+
     const langMap = {
       "언어_한국어": "ko", "한국어": "ko",
       "언어_English": "en", "English": "en",
@@ -610,7 +745,7 @@ async function handleMain(req, res) {
     console.log('🌍 언어값:', session.data.lang, '/ 사용언어:', session.data.lang || 'ko');
     let geminiReply;
     try {
-      geminiReply = await chat(session.history, userMessage, session.booted, 'hospital', session.data.lang || 'ko');
+      geminiReply = await chat(session.history, userMessage, session.booted, session.industry || 'hospital', session.data.lang || 'ko');
       console.log('✅ Gemini 응답:', JSON.stringify(geminiReply).substring(0, 100));
     } catch(e) {
       console.error('❌ Gemini 오류:', e.message);
