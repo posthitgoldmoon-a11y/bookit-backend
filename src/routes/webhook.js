@@ -747,6 +747,18 @@ async function handleMain(req, res) {
     try {
       geminiReply = await chat(session.history, userMessage, session.booted, session.industry || 'hospital', session.data.lang || 'ko');
       console.log('✅ Gemini 응답:', JSON.stringify(geminiReply).substring(0, 100));
+      // 금지 문구 강제 제거
+      if (geminiReply.message) {
+        geminiReply.message = geminiReply.message
+          .replace(/새로 예약하시겠어요\?/g, '')
+          .replace(/새로운 예약을 도와드릴까요\?/g, '')
+          .replace(/다른 예약을 도와드릴까요\?/g, '')
+          .replace(/예약을 도와드릴까요\?/g, '')
+          .replace(/Would you like to make a new booking\?/gi, '')
+          .replace(/Would you like to book again\?/gi, '')
+          .replace(/새로 예약.*?\?/g, '')
+          .trim();
+      }
     } catch(e) {
       console.error('❌ Gemini 오류:', e.message);
       await sendCallback(callbackUrl, '잠시 오류가 발생했습니다. 다시 시도해주세요 😊');
