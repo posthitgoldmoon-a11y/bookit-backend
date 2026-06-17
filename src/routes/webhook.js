@@ -918,10 +918,70 @@ async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
 async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
   console.log('sendBookingMenu 시작, 언어:', lang);
   const labels = {
-    ko: { intro: "📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!", book: "이 시술로 예약", detail: "자세히 알아보기", t1: "✨ 레이저 토닝", d1: "기미·잡티·모공 개선\n시술시간: 약 30분", t2: "💉 보톡스", d2: "이마·눈가·팔자주름\n시술시간: 약 15분", t3: "💧 수분 리프팅", d3: "피부 탄력·수분 개선\n시술시간: 약 40분", t4: "🌟 피부 클리닉", d4: "여드름·모공·피부결 개선\n시술시간: 약 60분", t5: "🎁 무료 상담", d5: "첫 방문 무료 피부 분석\n전문의 1:1 상담", q1: "레이저토닝 설명해줘", q2: "보톡스 설명해줘", q3: "수분리프팅 설명해줘", q4: "피부클리닉 설명해줘", q5: "무료상담 설명해줘" },
-    en: { intro: "📅 Which treatment would you like to book?\nPlease select a treatment!", book: "Book this", detail: "Learn more", t1: "✨ Laser Toning", d1: "Pigmentation & pore care\nDuration: ~30 min", t2: "💉 Botox", d2: "Forehead, eye, nasolabial\nDuration: ~15 min", t3: "💧 Moisture Lifting", d3: "Elasticity & hydration\nDuration: ~40 min", t4: "🌟 Skin Clinic", d4: "Acne, pores, skin texture\nDuration: ~60 min", t5: "🎁 Free Consultation", d5: "Free skin analysis\n1:1 doctor consultation", q1: "Tell me about laser toning", q2: "Tell me about botox", q3: "Tell me about moisture lifting", q4: "Tell me about skin clinic", q5: "Tell me about free consultation" },
-    zh: { intro: "📅 您想预约哪种治疗？\n请选择治疗项目！", book: "预约此项目", detail: "了解更多", t1: "✨ 激光调肤", d1: "改善色斑·毛孔\n时间: 约30分钟", t2: "💉 肉毒素", d2: "额头·眼角·法令纹\n时间: 约15分钟", t3: "💧 水光针", d3: "改善弹力·水分\n时间: 约40分钟", t4: "🌟 皮肤诊疗", d4: "痤疮·毛孔·肤质\n时间: 约60分钟", t5: "🎁 免费咨询", d5: "首次免费皮肤分析\n专科医生1:1咨询", q1: "介绍激光调肤", q2: "介绍肉毒素", q3: "介绍水光针", q4: "介绍皮肤诊疗", q5: "介绍免费咨询" },
-    ja: { intro: "📅 どの施術をご予約されますか？\n施術をお選びください！", book: "この施術を予約", detail: "詳しく見る", t1: "✨ レーザートーニング", d1: "シミ・毛穴ケア\n施術時間: 約30分", t2: "💉 ボトックス", d2: "額・目元・ほうれい線\n施術時間: 約15分", t3: "💧 水分リフティング", d3: "弾力・保湿改善\n施術時間: 約40分", t4: "🌟 スキンクリニック", d4: "ニキビ・毛穴・肌質\n施術時間: 約60分", t5: "🎁 無料カウンセリング", d5: "初回無料肌分析\n専門医1:1相談", q1: "レーザートーニングについて", q2: "ボトックスについて", q3: "水分リフティングについて", q4: "スキンクリニックについて", q5: "無料カウンセリングについて" }
+    ko: {
+      intro: "📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!",
+      book: "이 시술로 예약", detail: "자세히 알아보기",
+      items: [
+        { t: "✨ 레이저토닝", d: "기미·잡티·피부톤 개선\n다운타임 없음 · 약 30분", q: "레이저토닝 설명해줘", msg: "레이저토닝 예약하기" },
+        { t: "🔬 피코레이저", d: "기미·잡티·문신·모공\n회복 빠름 · 약 30분", q: "피코레이저 설명해줘", msg: "피코레이저 예약하기" },
+        { t: "💡 엑셀브이", d: "홍조·혈관·색소 복합\n약 2~3일 회복", q: "엑셀브이 설명해줘", msg: "엑셀브이 예약하기" },
+        { t: "💉 보톡스", d: "이마·사각턱·종아리\n다운타임 없음 · 약 15분", q: "보톡스 설명해줘", msg: "보톡스 예약하기" },
+        { t: "💎 필러", d: "볼륨·윤곽·팔자주름\n즉각 효과 · 부위별 상담", q: "필러 설명해줘", msg: "필러 예약하기" },
+        { t: "💧 물광주사", d: "수분·탄력·광채\n리쥬란·스킨부스터", q: "물광주사 설명해줘", msg: "물광주사 예약하기" },
+        { t: "🔥 울쎄라/써마지", d: "HIFU·고주파 리프팅\n6개월~1년 지속", q: "울쎄라 써마지 설명해줘", msg: "리프팅시술 예약하기" },
+        { t: "🧵 실리프팅", d: "즉각적 리프팅 효과\n1~2년 지속", q: "실리프팅 설명해줘", msg: "실리프팅 예약하기" },
+        { t: "🌿 여드름·흉터", d: "압출케어·프락셀·CO₂\n모공·피부결 개선", q: "여드름 흉터 치료 설명해줘", msg: "여드름흉터 예약하기" },
+        { t: "✂️ 제모레이저", d: "겨드랑이·팔다리·전신\n영구적 모발 감소", q: "제모레이저 설명해줘", msg: "제모레이저 예약하기" }
+      ]
+    },
+    en: {
+      intro: "📅 Which treatment would you like?\nPlease select a treatment!",
+      book: "Book this", detail: "Learn more",
+      items: [
+        { t: "✨ Laser Toning", d: "Pigmentation & pore care\nNo downtime · ~30 min", q: "Tell me about laser toning", msg: "레이저토닝 예약하기" },
+        { t: "🔬 Pico Laser", d: "Spots, pores, tattoo\nFast recovery · ~30 min", q: "Tell me about pico laser", msg: "피코레이저 예약하기" },
+        { t: "💡 Excel V", d: "Redness, vessels, pigment\n~2-3 day recovery", q: "Tell me about Excel V", msg: "엑셀브이 예약하기" },
+        { t: "💉 Botox", d: "Forehead, jaw, calf\nNo downtime · ~15 min", q: "Tell me about botox", msg: "보톡스 예약하기" },
+        { t: "💎 Filler", d: "Volume & contouring\nImmediate effect", q: "Tell me about filler", msg: "필러 예약하기" },
+        { t: "💧 Skin Booster", d: "Hydration & glow\nRejuran · Skinbooster", q: "Tell me about skin booster", msg: "물광주사 예약하기" },
+        { t: "🔥 Ulthera/Thermage", d: "HIFU & RF lifting\n6mo~1yr lasting", q: "Tell me about ulthera thermage", msg: "리프팅시술 예약하기" },
+        { t: "🧵 Thread Lift", d: "Instant lifting effect\n1~2 years lasting", q: "Tell me about thread lift", msg: "실리프팅 예약하기" },
+        { t: "🌿 Acne & Scar", d: "Fraxel · CO₂ laser\nPore & texture care", q: "Tell me about acne scar", msg: "여드름흉터 예약하기" },
+        { t: "✂️ Hair Removal", d: "Underarm, limbs, full body\nPermanent reduction", q: "Tell me about hair removal", msg: "제모레이저 예약하기" }
+      ]
+    },
+    zh: {
+      intro: "📅 您想预约哪种治疗？\n请选择治疗项目！",
+      book: "预约此项目", detail: "了解更多",
+      items: [
+        { t: "✨ 激光调肤", d: "改善色斑·毛孔\n无恢复期 · 约30分钟", q: "介绍激光调肤", msg: "레이저토닝 예약하기" },
+        { t: "🔬 皮秒激光", d: "色斑·毛孔·文身\n恢复快 · 约30分钟", q: "介绍皮秒激光", msg: "피코레이저 예약하기" },
+        { t: "💡 Excel V", d: "红血丝·色素复合\n约2-3天恢复", q: "介绍ExcelV", msg: "엑셀브이 예약하기" },
+        { t: "💉 肉毒素", d: "额头·下颌·小腿\n无恢复期 · 约15分钟", q: "介绍肉毒素", msg: "보톡스 예약하기" },
+        { t: "💎 填充", d: "丰盈·轮廓·法令纹\n即时效果", q: "介绍填充", msg: "필러 예약하기" },
+        { t: "💧 水光注射", d: "水润·弹力·光泽\n三文鱼针", q: "介绍水光注射", msg: "물광주사 예약하기" },
+        { t: "🔥 超声刀/热玛吉", d: "HIFU·射频提升\n持续6月~1年", q: "介绍超声刀热玛吉", msg: "리프팅시술 예약하기" },
+        { t: "🧵 线雕提升", d: "即时提升效果\n持续1~2年", q: "介绍线雕", msg: "실리프팅 예약하기" },
+        { t: "🌿 痘痘·疤痕", d: "点阵激光·CO₂\n毛孔·肤质改善", q: "介绍痘痘疤痕", msg: "여드름흉터 예약하기" },
+        { t: "✂️ 激光脱毛", d: "腋下·四肢·全身\n永久减少", q: "介绍激光脱毛", msg: "제모레이저 예약하기" }
+      ]
+    },
+    ja: {
+      intro: "📅 どの施術をご予約されますか？\n施術をお選びください！",
+      book: "この施術を予約", detail: "詳しく見る",
+      items: [
+        { t: "✨ レーザートーニング", d: "シミ・毛穴ケア\nダウンタイムなし · 約30分", q: "レーザートーニングについて", msg: "레이저토닝 예약하기" },
+        { t: "🔬 ピコレーザー", d: "シミ・毛穴・タトゥー\n回復早い · 約30分", q: "ピコレーザーについて", msg: "피코레이저 예약하기" },
+        { t: "💡 エクセルV", d: "赤み・血管・色素複合\n約2~3日回復", q: "エクセルVについて", msg: "엑셀브이 예약하기" },
+        { t: "💉 ボトックス", d: "額・エラ・ふくらはぎ\nダウンタイムなし · 約15分", q: "ボトックスについて", msg: "보톡스 예약하기" },
+        { t: "💎 フィラー", d: "ボリューム・輪郭・ほうれい線\n即効果", q: "フィラーについて", msg: "필러 예약하기" },
+        { t: "💧 水光注射", d: "水分・弾力・透明感\nリジュラン", q: "水光注射について", msg: "물광주사 예약하기" },
+        { t: "🔥 ウルセラ/サーマジ", d: "HIFU・高周波リフティング\n6ヶ月~1年持続", q: "ウルセラサーマジについて", msg: "리프팅시술 예약하기" },
+        { t: "🧵 スレッドリフト", d: "即効リフティング\n1~2年持続", q: "スレッドリフトについて", msg: "실리프팅 예약하기" },
+        { t: "🌿 ニキビ・傷跡", d: "フラクセル・CO₂\n毛穴・肌質改善", q: "ニキビ傷跡について", msg: "여드름흉터 예약하기" },
+        { t: "✂️ 脱毛レーザー", d: "脇・四肢・全身\n永久的減少", q: "脱毛レーザーについて", msg: "제모레이저 예약하기" }
+      ]
+    }
   };
   const l = labels[lang] || labels.ko;
   try {
@@ -932,13 +992,14 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
           { simpleText: { text: l.intro } },
           { carousel: {
             type: "basicCard",
-            items: [
-              { title: l.t1, description: l.d1, buttons: [{ action: "message", label: l.book, messageText: "레이저토닝 예약하기" }, { action: "message", label: l.detail, messageText: l.q1 }] },
-              { title: l.t2, description: l.d2, buttons: [{ action: "message", label: l.book, messageText: "보톡스 예약하기" }, { action: "message", label: l.detail, messageText: l.q2 }] },
-              { title: l.t3, description: l.d3, buttons: [{ action: "message", label: l.book, messageText: "수분리프팅 예약하기" }, { action: "message", label: l.detail, messageText: l.q3 }] },
-              { title: l.t4, description: l.d4, buttons: [{ action: "message", label: l.book, messageText: "피부클리닉 예약하기" }, { action: "message", label: l.detail, messageText: l.q4 }] },
-              { title: l.t5, description: l.d5, buttons: [{ action: "message", label: l.book, messageText: "무료상담 예약하기" }, { action: "message", label: l.detail, messageText: l.q5 }] }
-            ]
+            items: l.items.map(item => ({
+              title: item.t,
+              description: item.d,
+              buttons: [
+                { action: "message", label: l.book, messageText: item.msg },
+                { action: "message", label: l.detail, messageText: item.q }
+              ]
+            }))
           }}
         ],
         quickReplies: [{ label: (LANG_TEXTS[lang] || LANG_TEXTS.ko).home, action: "message", messageText: "처음으로" }]
