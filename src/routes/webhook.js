@@ -7,6 +7,35 @@ require('dotenv').config();
 const sessions = {};
 const BASE_URL = `http://${process.env.SERVER_IP}:3002`;
 
+// ─── 프롬프트 파일 카드 파서 ───────────────────────────────
+function parseCardSection(industry, sectionName) {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const promptPath = path.join(__dirname, '../prompts', `${industry}.txt`);
+    const text = fs.readFileSync(promptPath, 'utf-8');
+    const regex = new RegExp('## ' + sectionName + '\\n([\\s\\S]*?)(?=\\n##|$)');
+    const match = text.match(regex);
+    if (!match) return [];
+    return match[1].trim().split('\n')
+      .filter(line => line.trim())
+      .map(line => {
+        const parts = line.split(' | ');
+        return {
+          title: parts[0] ? parts[0].trim() : '',
+          desc: parts[1] ? parts[1].trim().replace(/\\n/g, '\n') : '',
+          msg: parts[2] ? parts[2].trim() : '',
+          img: parts[3] ? parts[3].trim() : ''
+        };
+      });
+  } catch(e) {
+    console.error('parseCardSection 오류:', e.message);
+    return [];
+  }
+}
+// ────────────────────────────────────────────────────────────
+
+
 const INDUSTRIES = {
   ko: [
     { title: '🏥 병원동행', desc: '접수부터 수납까지 보호자처럼', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
@@ -874,34 +903,50 @@ async function handleMain(req, res) {
 async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
   console.log('showWelcome 시작');
   try {
-    const bannerUrl = `${BASE_URL}/banner_hospital.jpg`;
-    const welcomeTexts = {
-      ko: "안녕하세요! 연세푸르미피부과입니다 😊\n\n👨‍⚕️ 피부과 전문의 3인 운영\n🏆 강남 레이저 시술 1위 병원\n🌍 외국인 다국어 상담 가능\n💡 첫 방문 고객 무료 피부 분석\n\n무엇을 도와드릴까요?",
-      en: "Hello! Welcome to Yonsei Purumi Skin Clinic 😊\n\n👨‍⚕️ 3 specialist doctors\n🏆 #1 Laser clinic in Gangnam\n🌍 Multilingual consultation\n💡 Free skin analysis for first visit\n\nHow can we help you?",
-      zh: "您好！欢迎来到延世푸르미皮肤科 😊\n\n👨‍⚕️ 3位专业皮肤科医生\n🏆 江南激光治疗第一\n🌍 多语言咨询\n💡 首次就诊免费皮肤分析\n\n请问有什么可以帮您？",
-      ja: "こんにちは！延世プルミ皮膚科へようこそ 😊\n\n👨‍⚕️ 皮膚科専門医3名\n🏆 江南レーザー施術No.1\n🌍 多言語対応\n💡 初回無料肌分析\n\nどのようなご用件でしょうか？",
-      th: "สวัสดี! ยินดีต้อนรับสู่คลินิก Yonsei Purumi 😊\n\n👨‍⚕️ แพทย์ผิวหนัง 3 ท่าน\n🏆 คลินิกเลเซอร์อันดับ 1\n🌍 ให้คำปรึกษาหลายภาษา\n💡 วิเคราะห์ผิวฟรีครั้งแรก\n\nเราช่วยอะไรคุณได้บ้าง?",
-      vi: "Xin chào! Chào mừng đến với Yonsei Purumi 😊\n\n👨‍⚕️ 3 bác sĩ chuyên khoa\n🏆 Phòng khám laser #1 Gangnam\n🌍 Tư vấn đa ngôn ngữ\n💡 Phân tích da miễn phí lần đầu\n\nChúng tôi có thể giúp gì?",
-      ar: "مرحباً! أهلاً بكم في عيادة يونسي 😊\n\n👨‍⚕️ 3 أطباء متخصصون\n🏆 عيادة الليزر الأولى\n🌍 استشارة متعددة اللغات\n💡 تحليل مجاني للبشرة\n\nكيف يمكننا مساعدتك؟",
-      ru: "Здравствуйте! Добро пожаловать в Yonsei Purumi 😊\n\n👨‍⚕️ 3 врача-дерматолога\n🏆 Клиника №1 в Каннаме\n🌍 Консультация на нескольких языках\n💡 Бесплатный анализ кожи\n\nЧем мы можем помочь?",
-      fr: "Bonjour! Bienvenue à Yonsei Purumi 😊\n\n👨‍⚕️ 3 médecins spécialistes\n🏆 Clinique laser #1 à Gangnam\n🌍 Consultation multilingue\n💡 Analyse de peau gratuite\n\nComment pouvons-nous vous aider?",
-      es: "¡Hola! Bienvenido a Yonsei Purumi 😊\n\n👨‍⚕️ 3 médicos especialistas\n🏆 Clínica láser #1 en Gangnam\n🌍 Consulta multilingüe\n💡 Análisis de piel gratis\n\n¿En qué podemos ayudarte?"
+    const fs = require('fs');
+    const path = require('path');
+    const promptPath = path.join(__dirname, '../prompts', `${industry}.txt`);
+    let bizName = industry;
+    let bizDesc = '';
+    let welcomeMsg = '';
+    try {
+      const promptText = fs.readFileSync(promptPath, 'utf-8');
+      const nameMatch = promptText.match(/- 상호:\s*(.+)/);
+      if (nameMatch) bizName = nameMatch[1].trim();
+      const locMatch = promptText.match(/- 위치:\s*(.+)/);
+      if (locMatch) bizDesc = locMatch[1].trim();
+      const welcomeMatch = promptText.match(/## 환영 메시지\n([\s\S]*?)(?=\n##|$)/);
+      if (welcomeMatch) welcomeMsg = welcomeMatch[1].trim();
+    } catch(e) {
+      console.error('프롬프트 읽기 오류:', e.message);
+    }
+    const bannerUrl = `${BASE_URL}/banner_${industry}.jpg`;
+    const welcomeMsgs = {
+      ko: welcomeMsg || `안녕하세요! ${bizName}입니다 😊\n\n무엇을 도와드릴까요?`,
+      en: `Hello! Welcome to ${bizName} 😊\n\nHow can we help you today?`,
+      zh: `您好！欢迎来到${bizName} 😊\n\n请问有什么可以帮您？`,
+      ja: `こんにちは！${bizName}へようこそ 😊\n\nどのようなご用件でしょうか？`,
+      th: `สวัสดี! ยินดีต้อนรับสู่${bizName} 😊\n\nเราช่วยอะไรคุณได้บ้าง?`,
+      vi: `Xin chào! Chào mừng đến với ${bizName} 😊\n\nChúng tôi có thể giúp gì?`,
+      ar: `مرحباً! أهلاً بكم في ${bizName} 😊\n\nكيف يمكننا مساعدتك؟`,
+      ru: `Здравствуйте! Добро пожаловать в ${bizName} 😊\n\nЧем мы можем помочь?`,
+      fr: `Bonjour! Bienvenue chez ${bizName} 😊\n\nComment pouvons-nous vous aider?`,
+      es: `¡Hola! Bienvenido a ${bizName} 😊\n\n¿En qué podemos ayudarte?`
     };
     const payload = {
-      version: "2.0",
+      version: '2.0',
       template: {
         outputs: [
           { basicCard: {
-            title: "✨ 연세푸르미피부과",
-            description: "강남 대표 피부과 | 개원 20년",
+            title: `✨ ${bizName}`,
+            description: bizDesc,
             thumbnail: { imageUrl: bannerUrl, fixedRatio: false }
           }},
-          { simpleText: { text: welcomeTexts[lang] || welcomeTexts.ko } }
+          { simpleText: { text: welcomeMsgs[lang] || welcomeMsgs.ko } }
         ],
         quickReplies: getQuickReplies(lang, industry)
       }
     };
-    console.log('페이로드 생성완료, 전송시작');
     const res = await fetch(callbackUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -916,95 +961,47 @@ async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
 
 async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
   console.log('sendBookingMenu 시작, 언어:', lang);
-  const labels = {
-    ko: {
-      intro: "📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!",
-      book: "이 시술로 예약", detail: "자세히 알아보기",
-      items: [
-        { t: "✨ 레이저토닝", d: "기미·잡티·피부톤 개선\n다운타임 없음 · 약 30분", q: "레이저토닝 설명해줘", msg: "레이저토닝 예약하기" },
-        { t: "🔬 피코레이저", d: "기미·잡티·문신·모공\n회복 빠름 · 약 30분", q: "피코레이저 설명해줘", msg: "피코레이저 예약하기" },
-        { t: "💡 엑셀브이", d: "홍조·혈관·색소 복합\n약 2~3일 회복", q: "엑셀브이 설명해줘", msg: "엑셀브이 예약하기" },
-        { t: "💉 보톡스", d: "이마·사각턱·종아리\n다운타임 없음 · 약 15분", q: "보톡스 설명해줘", msg: "보톡스 예약하기" },
-        { t: "💎 필러", d: "볼륨·윤곽·팔자주름\n즉각 효과 · 부위별 상담", q: "필러 설명해줘", msg: "필러 예약하기" },
-        { t: "💧 물광주사", d: "수분·탄력·광채\n리쥬란·스킨부스터", q: "물광주사 설명해줘", msg: "물광주사 예약하기" },
-        { t: "🔥 울쎄라/써마지", d: "HIFU·고주파 리프팅\n6개월~1년 지속", q: "울쎄라 써마지 설명해줘", msg: "리프팅시술 예약하기" },
-        { t: "🧵 실리프팅", d: "즉각적 리프팅 효과\n1~2년 지속", q: "실리프팅 설명해줘", msg: "실리프팅 예약하기" },
-        { t: "🌿 여드름·흉터", d: "압출케어·프락셀·CO₂\n모공·피부결 개선", q: "여드름 흉터 치료 설명해줘", msg: "여드름흉터 예약하기" },
-        { t: "✂️ 제모레이저", d: "겨드랑이·팔다리·전신\n영구적 모발 감소", q: "제모레이저 설명해줘", msg: "제모레이저 예약하기" }
-      ]
-    },
-    en: {
-      intro: "📅 Which treatment would you like?\nPlease select a treatment!",
-      book: "Book this", detail: "Learn more",
-      items: [
-        { t: "✨ Laser Toning", d: "Pigmentation & pore care\nNo downtime · ~30 min", q: "Tell me about laser toning", msg: "레이저토닝 예약하기" },
-        { t: "🔬 Pico Laser", d: "Spots, pores, tattoo\nFast recovery · ~30 min", q: "Tell me about pico laser", msg: "피코레이저 예약하기" },
-        { t: "💡 Excel V", d: "Redness, vessels, pigment\n~2-3 day recovery", q: "Tell me about Excel V", msg: "엑셀브이 예약하기" },
-        { t: "💉 Botox", d: "Forehead, jaw, calf\nNo downtime · ~15 min", q: "Tell me about botox", msg: "보톡스 예약하기" },
-        { t: "💎 Filler", d: "Volume & contouring\nImmediate effect", q: "Tell me about filler", msg: "필러 예약하기" },
-        { t: "💧 Skin Booster", d: "Hydration & glow\nRejuran · Skinbooster", q: "Tell me about skin booster", msg: "물광주사 예약하기" },
-        { t: "🔥 Ulthera/Thermage", d: "HIFU & RF lifting\n6mo~1yr lasting", q: "Tell me about ulthera thermage", msg: "리프팅시술 예약하기" },
-        { t: "🧵 Thread Lift", d: "Instant lifting effect\n1~2 years lasting", q: "Tell me about thread lift", msg: "실리프팅 예약하기" },
-        { t: "🌿 Acne & Scar", d: "Fraxel · CO₂ laser\nPore & texture care", q: "Tell me about acne scar", msg: "여드름흉터 예약하기" },
-        { t: "✂️ Hair Removal", d: "Underarm, limbs, full body\nPermanent reduction", q: "Tell me about hair removal", msg: "제모레이저 예약하기" }
-      ]
-    },
-    zh: {
-      intro: "📅 您想预约哪种治疗？\n请选择治疗项目！",
-      book: "预约此项目", detail: "了解更多",
-      items: [
-        { t: "✨ 激光调肤", d: "改善色斑·毛孔\n无恢复期 · 约30分钟", q: "介绍激光调肤", msg: "레이저토닝 예약하기" },
-        { t: "🔬 皮秒激光", d: "色斑·毛孔·文身\n恢复快 · 约30分钟", q: "介绍皮秒激光", msg: "피코레이저 예약하기" },
-        { t: "💡 Excel V", d: "红血丝·色素复合\n约2-3天恢复", q: "介绍ExcelV", msg: "엑셀브이 예약하기" },
-        { t: "💉 肉毒素", d: "额头·下颌·小腿\n无恢复期 · 约15分钟", q: "介绍肉毒素", msg: "보톡스 예약하기" },
-        { t: "💎 填充", d: "丰盈·轮廓·法令纹\n即时效果", q: "介绍填充", msg: "필러 예약하기" },
-        { t: "💧 水光注射", d: "水润·弹力·光泽\n三文鱼针", q: "介绍水光注射", msg: "물광주사 예약하기" },
-        { t: "🔥 超声刀/热玛吉", d: "HIFU·射频提升\n持续6月~1年", q: "介绍超声刀热玛吉", msg: "리프팅시술 예약하기" },
-        { t: "🧵 线雕提升", d: "即时提升效果\n持续1~2年", q: "介绍线雕", msg: "실리프팅 예약하기" },
-        { t: "🌿 痘痘·疤痕", d: "点阵激光·CO₂\n毛孔·肤质改善", q: "介绍痘痘疤痕", msg: "여드름흉터 예약하기" },
-        { t: "✂️ 激光脱毛", d: "腋下·四肢·全身\n永久减少", q: "介绍激光脱毛", msg: "제모레이저 예약하기" }
-      ]
-    },
-    ja: {
-      intro: "📅 どの施術をご予約されますか？\n施術をお選びください！",
-      book: "この施術を予約", detail: "詳しく見る",
-      items: [
-        { t: "✨ レーザートーニング", d: "シミ・毛穴ケア\nダウンタイムなし · 約30分", q: "レーザートーニングについて", msg: "레이저토닝 예약하기" },
-        { t: "🔬 ピコレーザー", d: "シミ・毛穴・タトゥー\n回復早い · 約30分", q: "ピコレーザーについて", msg: "피코레이저 예약하기" },
-        { t: "💡 エクセルV", d: "赤み・血管・色素複合\n約2~3日回復", q: "エクセルVについて", msg: "엑셀브이 예약하기" },
-        { t: "💉 ボトックス", d: "額・エラ・ふくらはぎ\nダウンタイムなし · 約15分", q: "ボトックスについて", msg: "보톡스 예약하기" },
-        { t: "💎 フィラー", d: "ボリューム・輪郭・ほうれい線\n即効果", q: "フィラーについて", msg: "필러 예약하기" },
-        { t: "💧 水光注射", d: "水分・弾力・透明感\nリジュラン", q: "水光注射について", msg: "물광주사 예약하기" },
-        { t: "🔥 ウルセラ/サーマジ", d: "HIFU・高周波リフティング\n6ヶ月~1年持続", q: "ウルセラサーマジについて", msg: "리프팅시술 예약하기" },
-        { t: "🧵 スレッドリフト", d: "即効リフティング\n1~2年持続", q: "スレッドリフトについて", msg: "실리프팅 예약하기" },
-        { t: "🌿 ニキビ・傷跡", d: "フラクセル・CO₂\n毛穴・肌質改善", q: "ニキビ傷跡について", msg: "여드름흉터 예약하기" },
-        { t: "✂️ 脱毛レーザー", d: "脇・四肢・全身\n永久的減少", q: "脱毛レーザーについて", msg: "제모레이저 예약하기" }
-      ]
-    }
-  };
-  const l = labels[lang] || labels.ko;
   try {
+    const industry = 'hospital';
+    const items = parseCardSection(industry, '카드_예약메뉴');
+    const labels = {
+      ko: { text: '📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!', btn: '예약하기', home: '🏠 처음으로' },
+      en: { text: '📅 Which treatment would you like to book?\nPlease select a treatment!', btn: 'Book', home: '🏠 Home' },
+      zh: { text: '📅 您想预约哪种治疗?\n请选择您需要的治疗!', btn: '预约', home: '🏠 首页' },
+      ja: { text: '📅 どの施術をご予約されますか?\nご希望の施術をお選びください!', btn: '予約する', home: '🏠 ホーム' },
+      th: { text: '📅 คุณต้องการนัดหมายการรักษาอะไร?\nกรุณาเลือกการรักษา!', btn: 'จอง', home: '🏠 หน้าหลัก' },
+      vi: { text: '📅 Bạn muốn đặt lịch điều trị gì?\nVui lòng chọn dịch vụ!', btn: 'Đặt lịch', home: '🏠 Trang chủ' },
+      ar: { text: '📅 ما العلاج الذي تريد حجزه?\nالرجاء اختيار العلاج!', btn: 'احجز', home: '🏠 الرئيسية' },
+      ru: { text: '📅 Какую процедуру вы хотите записаться?\nПожалуйста, выберите процедуру!', btn: 'Записаться', home: '🏠 Главная' },
+      fr: { text: '📅 Quel soin souhaitez-vous réserver?\nVeuillez sélectionner un soin!', btn: 'Réserver', home: '🏠 Accueil' },
+      es: { text: '📅 ¿Qué tratamiento desea reservar?\nPor favor seleccione un tratamiento!', btn: 'Reservar', home: '🏠 Inicio' }
+    };
+    const l = labels[lang] || labels.ko;
+    const cardItems = items.length > 0 ? items : [
+      { title: '💉 시술 예약', desc: '전문의 상담 후 시술 결정', msg: '시술 예약하기' }
+    ];
     const payload = {
-      version: "2.0",
+      version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: l.intro } },
+          { simpleText: { text: l.text } },
           { carousel: {
-            type: "basicCard",
-            items: l.items.map(item => ({
-              title: item.t,
-              description: item.d,
-              buttons: [
-                { action: "message", label: l.book, messageText: item.msg },
-                { action: "message", label: l.detail, messageText: item.q }
-              ]
+            type: 'basicCard',
+            items: cardItems.map(i => ({
+              title: i.title,
+              description: i.desc,
+              buttons: [{ action: 'message', label: l.btn, messageText: i.msg || i.title }]
             }))
           }}
         ],
-        quickReplies: [{ label: (LANG_TEXTS[lang] || LANG_TEXTS.ko).home, action: "message", messageText: "처음으로" }]
+        quickReplies: [{ label: l.home, action: 'message', messageText: '처음으로' }]
       }
     };
-    const res = await fetch(callbackUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const res = await fetch(callbackUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
     const resText = await res.text();
     console.log('sendBookingMenu 응답:', res.status, resText);
   } catch(e) {
@@ -1015,127 +1012,41 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
 async function sendConsultMenu(callbackUrl, lang = 'ko') {
   console.log('sendConsultMenu 시작, 언어:', lang);
   try {
-    const menus = {
-      ko: {
-        text: "💬 어떤 고민이 있으신가요?\n아래에서 선택하시거나 직접 입력해주세요!",
-        items: [
-          { title: "🔴 여드름 / 모공", desc: "여드름 치료, 모공 축소\n블랙헤드, 화이트헤드\n피지 과다 분비", msg: "여드름이랑 모공 고민이에요", btn: "상담하기" },
-          { title: "🌑 기미 / 잡티 / 색소", desc: "기미, 주근깨, 잡티\n피부톤 불균형\n색소침착 개선", msg: "기미랑 잡티 고민이에요", btn: "상담하기" },
-          { title: "📉 주름 / 탄력", desc: "이마, 눈가, 팔자주름\n피부 처짐, 탄력 저하\n볼륨 감소", msg: "주름이랑 탄력 고민이에요", btn: "상담하기" },
-          { title: "💧 피부 건조 / 민감", desc: "극건성, 민감성 피부\n홍조, 피부 자극\n수분 부족", msg: "건조하고 민감한 피부예요", btn: "상담하기" }
-        ],
-        home: "🏠 처음으로", homeMsg: "처음으로", price: "💰 가격안내", priceMsg: "가격안내"
-      },
-      en: {
-        text: "💬 What is your skin concern?\nPlease select or type directly!",
-        items: [
-          { title: "🔴 Acne / Pores", desc: "Acne treatment, pore reduction\nBlackheads, whiteheads\nExcess sebum", msg: "I have acne and pore concerns", btn: "Consult" },
-          { title: "🌑 Pigmentation / Dark spots", desc: "Melasma, freckles, dark spots\nUneven skin tone\nPigmentation improvement", msg: "I have pigmentation concerns", btn: "Consult" },
-          { title: "📉 Wrinkles / Elasticity", desc: "Forehead, eye area, nasolabial\nSagging skin, loss of elasticity\nVolume loss", msg: "I have wrinkle concerns", btn: "Consult" },
-          { title: "💧 Dry / Sensitive skin", desc: "Very dry, sensitive skin\nRedness, skin irritation\nMoisture deficiency", msg: "I have dry and sensitive skin", btn: "Consult" }
-        ],
-        home: "🏠 Home", homeMsg: "처음으로", price: "💰 Price", priceMsg: "가격안내"
-      },
-      zh: {
-        text: "💬 您有什么皮肤烦恼？\n请选择或直接输入！",
-        items: [
-          { title: "🔴 痘痘 / 毛孔", desc: "痘痘治疗，毛孔收缩\n黑头，白头\n皮脂分泌过多", msg: "我有痘痘和毛孔问题", btn: "咨询" },
-          { title: "🌑 色斑 / 雀斑", desc: "黄褐斑，雀斑，色斑\n肤色不均\n色素沉着改善", msg: "我有色斑问题", btn: "咨询" },
-          { title: "📉 皱纹 / 弹力", desc: "额头，眼角，法令纹\n皮肤松弛，弹力下降\n容量减少", msg: "我有皱纹问题", btn: "咨询" },
-          { title: "💧 干燥 / 敏感肌", desc: "极干性，敏感性皮肤\n泛红，皮肤刺激\n水分不足", msg: "我的皮肤干燥敏感", btn: "咨询" }
-        ],
-        home: "🏠 首页", homeMsg: "처음으로", price: "💰 价格", priceMsg: "가격안내"
-      },
-      ja: {
-        text: "💬 どのようなお肌のお悩みですか？\n下記から選択またはそのままご入力ください！",
-        items: [
-          { title: "🔴 ニキビ / 毛穴", desc: "ニキビ治療、毛穴縮小\n黒ずみ、白ニキビ\n皮脂過多", msg: "ニキビと毛穴が気になります", btn: "相談する" },
-          { title: "🌑 シミ / くすみ", desc: "シミ、そばかす、くすみ\n肌トーン不均一\n色素沈着改善", msg: "シミが気になります", btn: "相談する" },
-          { title: "📉 しわ / たるみ", desc: "額、目元、ほうれい線\肌のたるみ、弾力低下\nボリューム減少", msg: "しわとたるみが気になります", btn: "相談する" },
-          { title: "💧 乾燥 / 敏感肌", desc: "超乾燥、敏感肌\n赤み、肌刺激\n水分不足", msg: "肌が乾燥して敏感です", btn: "相談する" }
-        ],
-        home: "🏠 ホーム", homeMsg: "처음으로", price: "💰 料金", priceMsg: "가격안내"
-      },
-      th: {
-        text: "💬 คุณมีปัญหาผิวหนังอะไร?\nกรุณาเลือกหรือพิมพ์โดยตรง!",
-        items: [
-          { title: "🔴 สิว / รูขุมขน", desc: "รักษาสิว, ลดรูขุมขน\nสิวหัวดำ, สิวหัวขาว\nผิวมัน", msg: "ฉันมีปัญหาสิวและรูขุมขน", btn: "ปรึกษา" },
-          { title: "🌑 ฝ้า / กระ", desc: "ฝ้า, กระ, จุดด่างดำ\nผิวไม่สม่ำเสมอ\nการปรับปรุงเม็ดสี", msg: "ฉันมีปัญหาฝ้าและกระ", btn: "ปรึกษา" },
-          { title: "📉 ริ้วรอย / ความยืดหยุ่น", desc: "หน้าผาก, รอบดวงตา\nผิวหย่อนคล้อย\nสูญเสียความยืดหยุ่น", msg: "ฉันมีปัญหาริ้วรอย", btn: "ปรึกษา" },
-          { title: "💧 ผิวแห้ง / แพ้ง่าย", desc: "ผิวแห้งมาก, แพ้ง่าย\nผิวแดง, ระคายเคือง\nขาดความชุ่มชื้น", msg: "ผิวของฉันแห้งและแพ้ง่าย", btn: "ปรึกษา" }
-        ],
-        home: "🏠 หน้าหลัก", homeMsg: "처음으로", price: "💰 ราคา", priceMsg: "가격안내"
-      },
-      vi: {
-        text: "💬 Bạn có vấn đề gì về da?\nVui lòng chọn hoặc nhập trực tiếp!",
-        items: [
-          { title: "🔴 Mụn / Lỗ chân lông", desc: "Điều trị mụn, thu nhỏ lỗ chân lông\nMụn đầu đen, mụn đầu trắng\nDa dầu", msg: "Tôi có vấn đề về mụn và lỗ chân lông", btn: "Tư vấn" },
-          { title: "🌑 Nám / Tàn nhang", desc: "Nám, tàn nhang, đốm nâu\nTông màu da không đều\nCải thiện sắc tố", msg: "Tôi có vấn đề về nám da", btn: "Tư vấn" },
-          { title: "📉 Nếp nhăn / Độ đàn hồi", desc: "Trán, vùng mắt, rãnh mũi má\nDa chảy xệ\nMất độ đàn hồi", msg: "Tôi có vấn đề về nếp nhăn", btn: "Tư vấn" },
-          { title: "💧 Da khô / Nhạy cảm", desc: "Da rất khô, nhạy cảm\nDa đỏ, kích ứng\nThiếu độ ẩm", msg: "Da tôi khô và nhạy cảm", btn: "Tư vấn" }
-        ],
-        home: "🏠 Trang chủ", homeMsg: "처음으로", price: "💰 Giá", priceMsg: "가격안내"
-      },
-      ar: {
-        text: "💬 ما هي مشكلة بشرتك؟\nيرجى الاختيار أو الكتابة مباشرة!",
-        items: [
-          { title: "🔴 حب الشباب / المسام", desc: "علاج حب الشباب\nتقليص المسام\nالرؤوس السوداء والبيضاء", msg: "لدي مشكلة في حب الشباب والمسام", btn: "استشارة" },
-          { title: "🌑 البقع / التصبغ", desc: "الكلف، النمش، البقع\nعدم انتظام لون البشرة\nتحسين التصبغ", msg: "لدي مشكلة في تصبغ البشرة", btn: "استشارة" },
-          { title: "📉 التجاعيد / المرونة", desc: "الجبهة، العينان، خطوط الابتسامة\nترهل الجلد\nفقدان المرونة", msg: "لدي مشكلة في التجاعيد", btn: "استشارة" },
-          { title: "💧 البشرة الجافة / الحساسة", desc: "بشرة جافة جداً وحساسة\nاحمرار وتهيج\nنقص الرطوبة", msg: "بشرتي جافة وحساسة", btn: "استشارة" }
-        ],
-        home: "🏠 الرئيسية", homeMsg: "처음으로", price: "💰 الأسعار", priceMsg: "가격안내"
-      },
-      ru: {
-        text: "💬 Какая у вас проблема с кожей?\nВыберите или введите напрямую!",
-        items: [
-          { title: "🔴 Акне / Поры", desc: "Лечение акне, сужение пор\nЧёрные и белые угри\nИзбыток кожного сала", msg: "У меня проблемы с акне и порами", btn: "Консультация" },
-          { title: "🌑 Пигментация / Пятна", desc: "Мелазма, веснушки, пятна\nНеравномерный тон кожи\nУлучшение пигментации", msg: "У меня проблемы с пигментацией", btn: "Консультация" },
-          { title: "📉 Морщины / Упругость", desc: "Лоб, вокруг глаз, носогубные складки\nДряблость кожи\nПотеря упругости", msg: "У меня проблемы с морщинами", btn: "Консультация" },
-          { title: "💧 Сухая / Чувствительная", desc: "Очень сухая, чувствительная кожа\nПокраснение, раздражение\nНедостаток влаги", msg: "У меня сухая и чувствительная кожа", btn: "Консультация" }
-        ],
-        home: "🏠 Главная", homeMsg: "처음으로", price: "💰 Цены", priceMsg: "가격안내"
-      },
-      fr: {
-        text: "💬 Quel est votre problème de peau?\nVeuillez sélectionner ou saisir directement!",
-        items: [
-          { title: "🔴 Acné / Pores", desc: "Traitement de l'acné\nRéduction des pores\nPoints noirs et blancs", msg: "J'ai des problèmes d'acné et de pores", btn: "Consulter" },
-          { title: "🌑 Taches / Pigmentation", desc: "Mélasma, taches de rousseur\nTon de peau irrégulier\nAmélioration de la pigmentation", msg: "J'ai des problèmes de pigmentation", btn: "Consulter" },
-          { title: "📉 Rides / Élasticité", desc: "Front, yeux, sillons nasogéniens\nRelâchement cutané\nPerte d'élasticité", msg: "J'ai des problèmes de rides", btn: "Consulter" },
-          { title: "💧 Peau sèche / Sensible", desc: "Peau très sèche et sensible\nRougeurs, irritations\nManque d'hydratation", msg: "J'ai la peau sèche et sensible", btn: "Consulter" }
-        ],
-        home: "🏠 Accueil", homeMsg: "처음으로", price: "💰 Tarifs", priceMsg: "가격안내"
-      },
-      es: {
-        text: "💬 ¿Cuál es tu problema de piel?\n¡Por favor selecciona o escribe directamente!",
-        items: [
-          { title: "🔴 Acné / Poros", desc: "Tratamiento del acné\nReducción de poros\nEspinillas negras y blancas", msg: "Tengo problemas de acné y poros", btn: "Consultar" },
-          { title: "🌑 Manchas / Pigmentación", desc: "Melasma, pecas, manchas\nTono de piel desigual\nMejora de la pigmentación", msg: "Tengo problemas de pigmentación", btn: "Consultar" },
-          { title: "📉 Arrugas / Elasticidad", desc: "Frente, ojos, surcos nasales\nFlacidez cutánea\nPérdida de elasticidad", msg: "Tengo problemas de arrugas", btn: "Consultar" },
-          { title: "💧 Piel seca / Sensible", desc: "Piel muy seca y sensible\nRojez, irritación\nFalta de hidratación", msg: "Mi piel es seca y sensible", btn: "Consultar" }
-        ],
-        home: "🏠 Inicio", homeMsg: "처음으로", price: "💰 Precios", priceMsg: "가격안내"
-      }
+    const industry = 'hospital';
+    const items = parseCardSection(industry, '카드_상담메뉴');
+    const labels = {
+      ko: { text: '💬 어떤 피부 고민이 있으신가요?\n아래에서 선택하시거나 직접 입력해주세요!', btn: '상담하기', home: '🏠 처음으로', price: '💰 가격안내', priceMsg: '가격안내' },
+      en: { text: '💬 What is your skin concern?\nPlease select or type directly!', btn: 'Consult', home: '🏠 Home', price: '💰 Prices', priceMsg: '가격안내' },
+      zh: { text: '💬 您有什么皮肤问题?\n请选择或直接输入!', btn: '咨询', home: '🏠 首页', price: '💰 价格', priceMsg: '가격안내' },
+      ja: { text: '💬 お肌のお悩みは何ですか?\n下記から選択またはご入力ください!', btn: '相談する', home: '🏠 ホーム', price: '💰 料金', priceMsg: '가격안내' },
+      th: { text: '💬 คุณมีปัญหาผิวอะไร?\nเลือกหรือพิมพ์ได้เลย!', btn: 'ปรึกษา', home: '🏠 หน้าหลัก', price: '💰 ราคา', priceMsg: '가격안내' },
+      vi: { text: '💬 Bạn có vấn đề về da gì?\nHãy chọn hoặc nhập trực tiếp!', btn: 'Tư vấn', home: '🏠 Trang chủ', price: '💰 Giá', priceMsg: '가격안내' },
+      ar: { text: '💬 ما هي مشكلة بشرتك?\nالرجاء الاختيار أو الكتابة مباشرة!', btn: 'استشارة', home: '🏠 الرئيسية', price: '💰 الأسعار', priceMsg: '가격안내' },
+      ru: { text: '💬 Какая у вас проблема с кожей?\nВыберите или напишите напрямую!', btn: 'Консультация', home: '🏠 Главная', price: '💰 Цены', priceMsg: '가격안내' },
+      fr: { text: '💬 Quel est votre problème de peau?\nVeuillez sélectionner ou saisir directement!', btn: 'Consulter', home: '🏠 Accueil', price: '💰 Tarifs', priceMsg: '가격안내' },
+      es: { text: '💬 ¿Cuál es su problema de piel?\n¡Selecciona o escribe directamente!', btn: 'Consultar', home: '🏠 Inicio', price: '💰 Precios', priceMsg: '가격안내' }
     };
-
-    const m = menus[lang] || menus.ko;
+    const l = labels[lang] || labels.ko;
+    const cardItems = items.length > 0 ? items : [
+      { title: '💬 피부 상담', desc: '전문의 1:1 상담', msg: '피부 상담해주세요' }
+    ];
     const payload = {
-      version: "2.0",
+      version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: m.text } },
+          { simpleText: { text: l.text } },
           { carousel: {
-            type: "basicCard",
-            items: m.items.map(i => ({
+            type: 'basicCard',
+            items: cardItems.map(i => ({
               title: i.title,
               description: i.desc,
-              buttons: [{ action: "message", label: i.btn, messageText: i.msg }]
+              buttons: [{ action: 'message', label: l.btn, messageText: i.msg || i.title }]
             }))
           }}
         ],
         quickReplies: [
-          { label: m.home, action: "message", messageText: m.homeMsg },
-          { label: m.price, action: "message", messageText: m.priceMsg }
+          { label: l.home, action: 'message', messageText: '처음으로' },
+          { label: l.price, action: 'message', messageText: l.priceMsg }
         ]
       }
     };
@@ -1154,70 +1065,46 @@ async function sendConsultMenu(callbackUrl, lang = 'ko') {
 async function sendPriceMenu(callbackUrl, lang) {
   lang = lang || 'ko';
   console.log('sendPriceMenu 시작, 언어:', lang);
-  const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
-  const titles = {
-    ko: '💰 시술 가격 안내', en: '💰 Treatment Prices', zh: '💰 治疗价格',
-    ja: '💰 施術料金案内', th: '💰 ราคาการรักษา', vi: '💰 Bảng giá dịch vụ',
-    ar: '💰 أسعار العلاجات', ru: '💰 Цены на процедуры', fr: '💰 Tarifs des soins', es: '💰 Precios de tratamientos'
-  };
-  const items = {
-    ko: [
-      { title: '✨ 레이저 토닝', desc: '기미·잡티·모공 개선\n1회: 150,000원\n5회 패키지: 650,000원' },
-      { title: '💉 보톡스', desc: '이마·눈가·팔자주름\n1부위: 100,000원\n3부위: 250,000원' },
-      { title: '💧 수분 리프팅', desc: '피부 탄력·수분 개선\n1회: 200,000원\n3회 패키지: 550,000원' },
-      { title: '🌿 피부 클리닉', desc: '여드름·피부트러블 케어\n1회: 80,000원\n5회 패키지: 350,000원' }
-    ],
-    en: [
-      { title: '✨ Laser Toning', desc: 'Pigmentation & Pore Care\n1 session: ₩150,000\n5 sessions: ₩650,000' },
-      { title: '💉 Botox', desc: 'Forehead, Eyes, Nasolabial\n1 area: ₩100,000\n3 areas: ₩250,000' },
-      { title: '💧 Moisture Lifting', desc: 'Elasticity & Hydration\n1 session: ₩200,000\n3 sessions: ₩550,000' },
-      { title: '🌿 Skin Clinic', desc: 'Acne & Skin Care\n1 session: ₩80,000\n5 sessions: ₩350,000' }
-    ],
-    zh: [
-      { title: '✨ 激光嫩肤', desc: '改善色斑·毛孔\n1次: ₩150,000\n5次套餐: ₩650,000' },
-      { title: '💉 肉毒杆菌', desc: '额头·眼角·法令纹\n1个部位: ₩100,000\n3个部位: ₩250,000' },
-      { title: '💧 水光针', desc: '改善弹力·保湿\n1次: ₩200,000\n3次套餐: ₩550,000' },
-      { title: '🌿 皮肤诊所', desc: '痤疮·皮肤问题护理\n1次: ₩80,000\n5次套餐: ₩350,000' }
-    ],
-    ja: [
-      { title: '✨ レーザートーニング', desc: 'シミ・毛穴ケア\n1回: ₩150,000\n5回パック: ₩650,000' },
-      { title: '💉 ボトックス', desc: 'おでこ・目元・ほうれい線\n1部位: ₩100,000\n3部位: ₩250,000' },
-      { title: '💧 水分リフティング', desc: '弾力・保湿改善\n1回: ₩200,000\n3回パック: ₩550,000' },
-      { title: '🌿 スキンクリニック', desc: 'ニキビ・肌荒れケア\n1回: ₩80,000\n5回パック: ₩350,000' }
-    ]
-  };
-  const bookLabels = {
-    ko: '📅 예약하기', en: '📅 Book Now', zh: '📅 立即预约',
-    ja: '📅 予約する', th: '📅 จองเลย', vi: '📅 Đặt ngay',
-    ar: '📅 احجز الآن', ru: '📅 Записаться', fr: '📅 Réserver', es: '📅 Reservar'
-  };
-  const bookMsgs = {
-    ko: '예약하기', en: '예약하기', zh: '예약하기', ja: '예약하기',
-    th: '예약하기', vi: '예약하기', ar: '예약하기', ru: '예약하기', fr: '예약하기', es: '예약하기'
-  };
-  const priceItems = items[lang] || items.en;
-  const bookLabel = bookLabels[lang] || bookLabels.en;
   try {
+    const industry = 'hospital';
+    const items = parseCardSection(industry, '카드_가격메뉴');
+    const labels = {
+      ko: { title: '💰 시술 가격 안내', btn: '📅 예약하기' },
+      en: { title: '💰 Treatment Prices', btn: '📅 Book Now' },
+      zh: { title: '💰 治疗价格', btn: '📅 立即预约' },
+      ja: { title: '💰 施術料金案内', btn: '📅 予約する' },
+      th: { title: '💰 ราคาการรักษา', btn: '📅 จองเลย' },
+      vi: { title: '💰 Bảng giá dịch vụ', btn: '📅 Đặt ngay' },
+      ar: { title: '💰 أسعار العلاجات', btn: '📅 احجز الآن' },
+      ru: { title: '💰 Цены на процедуры', btn: '📅 Записаться' },
+      fr: { title: '💰 Tarifs des soins', btn: '📅 Réserver' },
+      es: { title: '💰 Precios de tratamientos', btn: '📅 Reservar' }
+    };
+    const l = labels[lang] || labels.ko;
+    const cardItems = items.length > 0 ? items : [
+      { title: '💰 가격 안내', desc: '가격 정보를 준비 중입니다', msg: '' }
+    ];
+    const payload = {
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: l.title } },
+          { carousel: {
+            type: 'basicCard',
+            items: cardItems.map(item => ({
+              title: item.title,
+              description: item.desc,
+              buttons: [{ action: 'message', label: l.btn, messageText: '예약하기' }]
+            }))
+          }}
+        ],
+        quickReplies: getQuickReplies(lang, industry)
+      }
+    };
     const res = await fetch(callbackUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        version: '2.0',
-        template: {
-          outputs: [
-            { simpleText: { text: titles[lang] || titles.en } },
-            { carousel: {
-              type: 'basicCard',
-              items: priceItems.map(item => ({
-                title: item.title,
-                description: item.desc,
-                buttons: [{ action: 'message', label: bookLabel, messageText: '예약하기' }]
-              }))
-            }}
-          ],
-          quickReplies: getQuickReplies(lang, industry)
-        }
-      })
+      body: JSON.stringify(payload)
     });
     const resText = await res.text();
     console.log('sendPriceMenu 응답:', res.status, resText);
@@ -1227,64 +1114,49 @@ async function sendPriceMenu(callbackUrl, lang) {
 }
 
 async function showDoctors(callbackUrl, lang) {
-  const doctorLang = lang || 'ko';
-  const titles = {
-    ko: '👨‍⚕️ 의료진 소개', en: '👨‍⚕️ Our Doctors', zh: '👨‍⚕️ 医师介绍',
-    ja: '👨‍⚕️ 医師紹介', th: '👨‍⚕️ แพทย์ของเรา', vi: '👨‍⚕️ Bác sĩ của chúng tôi',
-    ar: '👨‍⚕️ أطباؤنا', ru: '👨‍⚕️ Наши врачи', fr: '👨‍⚕️ Nos médecins', es: '👨‍⚕️ Nuestros médicos'
-  };
-  
-  const doctors = {
-    ko: [
-      { name: '김연세 원장', spec: '피부과 전문의\n경력 20년\n레이저 시술 전문', btn: '김연세 원장으로 예약하기', img: BASE_URL+'/doctor_1.jpg' },
-      { name: '박푸르미 원장', spec: '피부과 전문의\n경력 15년\n보톡스·필러 전문', btn: '박푸르미 원장으로 예약하기', img: BASE_URL+'/doctor_2.jpg' },
-      { name: '이미소 원장', spec: '피부과 전문의\n경력 10년\n피부 관리 전문', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
-    ],
-    en: [
-      { name: 'Dr. Kim Yonsei', spec: 'Dermatologist\n20 years experience\nLaser treatment specialist', btn: '김연세 원장으로 예약하기' },
-      { name: 'Dr. Park Purumi', spec: 'Dermatologist\n15 years experience\nBotox & Filler specialist', btn: '박푸르미 원장으로 예약하기' },
-      { name: 'Dr. Lee Miso', spec: 'Dermatologist\n10 years experience\nSkin care specialist', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
-    ],
-    zh: [
-      { name: '金延世院长', spec: '皮肤科专科医师\n20年经验\n激光治疗专家', btn: '김연세 원장으로 예약하기', img: BASE_URL+'/doctor_1.jpg' },
-      { name: '朴普鲁美院长', spec: '皮肤科专科医师\n15年经验\n肉毒杆菌·填充专家', btn: '박푸르미 원장으로 예약하기', img: BASE_URL+'/doctor_2.jpg' },
-      { name: '李美笑院长', spec: '皮肤科专科医师\n10年经验\n皮肤护理专家', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
-    ],
-    ja: [
-      { name: 'キム・ヨンセ院長', spec: '皮膚科専門医\n経歴20年\nレーザー治療専門', btn: '김연세 원장으로 예약하기', img: BASE_URL+'/doctor_1.jpg' },
-      { name: 'パク・プルミ院長', spec: '皮膚科専門医\n経歴15年\nボトックス・フィラー専門', btn: '박푸르미 원장으로 예약하기', img: BASE_URL+'/doctor_2.jpg' },
-      { name: 'イ・ミソ院長', spec: '皮膚科専門医\n経歴10年\nスキンケア専門', btn: '이미소 원장으로 예약하기', img: BASE_URL+'/doctor_3.jpg' }
-    ]
-  };
-  const bookBtnLabels = {
-    ko: '📅 예약하기', en: '📅 Book', zh: '📅 预约', ja: '📅 予約する',
-    th: '📅 จอง', vi: '📅 Đặt lịch', ar: '📅 حجز', ru: '📅 Записаться', fr: '📅 Réserver', es: '📅 Reservar'
-  };
-  const docList = doctors[lang] || doctors.en;
-  const bookLabel = bookBtnLabels[lang] || bookBtnLabels.en;
-  const outputs = [
-    { simpleText: { text: titles[lang] || titles.en } },
-    { carousel: {
-      type: 'basicCard',
-      items: docList.map(d => ({
-        title: d.name,
-        description: d.spec,
-        thumbnail: d.img ? { imageUrl: d.img, fixedRatio: false } : undefined,
-        buttons: [{ action: 'message', label: bookLabel, messageText: d.btn }]
-      }))
-    }}
-  ];
+  lang = lang || 'ko';
+  console.log('showDoctors 시작, 언어:', lang);
   try {
+    const industry = 'hospital';
+    const items = parseCardSection(industry, '카드_의료진');
+    const labels = {
+      ko: { title: '👨‍⚕️ 의료진 소개', btn: '예약하기', home: '🏠 처음으로' },
+      en: { title: '👨‍⚕️ Our Doctors', btn: 'Book', home: '🏠 Home' },
+      zh: { title: '👨‍⚕️ 医师介绍', btn: '预约', home: '🏠 首页' },
+      ja: { title: '👨‍⚕️ 医師紹介', btn: '予約する', home: '🏠 ホーム' },
+      th: { title: '👨‍⚕️ แพทย์ของเรา', btn: 'จอง', home: '🏠 หน้าหลัก' },
+      vi: { title: '👨‍⚕️ Bác sĩ của chúng tôi', btn: 'Đặt lịch', home: '🏠 Trang chủ' },
+      ar: { title: '👨‍⚕️ أطباؤنا', btn: 'احجز', home: '🏠 الرئيسية' },
+      ru: { title: '👨‍⚕️ Наши врачи', btn: 'Записаться', home: '🏠 Главная' },
+      fr: { title: '👨‍⚕️ Nos médecins', btn: 'Réserver', home: '🏠 Accueil' },
+      es: { title: '👨‍⚕️ Nuestros médicos', btn: 'Reservar', home: '🏠 Inicio' }
+    };
+    const l = labels[lang] || labels.ko;
+    const cardItems = items.length > 0 ? items : [
+      { title: '👨‍⚕️ 전문의', desc: '피부과 전문의', msg: '전문의로 예약하기', img: '' }
+    ];
+    const payload = {
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: l.title } },
+          { carousel: {
+            type: 'basicCard',
+            items: cardItems.map(d => ({
+              title: d.title,
+              description: d.desc,
+              thumbnail: d.img ? { imageUrl: `${BASE_URL}/${d.img}`, fixedRatio: false } : undefined,
+              buttons: [{ action: 'message', label: l.btn, messageText: d.msg || d.title }]
+            }))
+          }}
+        ],
+        quickReplies: [{ label: l.home, action: 'message', messageText: '처음으로' }]
+      }
+    };
     const res = await fetch(callbackUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        version: '2.0',
-        template: {
-          outputs,
-          quickReplies: getQuickReplies(doctorLang, session.industry || 'hospital')
-        }
-      })
+      body: JSON.stringify(payload)
     });
     const resText = await res.text();
     console.log('showDoctors 응답:', res.status, resText);
@@ -1292,5 +1164,6 @@ async function showDoctors(callbackUrl, lang) {
     console.error('showDoctors 오류:', e.message);
   }
 }
+
 
 module.exports = router;
