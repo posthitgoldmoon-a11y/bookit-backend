@@ -8,26 +8,33 @@ const sessions = {};
 const BASE_URL = `http://${process.env.SERVER_IP}:3002`;
 
 // ─── 프롬프트 파일 카드 파서 ───────────────────────────────
-function parseCardSection(industry, sectionName) {
+function parseCardSection(industry, sectionName, lang = 'ko') {
   try {
     const fs = require('fs');
     const path = require('path');
     const promptPath = path.join(__dirname, '../prompts', `${industry}.txt`);
     const text = fs.readFileSync(promptPath, 'utf-8');
-    const regex = new RegExp('## ' + sectionName + '\\n([\\s\\S]*?)(?=\\n##|$)');
-    const match = text.match(regex);
-    if (!match) return [];
-    return match[1].trim().split('\n')
-      .filter(line => line.trim())
-      .map(line => {
-        const parts = line.split(' | ');
-        return {
-          title: parts[0] ? parts[0].trim() : '',
-          desc: parts[1] ? parts[1].trim().replace(/\\n/g, '\n') : '',
-          msg: parts[2] ? parts[2].trim() : '',
-          img: parts[3] ? parts[3].trim() : ''
-        };
-      });
+    // 언어별 섹션 우선 시도 (예: 카드_상담메뉴_en)
+    const langSection = lang !== 'ko' ? sectionName + '_' + lang : null;
+    const tryNames = langSection ? [langSection, sectionName] : [sectionName];
+    for (const name of tryNames) {
+      const regex = new RegExp('## ' + name + '\\n([\\s\\S]*?)(?=\\n##|$)');
+      const match = text.match(regex);
+      if (match) {
+        return match[1].trim().split('\n')
+          .filter(line => line.trim())
+          .map(line => {
+            const parts = line.split(' | ');
+            return {
+              title: parts[0] ? parts[0].trim() : '',
+              desc: parts[1] ? parts[1].trim().replace(/\\n/g, '\n') : '',
+              msg: parts[2] ? parts[2].trim() : '',
+              img: parts[3] ? parts[3].trim() : ''
+            };
+          });
+      }
+    }
+    return [];
   } catch(e) {
     console.error('parseCardSection 오류:', e.message);
     return [];
@@ -356,7 +363,7 @@ async function handleMain(req, res) {
 
     // 전화번호 감지
     const phone = extractPhone(userMessage);
-    if (phone && session.contactRequested && !session.phone) {
+    if (phone && session.contactRequested && !session.phone && !session.waitingFor) {
       session.phone = phone;
       const lang = session.data.lang || 'ko';
       const confirmMsgs = {
@@ -659,10 +666,23 @@ async function handleMain(req, res) {
     }
 
     if (userMessage === "카카오예약하기") {
+      const serviceNames = {
+        ko: session.data.service || '시술',
+        en: session.data.service || 'Treatment',
+        zh: session.data.service || '治疗',
+        ja: session.data.service || '施術',
+        th: session.data.service || 'การรักษา',
+        vi: session.data.service || 'Điều trị',
+        ar: session.data.service || 'العلاج',
+        ru: session.data.service || 'Процедура',
+        fr: session.data.service || 'Soin',
+        es: session.data.service || 'Tratamiento'
+      };
+      const serviceName = serviceNames[session.data.lang || 'ko'];
       const cl = {
-        ko: { msg: `${session.data.service} 예약을 진행할게요! 😊\n\n날짜와 시간을 선택해주세요!`, title: "📅 날짜/시간 선택", desc: "아래 버튼을 눌러 날짜와 시간을 선택해주세요!", btn1: "📅 날짜/시간 선택하기", btn2: "✅ 날짜선택완료" },
-        en: { msg: `Proceeding with ${session.data.service} booking! 😊\n\nPlease select a date and time!`, title: "📅 Select Date/Time", desc: "Tap the button below to select!", btn1: "📅 Select Date/Time", btn2: "✅ Done" },
-        zh: { msg: `正在预约${session.data.service}！ 😊\n\n请选择日期和时间！`, title: "📅 选择日期/时间", desc: "请点击下方按钮！", btn1: "📅 选择日期/时间", btn2: "✅ 完成" },
+        ko: { msg: `${serviceName} 예약을 진행할게요! 😊\n\n날짜와 시간을 선택해주세요!`, title: "📅 날짜/시간 선택", desc: "아래 버튼을 눌러 날짜와 시간을 선택해주세요!", btn1: "📅 날짜/시간 선택하기", btn2: "✅ 날짜선택완료" },
+        en: { msg: `Proceeding with ${serviceName} booking! 😊\n\nPlease select a date and time!`, title: "📅 Select Date/Time", desc: "Tap the button below to select!", btn1: "📅 Select Date/Time", btn2: "✅ Done" },
+        zh: { msg: `正在预约${serviceName}！ 😊\n\n请选择日期和时间！`, title: "📅 选择日期/时间", desc: "请点击下方按钮！", btn1: "📅 选择日期/时间", btn2: "✅ 完成" },
         ja: { msg: `${session.data.service}のご予約を進めます！ 😊\n\n日付と時間をお選びください！`, title: "📅 日付/時間を選択", desc: "下のボタンを押してください！", btn1: "📅 日付/時間を選択", btn2: "✅ 選択完了" },
         th: { msg: `กำลังดำเนินการจอง ${session.data.service}! 😊\n\nกรุณาเลือกวันและเวลา!`, title: "📅 เลือกวันและเวลา", desc: "กดปุ่มด้านล่าง!", btn1: "📅 เลือกวันและเวลา", btn2: "✅ เสร็จสิ้น" },
         vi: { msg: `Đang tiến hành đặt lịch ${session.data.service}! 😊\n\nVui lòng chọn ngày và giờ!`, title: "📅 Chọn ngày/giờ", desc: "Nhấn nút bên dưới!", btn1: "📅 Chọn ngày/giờ", btn2: "✅ Hoàn thành" },
@@ -770,6 +790,7 @@ async function handleMain(req, res) {
           return;
         }
         session.data.date = data.datetime;
+        session.waitingFor = 'name';
         const dateMsg = lt.dateSelected(data.datetime);
         session.history.push({ role: "user", content: `날짜 ${data.datetime} 선택` });
         session.history.push({ role: "model", content: dateMsg });
@@ -777,6 +798,53 @@ async function handleMain(req, res) {
       } catch(e) {
         await sendCallback(callbackUrl, lt.error);
       }
+      return;
+    }
+
+    // 이름 대기 상태 처리
+    if (session.waitingFor === 'name') {
+      session.data.name = userMessage.trim();
+      session.waitingFor = 'phone';
+      const lang = session.data.lang || 'ko';
+      const phoneMsgs = {
+        ko: '📞 연락처를 알려주세요 😊\n(선택사항 - 건너뛰시려면 "건너뛰기" 입력)',
+        en: '📞 Please enter your phone number 😊\n(Optional - type "skip" to skip)',
+        zh: '📞 请输入您的电话号码 😊\n（可选 - 输入"跳过"可跳过）',
+        ja: '📞 電話番号を入力してください 😊\n（任意 - スキップする場合は「スキップ」と入力）',
+        th: '📞 กรุณากรอกหมายเลขโทรศัพท์ 😊\n(ไม่บังคับ - พิมพ์ "ข้าม" เพื่อข้าม)',
+        vi: '📞 Vui lòng nhập số điện thoại 😊\n(Tùy chọn - gõ "bỏ qua" để bỏ qua)',
+        ar: '📞 يرجى إدخال رقم هاتفك 😊\n(اختياري - اكتب "تخطي" للتخطي)',
+        ru: '📞 Введите номер телефона 😊\n(Необязательно - введите "пропустить" для пропуска)',
+        fr: '📞 Veuillez entrer votre numéro de téléphone 😊\n(Optionnel - tapez "passer" pour ignorer)',
+        es: '📞 Por favor ingrese su número de teléfono 😊\n(Opcional - escriba "omitir" para omitir)'
+      };
+      await sendCallback(callbackUrl, phoneMsgs[lang] || phoneMsgs.ko,
+        [{ label: lang === 'ko' ? '건너뛰기' : 'Skip', action: 'message', messageText: '건너뛰기' },
+         { label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
+      );
+      return;
+    }
+
+    // 전화번호 대기 상태 처리
+    if (session.waitingFor === 'phone') {
+      const lang = session.data.lang || 'ko';
+      const skipWords = ['건너뛰기', 'skip', '跳过', 'スキップ', 'ข้าม', 'bỏ qua', 'تخطي', 'пропустить', 'passer', 'omitir'];
+      if (!skipWords.includes(userMessage.trim().toLowerCase())) {
+        session.data.phone = userMessage.trim();
+      }
+      session.waitingFor = null;
+      session.booted = true;
+      const d = session.data;
+      const confirmMsgs = {
+        ko: `✅ 예약이 접수되었습니다!\n\n👤 이름: ${d.name}\n📞 전화: ${d.phone || '미입력'}\n💉 시술: ${d.service || '미입력'}\n📅 일시: ${d.date}\n\n곧 확인 연락드리겠습니다 😊`,
+        en: `✅ Reservation received!\n\n👤 Name: ${d.name}\n📞 Phone: ${d.phone || 'Not provided'}\n💉 Treatment: ${d.service || 'TBD'}\n📅 Date: ${d.date}\n\nWe will contact you shortly 😊`,
+        zh: `✅ 预约已提交！\n\n👤 姓名: ${d.name}\n📞 电话: ${d.phone || '未填写'}\n💉 治疗: ${d.service || '待定'}\n📅 日期: ${d.date}\n\n我们会尽快联系您 😊`,
+        ja: `✅ ご予約を受け付けました！\n\n👤 お名前: ${d.name}\n📞 電話: ${d.phone || '未入力'}\n💉 施術: ${d.service || '未定'}\n📅 日時: ${d.date}\n\nまもなくご連絡いたします 😊`
+      };
+      await sendCallback(callbackUrl, confirmMsgs[lang] || confirmMsgs.ko,
+        [{ label: lang === 'ko' ? '🏠 처음으로' : '🏠 Home', action: 'message', messageText: '처음으로' }]
+      );
+      await sendTelegram(`📋 새 예약!\n👤 이름: ${d.name}\n📞 전화: ${d.phone || '미입력'}\n💉 시술: ${d.service || '미입력'}\n📅 일시: ${d.date}\n🌍 언어: ${lang}`);
       return;
     }
 
@@ -963,7 +1031,7 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
   console.log('sendBookingMenu 시작, 언어:', lang);
   try {
     const industry = 'hospital';
-    const items = parseCardSection(industry, '카드_예약메뉴');
+    const items = parseCardSection(industry, '카드_예약메뉴', lang);
     const labels = {
       ko: { text: '📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!', btn: '예약하기', home: '🏠 처음으로' },
       en: { text: '📅 Which treatment would you like to book?\nPlease select a treatment!', btn: 'Book', home: '🏠 Home' },
@@ -1013,7 +1081,7 @@ async function sendConsultMenu(callbackUrl, lang = 'ko') {
   console.log('sendConsultMenu 시작, 언어:', lang);
   try {
     const industry = 'hospital';
-    const items = parseCardSection(industry, '카드_상담메뉴');
+    const items = parseCardSection(industry, '카드_상담메뉴', lang);
     const labels = {
       ko: { text: '💬 어떤 피부 고민이 있으신가요?\n아래에서 선택하시거나 직접 입력해주세요!', btn: '상담하기', home: '🏠 처음으로', price: '💰 가격안내', priceMsg: '가격안내' },
       en: { text: '💬 What is your skin concern?\nPlease select or type directly!', btn: 'Consult', home: '🏠 Home', price: '💰 Prices', priceMsg: '가격안내' },
@@ -1067,7 +1135,7 @@ async function sendPriceMenu(callbackUrl, lang) {
   console.log('sendPriceMenu 시작, 언어:', lang);
   try {
     const industry = 'hospital';
-    const items = parseCardSection(industry, '카드_가격메뉴');
+    const items = parseCardSection(industry, '카드_가격메뉴', lang);
     const labels = {
       ko: { title: '💰 시술 가격 안내', btn: '📅 예약하기' },
       en: { title: '💰 Treatment Prices', btn: '📅 Book Now' },
@@ -1118,7 +1186,7 @@ async function showDoctors(callbackUrl, lang) {
   console.log('showDoctors 시작, 언어:', lang);
   try {
     const industry = 'hospital';
-    const items = parseCardSection(industry, '카드_의료진');
+    const items = parseCardSection(industry, '카드_의료진', lang);
     const labels = {
       ko: { title: '👨‍⚕️ 의료진 소개', btn: '예약하기', home: '🏠 처음으로' },
       en: { title: '👨‍⚕️ Our Doctors', btn: 'Book', home: '🏠 Home' },

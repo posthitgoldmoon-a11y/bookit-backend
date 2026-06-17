@@ -293,3 +293,26 @@ BOOKING_JSON:
 김연세 원장 | 피부과 전문의 20년\n레이저 시술 전문\n강남 레이저 1위 | 김연세 원장으로 예약하기 | doctor_1.jpg
 박푸르미 원장 | 피부과 전문의 15년\n여드름·흉터 전문\n보톡스·필러 전문 | 박푸르미 원장으로 예약하기 | doctor_2.jpg
 이미소 원장 | 피부과 전문의 10년\n안티에이징·리프팅 전문\n피부 관리 전문 | 이미소 원장으로 예약하기 | doctor_3.jpg
+
+## 카드_상담메뉴_en
+🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin
+💉 Treatment Recommendation | By age & skin type\n1:1 consultation with specialist | Please recommend a treatment
+💰 Price Inquiry | Treatment cost guide\nPackage & discount info | Please inquire about prices
+👨‍⚕️ Doctor Selection | Meet our 3 specialists\nChoose by specialty | Please show me the doctors
+
+## 카드_예약메뉴_en
+💉 Laser Treatment | Toning·Pigmentation·Hair removal\n₩80,000~300,000 | Book Laser Treatment
+💊 Botox | Forehead·Jaw·Calf\n₩100,000~300,000 | Book Botox
+💋 Filler | Volume & contour correction\n₩200,000~500,000 | Book Filler
+✨ Lifting | Ulthera·Thermage·Thread lift\nAfter consultation | Book Lifting
+
+## 카드_가격메뉴_en
+💉 Laser Treatment | Toning 1session ₩80,000 / 5sessions ₩350,000\nPigmentation ₩50,000~150,000\nUnderarm hair removal ₩50,000
+💊 Botox | Forehead ₩100,000\nJaw ₩200,000\nCalf ₩300,000
+💋 Filler | ₩200,000~500,000 per area\nHyaluronic acid based
+✨ Lifting & Skincare | Moisture care 1session ₩80,000 / 5sessions ₩350,000\nSkin booster ₩150,000\nSkin cancer screening ₩50,000
+
+## 카드_의료진_en
+Dr. Kim Yonsei | Dermatologist 20 years\nLaser treatment specialist\n#1 laser clinic in Gangnam | Book with Dr. Kim | doctor_1.jpg
+Dr. Park Purumi | Dermatologist 15 years\nAcne & scar specialist\nBotox & filler expert | Book with Dr. Park | doctor_2.jpg
+Dr. Lee Miso | Dermatologist 10 years\nAnti-aging & lifting specialist\nSkin care expert | Book with Dr. Lee | doctor_3.jpg
