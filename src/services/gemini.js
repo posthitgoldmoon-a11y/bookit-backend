@@ -73,7 +73,7 @@ BOOKING_JSON:
 {}`;
 }
 
-async function chat(conversationHistory, userMessage, booted = false, industry = "hospital_companion", lang = 'ko') {
+async function chat(conversationHistory, userMessage, booted = false, industry = "hospital", lang = 'ko') {
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const systemPrompt = getSystemPrompt(industry, booted, lang);
