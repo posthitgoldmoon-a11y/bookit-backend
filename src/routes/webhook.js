@@ -481,15 +481,14 @@ async function handleMain(req, res) {
 
     if (userMessage === "예약하기" || userMessage === "상담하기") {
       session.data.pendingMenu = userMessage;
-      // 언어가 이미 선택된 경우 바로 메뉴로
-      if (session.data.lang) {
-        if (userMessage === "상담하기") {
-          await sendConsultMenu(callbackUrl, session.data.lang);
-        } else {
-          await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang);
-        }
-        return;
+      // 언어 기본값 ko 설정
+      if (!session.data.lang) session.data.lang = 'ko';
+      if (userMessage === "상담하기") {
+        await sendConsultMenu(callbackUrl, session.data.lang);
+      } else {
+        await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang);
       }
+      return;
       await fetch(callbackUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
