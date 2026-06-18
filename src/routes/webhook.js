@@ -774,6 +774,18 @@ async function handleMain(req, res) {
     }
 
     // 의사 상세 소개 처리
+    // 가격 상세 소개 처리
+    if (userMessage.startsWith('가격소개:')) {
+      const itemName = userMessage.replace('가격소개:', '').trim();
+      const lang = session.data.lang || 'ko';
+      const question = lang === 'ko' ? `${itemName} 가격과 상세 정보를 알려주세요` : `Please provide price and details for ${itemName}`;
+      session.history.push({ role: 'user', content: question });
+      const geminiRes = await chat(session.history, question, true, session.industry || 'hospital', lang);
+      await sendCallback(callbackUrl, geminiRes.message,
+        [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]);
+      return;
+    }
+
     if (userMessage.startsWith('의사소개:')) {
       const doctorName = userMessage.replace('의사소개:', '').trim();
       const lang = session.data.lang || 'ko';
@@ -1192,16 +1204,16 @@ async function sendPriceMenu(callbackUrl, lang) {
     const industry = 'hospital';
     const items = parseCardSection(industry, '카드_가격메뉴', lang);
     const labels = {
-      ko: { title: '💰 시술 가격 안내', btn: '📅 예약하기' },
-      en: { title: '💰 Treatment Prices', btn: '📅 Book Now' },
-      zh: { title: '💰 治疗价格', btn: '📅 立即预约' },
-      ja: { title: '💰 施術料金案内', btn: '📅 予約する' },
-      th: { title: '💰 ราคาการรักษา', btn: '📅 จองเลย' },
-      vi: { title: '💰 Bảng giá dịch vụ', btn: '📅 Đặt ngay' },
-      ar: { title: '💰 أسعار العلاجات', btn: '📅 احجز الآن' },
-      ru: { title: '💰 Цены на процедуры', btn: '📅 Записаться' },
-      fr: { title: '💰 Tarifs des soins', btn: '📅 Réserver' },
-      es: { title: '💰 Precios de tratamientos', btn: '📅 Reservar' }
+      ko: { title: '💰 시술 가격 안내', btn: '🔍 자세히 알아보기' },
+      en: { title: '💰 Treatment Prices', btn: '🔍 Learn More' },
+      zh: { title: '💰 治疗价格', btn: '🔍 了解更多' },
+      ja: { title: '💰 施術料金案内', btn: '🔍 詳しく見る' },
+      th: { title: '💰 ราคาการรักษา', btn: '🔍 ดูเพิ่มเติม' },
+      vi: { title: '💰 Bảng giá dịch vụ', btn: '🔍 Xem thêm' },
+      ar: { title: '💰 أسعار العلاجات', btn: '🔍 معرفة المزيد' },
+      ru: { title: '💰 Цены на процедуры', btn: '🔍 Подробнее' },
+      fr: { title: '💰 Tarifs des soins', btn: '🔍 En savoir plus' },
+      es: { title: '💰 Precios de tratamientos', btn: '🔍 Saber más' }
     };
     const l = labels[lang] || labels.ko;
     const cardItems = items.length > 0 ? items : [
@@ -1217,7 +1229,7 @@ async function sendPriceMenu(callbackUrl, lang) {
             items: cardItems.map(item => ({
               title: item.title,
               description: item.desc,
-              buttons: [{ action: 'message', label: l.btn, messageText: '예약하기' }]
+              buttons: [{ action: 'message', label: l.btn, messageText: '가격소개:' + item.title }]
             }))
           }}
         ],
