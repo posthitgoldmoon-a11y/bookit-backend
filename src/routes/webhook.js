@@ -988,20 +988,7 @@ async function handleMain(req, res) {
         es: '📞 Deje su número y nuestro personal confirmará su reserva directamente 😊 (Opcional)'
       };
       const contactMsg = contactMsgs[lang] || contactMsgs.ko;
-      // 텔레그램 알림
-      const historyText = session.history.slice(-4).map(h => (h.role === 'user' ? '👤 ' : '🤖 ') + h.content.substring(0, 50)).join('\n');
-      await sendTelegram([
-        '🔔 예약 의사 확인!',
-        '━━━━━━━━━━━━━━',
-        '🏢 업종: ' + (session.industry || 'hospital'),
-        '🌍 언어: ' + lang,
-        '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
-        '━━━━━━━━━━━━━━',
-        '💬 최근 상담:',
-        historyText,
-        '━━━━━━━━━━━━━━',
-        '📞 전화번호: 대기중'
-      ].join('\n'));
+      // 텔레그램 알림은 예약 완료 후 발송
       await fetch(callbackUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1015,7 +1002,7 @@ async function handleMain(req, res) {
                   title: bl.title,
                   description: bl.desc,
                   buttons: [
-                    { action: "webLink", label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || "https://booking.naver.com" },
+                    { action: "message", label: bl.naver, messageText: "네이버예약클릭" },
                     { action: "message", label: bl.kakao, messageText: "카카오예약하기" }
                   ]
                 }
