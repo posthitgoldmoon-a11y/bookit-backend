@@ -1072,7 +1072,10 @@ async function handleMain(req, res) {
 
     const lt2 = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
     await sendCallback(callbackUrl, geminiReply.message,
-      [{ label: lt2.home, action: "message", messageText: "처음으로" }]
+      [
+        { label: '🎁 무료체험 신청', action: 'message', messageText: '무료체험신청' },
+        { label: lt2.home, action: "message", messageText: "처음으로" }
+      ]
     );
 
   } catch(err) {
