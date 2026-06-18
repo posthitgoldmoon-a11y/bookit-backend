@@ -610,8 +610,8 @@ async function handleMain(req, res) {
       es: { title: "📋 Seleccionar método de reserva", desc: "¡Por favor seleccione su método de reserva!", naver: "🟢 Reserva por Naver", kakao: "🟡 Reserva por KakaoTalk" }
     };
 
-    if (bookingKeywords.includes(userMessage)) {
-      session.data.service = userMessage.replace(" 예약하기", "").replace("으로 예약하기", "");
+    if (bookingKeywords.includes(userMessage) || userMessage.endsWith("예약하기") || userMessage.endsWith("예약")) {
+      session.data.service = userMessage.replace(/\s*예약하기$/, "").replace(/\s*예약$/, "").replace("으로", "").trim() || session.data.service || "상담 후 결정";
       session.contactRequested = true;
       const lang = session.data.lang || 'ko';
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
@@ -826,6 +826,12 @@ async function handleMain(req, res) {
     }
 
     // 전화번호 대기 상태 처리
+      // service가 없으면 대화 history에서 추출 시도
+      if (!session.data.service) {
+        const recentChat = session.history.slice(-6).map(h => h.content).join(" ");
+        const serviceMatch = recentChat.match(/(여드름[^\s]*|레이저[^\s]*|보톡스[^\s]*|필러[^\s]*|리프팅[^\s]*|물광[^\s]*|피코[^\s]*|실리프팅[^\s]*|제모[^\s]*|엑셀[^\s]*)/);
+        if (serviceMatch) session.data.service = serviceMatch[1];
+      }
     if (session.waitingFor === 'phone') {
       const lang = session.data.lang || 'ko';
       const skipWords = ['건너뛰기', 'skip', '跳过', 'スキップ', 'ข้าม', 'bỏ qua', 'تخطي', 'пропустить', 'passer', 'omitir'];
