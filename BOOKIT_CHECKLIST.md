@@ -285,3 +285,20 @@ cp /tmp/backup.js <파일경로>
 - 체크리스트: ~/bookit-backend/BOOKIT_CHECKLIST.md
 - 일괄배포 스크립트: ~/bookit-backend/deploy_all.sh
 - 세션 시작 시 반드시 확인: cat ~/bookit-backend/BOOKIT_CHECKLIST.md
+
+## 작업 전 필수 확인
+1. 어떤 채널 작업인지 먼저 확인
+2. 작업 전 디렉토리 확인: pwd
+3. 새 채널 만들 때: cp -r ~/bookit-backend ~/새채널명-backend
+4. 기존 채널 디렉토리에서 다른 채널 작업 절대 금지
+
+## 디렉토리-채널-GitHub 매핑
+- bookit-backend / 부킷메디 / 포트3002 / GitHub:bookit-backend
+- gourmet-backend / 부킷고멧 / 포트3005 / GitHub:bookit-gourmet
+- beauty-backend / 부킷뷰티 / 포트3006 / GitHub:bookit-beauty
+- donworry-backend / 부킷데모 / 포트3003 / GitHub:bookit-all
+- hospital-companion-backend / 돈워리 / 포트3000 / GitHub:hospital-companion-backend
+
+## 중요 파일 위치
+- 체크리스트: ~/bookit-backend/BOOKIT_CHECKLIST.md
+- 일괄배포: ~/bookit-backend/deploy_all.sh
