@@ -851,12 +851,12 @@ async function handleMain(req, res) {
 
     // 전화번호 대기 상태 처리
       // service가 없으면 대화 history에서 추출 시도
-      // 대화 history 전체 요약 저장
-      // 유저 첫 질문 + 시술명 위주로 요약
-      const firstMsg = session.history.filter(h => h.role === "user")[0]?.content || "";
-      const serviceName = session.data.service || "";
-      const extraMsgs = session.history.filter(h => h.role === "user").slice(1, 3).map(h => h.content).filter(m => m.length < 30 && !m.includes("날짜") && !m.includes("예약하기") && !m.includes("카카오")).join(", ");
-      session.data.consultNote = [serviceName, firstMsg.substring(0, 50), extraMsgs].filter(Boolean).join(" / ").substring(0, 100) || "상담 후 결정";
+      // Gemini로 상담내용 요약
+      const userMsgs = session.history.filter(h => h.role === "user").map(h => h.content).join(", ");
+      try {
+        const summaryRes = await chat([], `다음 고객 상담 내용을 10자 이내로 핵심만 요약해줘. 예: "입주위 가려움 전문의 문의", "코 여드름 케어 예약", "보톡스 가격 문의". 상담내용: ${userMsgs}`, false, "hospital", "ko");
+        session.data.consultNote = summaryRes.message?.replace(/[*#\n]/g, "").trim().substring(0, 50) || userMsgs.substring(0, 50);
+      } catch(e) { session.data.consultNote = userMsgs.substring(0, 50) || "상담 후 결정"; }
     if (session.waitingFor === 'privacy') {
       const lang = session.data.lang || 'ko';
       const agreeWords = ['동의', '✅', 'yes', 'agree', '同意', 'はい', 'ใช่', 'có', 'نعم', 'да', 'oui', 'sí'];
