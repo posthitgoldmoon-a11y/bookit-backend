@@ -852,11 +852,11 @@ async function handleMain(req, res) {
     // 전화번호 대기 상태 처리
       // service가 없으면 대화 history에서 추출 시도
       // 대화 history 전체 요약 저장
-      const allUserMsgs = session.history.filter(h => h.role === "user").map(h => h.content).join(" / ");
-      const allBotMsgs = session.history.filter(h => h.role === "model" || h.role === "assistant").map(h => h.content.substring(0, 50)).join(" | ");
-      session.data.consultNote = ("고객문의: " + allUserMsgs + "\n봇응답요약: " + allBotMsgs).substring(0, 300);
-      if (!session.data.service) session.data.service = allUserMsgs.substring(0, 50) || "상담 후 결정";
-    // 개인정보 동의 대기 상태 처리
+      // 유저 첫 질문 + 시술명 위주로 요약
+      const firstMsg = session.history.filter(h => h.role === "user")[0]?.content || "";
+      const serviceName = session.data.service || "";
+      const extraMsgs = session.history.filter(h => h.role === "user").slice(1, 3).map(h => h.content).filter(m => m.length < 30 && !m.includes("날짜") && !m.includes("예약하기") && !m.includes("카카오")).join(", ");
+      session.data.consultNote = [serviceName, firstMsg.substring(0, 50), extraMsgs].filter(Boolean).join(" / ").substring(0, 100) || "상담 후 결정";
     if (session.waitingFor === 'privacy') {
       const lang = session.data.lang || 'ko';
       const agreeWords = ['동의', '✅', 'yes', 'agree', '同意', 'はい', 'ใช่', 'có', 'نعم', 'да', 'oui', 'sí'];
