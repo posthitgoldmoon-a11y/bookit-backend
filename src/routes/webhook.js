@@ -807,10 +807,10 @@ async function handleMain(req, res) {
       session.waitingFor = 'privacy';
       const lang = session.data.lang || 'ko';
       const phoneMsgs = {
-        ko: '📋 개인정보 수집 및 이용에 동의하십니까?\n\n수집항목: 성명, 연락처\n수집목적: 예약 확인 및 안내\n보유기간: 예약 완료 후 1년\n\n✅ 동의 / ❌ 비동의',
-        en: '📋 Do you agree to the collection and use of personal information?\n\nItems: Name, Phone\nPurpose: Reservation confirmation\nRetention: 1 year after reservation\n\n✅ Agree / ❌ Disagree',
-        zh: '📋 您是否同意收集和使用个人信息?\n\n收集项目: 姓名, 电话\n收集目的: 预约确认\n保留期限: 预约完成后1年\n\n✅ 同意 / ❌ 不同意',
-        ja: '📋 個人情報の収集・利用に同意しますか?\n\n収集項目: 氏名, 電話番号\n収集目的: 予約確認\n保有期間: 予約完了後1年\n\n✅ 同意 / ❌ 不同意',
+        ko: '📋 개인정보 수집 및 이용에 동의하십니까?\n\n수집항목: 성명, 연락처\n수집목적: 예약 확인 및 안내\n보유기간: 예약 완료 후 1년',
+        en: '📋 Do you agree to the collection and use of personal information?\n\nItems: Name, Phone\nPurpose: Reservation confirmation\nRetention: 1 year after reservation',
+        zh: '📋 您是否同意收集和使用个人信息?\n\n收集项目: 姓名, 电话\n收集目的: 预约确认\n保留期限: 预约完成后1年',
+        ja: '📋 個人情報の収集・利用に同意しますか?\n\n収集項目: 氏名, 電話番号\n収集目的: 予約確認\n保有期間: 予約完了後1年',
         th: '📞 กรุณากรอกหมายเลขโทรศัพท์ 😊\n(ไม่บังคับ - พิมพ์ "ข้าม" เพื่อข้าม)',
         vi: '📞 Vui lòng nhập số điện thoại 😊\n(Tùy chọn - gõ "bỏ qua" để bỏ qua)',
         ar: '📞 يرجى إدخال رقم هاتفك 😊\n(اختياري - اكتب "تخطي" للتخطي)',
@@ -818,10 +818,10 @@ async function handleMain(req, res) {
         fr: '📞 Veuillez entrer votre numéro de téléphone 😊\n(Optionnel - tapez "passer" pour ignorer)',
         es: '📞 Por favor ingrese su número de teléfono 😊\n(Opcional - escriba "omitir" para omitir)'
       };
-      await sendCallback(callbackUrl, phoneMsgs[lang] || phoneMsgs.ko,
-        [{ label: lang === 'ko' ? '건너뛰기' : 'Skip', action: 'message', messageText: '건너뛰기' },
-         { label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
-      );
+      await sendCallback(callbackUrl, phoneMsgs[lang] || phoneMsgs.ko, [
+        { label: '✅ 동의', action: 'message', messageText: '동의' },
+        { label: '❌ 비동의', action: 'message', messageText: '비동의' }
+      ]);
       return;
     }
 
