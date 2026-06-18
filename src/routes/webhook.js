@@ -691,7 +691,15 @@ async function handleMain(req, res) {
     }
 
     if (session.data.waitingFor === 'freeTrialPhone') {
-      const phone = userMessage.trim();
+      const phone = userMessage.trim().replace(/[\s\-]/g, '');
+      const phoneRegex = /^01[0-9]{8,9}$/;
+      if (!phoneRegex.test(phone)) {
+        await sendCallback(callbackUrl,
+          '📞 올바른 전화번호 형식으로 입력해주세요\n\n예시: 010-1234-5678',
+          [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
+        );
+        return;
+      }
       session.data.waitingFor = null;
       await sendTelegram([
         '🎁 무료체험 신청!',
