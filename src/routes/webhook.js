@@ -827,11 +827,11 @@ async function handleMain(req, res) {
 
     // 전화번호 대기 상태 처리
       // service가 없으면 대화 history에서 추출 시도
-      if (!session.data.service) {
-        const recentChat = session.history.slice(-10).filter(h => h.role === "user").map(h => h.content).join(" / ");
-        session.data.consultNote = recentChat.substring(0, 100) || session.data.service || "상담 후 결정";
-        if (!session.data.service) session.data.service = session.data.consultNote;
-      }
+      // 대화 history 전체 요약 저장
+      const allUserMsgs = session.history.filter(h => h.role === "user").map(h => h.content).join(" / ");
+      const allBotMsgs = session.history.filter(h => h.role === "model" || h.role === "assistant").map(h => h.content.substring(0, 50)).join(" | ");
+      session.data.consultNote = ("고객문의: " + allUserMsgs + "\n봇응답요약: " + allBotMsgs).substring(0, 300);
+      if (!session.data.service) session.data.service = allUserMsgs.substring(0, 50) || "상담 후 결정";
     // 개인정보 동의 대기 상태 처리
     if (session.waitingFor === 'privacy') {
       const lang = session.data.lang || 'ko';
