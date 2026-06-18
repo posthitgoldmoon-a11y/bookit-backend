@@ -937,9 +937,21 @@ async function handleMain(req, res) {
     session.history.push({ role: "model", content: geminiReply.message });
     if (session.history.length > 20) session.history = session.history.slice(-20);
 
-    if (geminiReply.showDoctors) { await showDoctors(callbackUrl, session.data.lang || 'ko'); return; }
-    if (geminiReply.showPrice) { await sendPriceMenu(callbackUrl, session.data.lang || 'ko'); return; }
-    if (geminiReply.showCalendar) { await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang || 'ko'); return; }
+    if (geminiReply.showDoctors) {
+      if (geminiReply.message) await sendCallback(callbackUrl, geminiReply.message);
+      await showDoctors(callbackUrl, session.data.lang || 'ko');
+      return;
+    }
+    if (geminiReply.showPrice) {
+      if (geminiReply.message) await sendCallback(callbackUrl, geminiReply.message);
+      await sendPriceMenu(callbackUrl, session.data.lang || 'ko');
+      return;
+    }
+    if (geminiReply.showCalendar) {
+      if (geminiReply.message) await sendCallback(callbackUrl, geminiReply.message);
+      await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang || 'ko');
+      return;
+    }
     // 가격/설명 문의 시 showBookingType 강제 무시
     const priceKeywords = ['얼마', '가격', '요금', '비용', '금액', '할인', '패키지', '코스', '설명', '어떤', '뭐야', '뭔가요', '알려줘', '알려주세요', '어떻게', '소개', 'price', 'cost', 'how much', 'what is'];
     const isPriceQuery = priceKeywords.some(k => userMessage.includes(k));
