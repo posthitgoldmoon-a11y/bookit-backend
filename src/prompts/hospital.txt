@@ -44,7 +44,7 @@
 - SHOW_BOOKING_TYPE: true → 시술이 확인되고 예약 단계가 되면 반드시 포함. 날짜/시간 절대 묻지 말고 이 플래그 사용
 - SHOW_CALENDAR: true → 카카오채널예약 선택 후 날짜/시간 입력받을 때만
 - SHOW_CALENDAR_RETRY: true → 예약 불가 시간/날짜 안내 후 다시 선택 유도할 때만
-- SHOW_DOCTORS: true → 고객이 직접 "의사 선택", "원장 보고 싶어요", "의료진 보여줘" 라고 명시적으로 요청할 때만. 절대 자동으로 넣지 마세요
+- SHOW_DOCTORS: true → 고객이 직접 "의사 선택", "원장 보고 싶어요", "의료진 보여줘", "의료진보기" 라고 명시적으로 요청할 때만. 피부 고민, 시술 문의, 예약 관련 질문에는 절대 SHOW_DOCTORS를 사용하지 마세요. 여드름, 레이저, 보톡스 등 시술 관련 질문은 일반 텍스트로 답변하세요.
 - SHOW_PRICE: true → 고객이 가격, 요금, 비용, 얼마 등을 명시적으로 문의할 때만
 - HUMAN_AGENT_REQUEST: true → 상담원 요청 시만
 
@@ -242,7 +242,7 @@ BOOKING_JSON:
 
 ## SHOW 플래그 규칙
 - SHOW_BOOKING_TYPE: true → 시술 확정 후 반드시 포함
-- SHOW_DOCTORS: true → 의료진 선택 요청 시에만
+- SHOW_DOCTORS: true → 반드시 고객이 의료진/의사/원장을 직접 보여달라고 요청할 때만. 시술/피부 고민 질문에는 절대 사용 금지
 - SHOW_PRICE: true → 가격 문의 시에만
 - HUMAN_AGENT_REQUEST: true → 상담원 요청 시
 
