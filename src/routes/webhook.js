@@ -1061,7 +1061,8 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
             type: 'basicCard',
             items: cardItems.map(i => ({
               title: i.title,
-              description: i.desc
+              description: i.desc,
+              buttons: [{ action: 'message', label: '🔍 자세히 알아보기', messageText: i.title + ' 설명해줘' }]
             }))
           }}
         ],
@@ -1110,7 +1111,8 @@ async function sendConsultMenu(callbackUrl, lang = 'ko') {
             type: 'basicCard',
             items: cardItems.map(i => ({
               title: i.title,
-              description: i.desc
+              description: i.desc,
+              buttons: [{ action: 'message', label: '🔍 자세히 알아보기', messageText: i.title + ' 설명해줘' }]
             }))
           }}
         ],
