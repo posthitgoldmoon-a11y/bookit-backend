@@ -390,7 +390,7 @@ async function handleMain(req, res) {
         '📱 전화번호 수집!',
         '━━━━━━━━━━━━━━',
         '📞 전화번호: ' + phone,
-        '🏥 시술: ' + (session.data.service || '미선택'),
+        '📝 상담내용: ' + (session.data.consultNote || session.data.service || '미선택'),
         '🌍 언어: ' + lang,
         '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
         '━━━━━━━━━━━━━━',
@@ -633,7 +633,7 @@ async function handleMain(req, res) {
       await sendTelegram([
         '🔔 예약 버튼 클릭!',
         '━━━━━━━━━━━━━━',
-        '🏥 시술: ' + session.data.service,
+        '📝 상담내용: ' + (session.data.consultNote || session.data.service),
         '🌍 언어: ' + lang,
         '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'}),
         '━━━━━━━━━━━━━━',
@@ -828,9 +828,9 @@ async function handleMain(req, res) {
     // 전화번호 대기 상태 처리
       // service가 없으면 대화 history에서 추출 시도
       if (!session.data.service) {
-        const recentChat = session.history.slice(-6).map(h => h.content).join(" ");
-        const serviceMatch = recentChat.match(/(여드름[^\s]*|레이저[^\s]*|보톡스[^\s]*|필러[^\s]*|리프팅[^\s]*|물광[^\s]*|피코[^\s]*|실리프팅[^\s]*|제모[^\s]*|엑셀[^\s]*)/);
-        if (serviceMatch) session.data.service = serviceMatch[1];
+        const recentChat = session.history.slice(-10).filter(h => h.role === "user").map(h => h.content).join(" / ");
+        session.data.consultNote = recentChat.substring(0, 100) || session.data.service || "상담 후 결정";
+        if (!session.data.service) session.data.service = session.data.consultNote;
       }
     // 개인정보 동의 대기 상태 처리
     if (session.waitingFor === 'privacy') {
@@ -846,9 +846,9 @@ async function handleMain(req, res) {
         const d = session.data;
         const confirmMsgs = {
           ko: `✅ 예약이 접수되었습니다!\n\n👤 이름: ${d.name}\n💉 시술: ${d.service || '상담 후 결정'}\n📅 일시: ${d.date}\n\n곧 확인 연락드리겠습니다 😊`,
-          en: `✅ Reservation received!\n\n👤 Name: ${d.name}\n💉 Treatment: ${d.service || 'TBD'}\n📅 Date: ${d.date}\n\nWe will contact you shortly 😊`
+          en: `✅ Reservation received!\n\n👤 Name: ${d.name}\n📝 Note: ${d.consultNote || d.service || 'TBD'}\n📅 Date: ${d.date}\n\nWe will contact you shortly 😊`
         };
-        await sendTelegram(`📋 새 예약!\n👤 ${d.name}\n📞 전화: 미동의\n💉 ${d.service || '상담 후 결정'}\n📅 ${d.date}`);
+        await sendTelegram(`📋 새 예약!\n👤 ${d.name}\n📞 전화: 미동의\n📝 ${d.consultNote || d.service || '상담 후 결정'}\n📅 ${d.date}`);
         await sendCallback(callbackUrl, confirmMsgs[lang] || confirmMsgs.ko,
           [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]);
         return;
@@ -875,15 +875,15 @@ async function handleMain(req, res) {
       session.booted = true;
       const d = session.data;
       const confirmMsgs = {
-        ko: `✅ 예약이 접수되었습니다!\n\n👤 이름: ${d.name}\n📞 전화: ${d.phone || '미입력'}\n💉 시술: ${d.service || '미입력'}\n📅 일시: ${d.date}\n\n곧 확인 연락드리겠습니다 😊`,
-        en: `✅ Reservation received!\n\n👤 Name: ${d.name}\n📞 Phone: ${d.phone || 'Not provided'}\n💉 Treatment: ${d.service || 'TBD'}\n📅 Date: ${d.date}\n\nWe will contact you shortly 😊`,
-        zh: `✅ 预约已提交！\n\n👤 姓名: ${d.name}\n📞 电话: ${d.phone || '未填写'}\n💉 治疗: ${d.service || '待定'}\n📅 日期: ${d.date}\n\n我们会尽快联系您 😊`,
-        ja: `✅ ご予約を受け付けました！\n\n👤 お名前: ${d.name}\n📞 電話: ${d.phone || '未入力'}\n💉 施術: ${d.service || '未定'}\n📅 日時: ${d.date}\n\nまもなくご連絡いたします 😊`
+        ko: `✅ 예약이 접수되었습니다!\n\n👤 이름: ${d.name}\n📞 전화: ${d.phone || '미입력'}\n📝 상담내용: ${d.consultNote || d.service || '미입력'}\n📅 일시: ${d.date}\n\n곧 확인 연락드리겠습니다 😊`,
+        en: `✅ Reservation received!\n\n👤 Name: ${d.name}\n📞 Phone: ${d.phone || 'Not provided'}\n📝 Note: ${d.consultNote || d.service || 'TBD'}\n📅 Date: ${d.date}\n\nWe will contact you shortly 😊`,
+        zh: `✅ 预约已提交！\n\n👤 姓名: ${d.name}\n📞 电话: ${d.phone || '未填写'}\n📝 咨询内容: ${d.consultNote || d.service || '待定'}\n📅 日期: ${d.date}\n\n我们会尽快联系您 😊`,
+        ja: `✅ ご予約を受け付けました！\n\n👤 お名前: ${d.name}\n📞 電話: ${d.phone || '未入力'}\n📝 相談内容: ${d.consultNote || d.service || '未定'}\n📅 日時: ${d.date}\n\nまもなくご連絡いたします 😊`
       };
       await sendCallback(callbackUrl, confirmMsgs[lang] || confirmMsgs.ko,
         [{ label: lang === 'ko' ? '🏠 처음으로' : '🏠 Home', action: 'message', messageText: '처음으로' }]
       );
-      await sendTelegram(`📋 새 예약!\n👤 이름: ${d.name}\n📞 전화: ${d.phone || '미입력'}\n💉 시술: ${d.service || '미입력'}\n📅 일시: ${d.date}\n🌍 언어: ${lang}`);
+      await sendTelegram(`📋 새 예약!\n👤 이름: ${d.name}\n📞 전화: ${d.phone || '미입력'}\n📝 상담내용: ${d.consultNote || d.service || '미입력'}\n📅 일시: ${d.date}\n🌍 언어: ${lang}`);
       return;
     }
 
