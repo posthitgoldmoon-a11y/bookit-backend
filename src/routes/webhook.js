@@ -616,7 +616,7 @@ async function handleMain(req, res) {
       const lang = session.data.lang || 'ko';
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
       const contactMsgs = {
-        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊 (선택사항)',
+        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊',
         en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
         zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
         ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
@@ -804,13 +804,13 @@ async function handleMain(req, res) {
     // 이름 대기 상태 처리
     if (session.waitingFor === 'name') {
       session.data.name = userMessage.trim();
-      session.waitingFor = 'phone';
+      session.waitingFor = 'privacy';
       const lang = session.data.lang || 'ko';
       const phoneMsgs = {
-        ko: '📞 연락처를 알려주세요 😊\n(선택사항 - 건너뛰시려면 "건너뛰기" 입력)',
-        en: '📞 Please enter your phone number 😊\n(Optional - type "skip" to skip)',
-        zh: '📞 请输入您的电话号码 😊\n（可选 - 输入"跳过"可跳过）',
-        ja: '📞 電話番号を入力してください 😊\n（任意 - スキップする場合は「スキップ」と入力）',
+        ko: '📋 개인정보 수집 및 이용에 동의하십니까?\n\n수집항목: 성명, 연락처\n수집목적: 예약 확인 및 안내\n보유기간: 예약 완료 후 1년\n\n✅ 동의 / ❌ 비동의',
+        en: '📋 Do you agree to the collection and use of personal information?\n\nItems: Name, Phone\nPurpose: Reservation confirmation\nRetention: 1 year after reservation\n\n✅ Agree / ❌ Disagree',
+        zh: '📋 您是否同意收集和使用个人信息?\n\n收集项目: 姓名, 电话\n收集目的: 预约确认\n保留期限: 预约完成后1年\n\n✅ 同意 / ❌ 不同意',
+        ja: '📋 個人情報の収集・利用に同意しますか?\n\n収集項目: 氏名, 電話番号\n収集目的: 予約確認\n保有期間: 予約完了後1年\n\n✅ 同意 / ❌ 不同意',
         th: '📞 กรุณากรอกหมายเลขโทรศัพท์ 😊\n(ไม่บังคับ - พิมพ์ "ข้าม" เพื่อข้าม)',
         vi: '📞 Vui lòng nhập số điện thoại 😊\n(Tùy chọn - gõ "bỏ qua" để bỏ qua)',
         ar: '📞 يرجى إدخال رقم هاتفك 😊\n(اختياري - اكتب "تخطي" للتخطي)',
@@ -832,6 +832,39 @@ async function handleMain(req, res) {
         const serviceMatch = recentChat.match(/(여드름[^\s]*|레이저[^\s]*|보톡스[^\s]*|필러[^\s]*|리프팅[^\s]*|물광[^\s]*|피코[^\s]*|실리프팅[^\s]*|제모[^\s]*|엑셀[^\s]*)/);
         if (serviceMatch) session.data.service = serviceMatch[1];
       }
+    // 개인정보 동의 대기 상태 처리
+    if (session.waitingFor === 'privacy') {
+      const lang = session.data.lang || 'ko';
+      const agreeWords = ['동의', '✅', 'yes', 'agree', '同意', 'はい', 'ใช่', 'có', 'نعم', 'да', 'oui', 'sí'];
+      const disagreeWords = ['비동의', '❌', 'no', 'disagree', '不同意', 'いいえ', 'ไม่', 'không', 'لا', 'нет', 'non', 'no'];
+      if (disagreeWords.some(w => userMessage.trim().toLowerCase().includes(w))) {
+        session.waitingFor = null;
+        session.booted = true;
+        await sendCallback(callbackUrl, lang === 'ko' ? '❌ 동의하지 않으셨습니다.\n전화번호 없이 예약을 접수할게요.' : 'Reservation submitted without phone number.',
+          [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]);
+        // 전화번호 없이 예약 확정
+        const d = session.data;
+        const confirmMsgs = {
+          ko: `✅ 예약이 접수되었습니다!\n\n👤 이름: ${d.name}\n💉 시술: ${d.service || '상담 후 결정'}\n📅 일시: ${d.date}\n\n곧 확인 연락드리겠습니다 😊`,
+          en: `✅ Reservation received!\n\n👤 Name: ${d.name}\n💉 Treatment: ${d.service || 'TBD'}\n📅 Date: ${d.date}\n\nWe will contact you shortly 😊`
+        };
+        await sendTelegram(`📋 새 예약!\n👤 ${d.name}\n📞 전화: 미동의\n💉 ${d.service || '상담 후 결정'}\n📅 ${d.date}`);
+        await sendCallback(callbackUrl, confirmMsgs[lang] || confirmMsgs.ko,
+          [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]);
+        return;
+      }
+      // 동의한 경우 전화번호 요청
+      session.waitingFor = 'phone';
+      const phoneMsgs2 = {
+        ko: '📞 연락처를 알려주세요 😊',
+        en: '📞 Please enter your phone number 😊',
+        zh: '📞 请输入您的电话号码 😊',
+        ja: '📞 電話番号を入力してください 😊'
+      };
+      await sendCallback(callbackUrl, phoneMsgs2[lang] || phoneMsgs2.ko);
+      return;
+    }
+
     if (session.waitingFor === 'phone') {
       const lang = session.data.lang || 'ko';
       const skipWords = ['건너뛰기', 'skip', '跳过', 'スキップ', 'ข้าม', 'bỏ qua', 'تخطي', 'пропустить', 'passer', 'omitir'];
@@ -896,7 +929,7 @@ async function handleMain(req, res) {
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
       session.contactRequested = true;
       const contactMsgs = {
-        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊 (선택사항)',
+        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊',
         en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
         zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
         ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
