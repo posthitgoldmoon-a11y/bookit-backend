@@ -1231,16 +1231,16 @@ async function showDoctors(callbackUrl, lang) {
     const industry = 'hospital';
     const items = parseCardSection(industry, '카드_의료진', lang);
     const labels = {
-      ko: { title: '👨‍⚕️ 의료진 소개', btn: '예약하기', home: '🏠 처음으로' },
-      en: { title: '👨‍⚕️ Our Doctors', btn: 'Book', home: '🏠 Home' },
-      zh: { title: '👨‍⚕️ 医师介绍', btn: '预约', home: '🏠 首页' },
-      ja: { title: '👨‍⚕️ 医師紹介', btn: '予約する', home: '🏠 ホーム' },
-      th: { title: '👨‍⚕️ แพทย์ของเรา', btn: 'จอง', home: '🏠 หน้าหลัก' },
-      vi: { title: '👨‍⚕️ Bác sĩ của chúng tôi', btn: 'Đặt lịch', home: '🏠 Trang chủ' },
-      ar: { title: '👨‍⚕️ أطباؤنا', btn: 'احجز', home: '🏠 الرئيسية' },
-      ru: { title: '👨‍⚕️ Наши врачи', btn: 'Записаться', home: '🏠 Главная' },
-      fr: { title: '👨‍⚕️ Nos médecins', btn: 'Réserver', home: '🏠 Accueil' },
-      es: { title: '👨‍⚕️ Nuestros médicos', btn: 'Reservar', home: '🏠 Inicio' }
+      ko: { title: '👨‍⚕️ 의료진 소개', btn: '🔍 자세히 알아보기', home: '🏠 처음으로' },
+      en: { title: '👨‍⚕️ Our Doctors', btn: '🔍 Learn More', home: '🏠 Home' },
+      zh: { title: '👨‍⚕️ 医师介绍', btn: '🔍 了解更多', home: '🏠 首页' },
+      ja: { title: '👨‍⚕️ 医師紹介', btn: '🔍 詳しく見る', home: '🏠 ホーム' },
+      th: { title: '👨‍⚕️ แพทย์ของเรา', btn: '🔍 ดูเพิ่มเติม', home: '🏠 หน้าหลัก' },
+      vi: { title: '👨‍⚕️ Bác sĩ của chúng tôi', btn: '🔍 Xem thêm', home: '🏠 Trang chủ' },
+      ar: { title: '👨‍⚕️ أطباؤنا', btn: '🔍 معرفة المزيد', home: '🏠 الرئيسية' },
+      ru: { title: '👨‍⚕️ Наши врачи', btn: '🔍 Подробнее', home: '🏠 Главная' },
+      fr: { title: '👨‍⚕️ Nos médecins', btn: '🔍 En savoir plus', home: '🏠 Accueil' },
+      es: { title: '👨‍⚕️ Nuestros médicos', btn: '🔍 Saber más', home: '🏠 Inicio' }
     };
     const l = labels[lang] || labels.ko;
     const cardItems = items.length > 0 ? items : [
@@ -1257,7 +1257,7 @@ async function showDoctors(callbackUrl, lang) {
               title: d.title,
               description: d.desc,
               thumbnail: d.img ? { imageUrl: `${BASE_URL}/${d.img}`, fixedRatio: false } : undefined,
-              buttons: [{ action: 'message', label: l.btn, messageText: d.msg || d.title }]
+              buttons: [{ action: 'message', label: l.btn, messageText: d.title + ' 의사 자세히 알려줘' }]
             }))
           }}
         ],
