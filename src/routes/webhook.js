@@ -657,22 +657,22 @@ async function handleMain(req, res) {
       const lang = session.data.lang || "ko";
       const naverUrl = process.env.NAVER_BOOKING_URL || "https://booking.naver.com";
       // 텔레그램 알림 발송
-      const historyText = session.history.slice(-4).map(h => (h.role === "user" ? "👤 " : "🤖 ") + h.content.substring(0, 50)).join("\n");
+      // Gemini로 상담내용 즉석 요약
+      const userMsgsNaver = session.history.filter(h => h.role === "user").map(h => h.content).join(", ");
+      let naverNote = session.data.consultNote || "";
+      if (!naverNote || naverNote === "상담 내용 없음" || naverNote === "상담 후 결정") {
+        try {
+          const sumRes = await chat([], `다음 고객 상담 내용을 10자 이내로 핵심만 요약해줘. 예: "프락셀 예약 문의", "여드름 케어 상담". 상담내용: ${userMsgsNaver}`, false, "hospital", "ko");
+          naverNote = sumRes.message?.replace(/[*#\n]/g, "").trim().substring(0, 50) || userMsgsNaver.substring(0, 50);
+        } catch(e) { naverNote = userMsgsNaver.substring(0, 50) || "미입력"; }
+      }
       await sendTelegram([
         "🟢 네이버 예약 클릭!",
         "━━━━━━━━━━━━━━",
-        "📝 상담내용: " + (session.data.consultNote || session.data.service || "미입력"),
+        "📝 상담내용: " + naverNote,
         "🌍 언어: " + lang,
-        "⏰ 시간: " + new Date().toLocaleString("ko-KR", {timeZone: "Asia/Seoul"}),
-        "━━━━━━━━━━━━━━",
-        "💬 최근 상담:",
-        historyText
+        "⏰ 시간: " + new Date().toLocaleString("ko-KR", {timeZone: "Asia/Seoul"})
       ].join("\n"));
-      // 네이버 예약 URL로 안내
-      await sendCallback(callbackUrl,
-        "🟢 네이버 예약 페이지로 이동합니다!\n아래 링크를 눌러 시술과 날짜를 직접 선택해주세요 😊\n\n" + naverUrl,
-        [{ label: "🏠 처음으로", action: "message", messageText: "처음으로" }]
-      );
       return;
     }
 
