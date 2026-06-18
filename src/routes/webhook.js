@@ -1069,16 +1069,16 @@ async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
     }
     const bannerUrl = `${BASE_URL}/banner_${industry}.jpg`;
     const welcomeMsgs = {
-      ko: welcomeMsg || `안녕하세요! ${bizName}입니다 😊\n\n무엇을 도와드릴까요?`,
-      en: `Hello! Welcome to ${bizName} 😊\n\nHow can we help you today?`,
-      zh: `您好！欢迎来到${bizName} 😊\n\n请问有什么可以帮您？`,
-      ja: `こんにちは！${bizName}へようこそ 😊\n\nどのようなご用件でしょうか？`,
-      th: `สวัสดี! ยินดีต้อนรับสู่${bizName} 😊\n\nเราช่วยอะไรคุณได้บ้าง?`,
-      vi: `Xin chào! Chào mừng đến với ${bizName} 😊\n\nChúng tôi có thể giúp gì?`,
-      ar: `مرحباً! أهلاً بكم في ${bizName} 😊\n\nكيف يمكننا مساعدتك؟`,
-      ru: `Здравствуйте! Добро пожаловать в ${bizName} 😊\n\nЧем мы можем помочь?`,
-      fr: `Bonjour! Bienvenue chez ${bizName} 😊\n\nComment pouvons-nous vous aider?`,
-      es: `¡Hola! Bienvenido a ${bizName} 😊\n\n¿En qué podemos ayudarte?`
+      ko: welcomeMsg || `안녕하세요! ${bizName}입니다 😊\n\n무엇을 도와드릴까요?\n\n💬 아래 버튼을 누르시거나 사람에게 말하듯 자연스럽게 대화해 보세요!`,
+      en: `Hello! Welcome to ${bizName} 😊\n\nHow can we help you today?\n\n💬 Tap a button below or just chat naturally!`,
+      zh: `您好！欢迎来到${bizName} 😊\n\n请问有什么可以帮您？\n\n💬 点击下方按钮或像和朋友聊天一样自然交流吧！`,
+      ja: `こんにちは！${bizName}へようこそ 😊\n\nどのようなご用件でしょうか？\n\n💬 下のボタンを押すか、自然に話しかけてください！`,
+      th: `สวัสดี! ยินดีต้อนรับสู่${bizName} 😊\n\nเราช่วยอะไรคุณได้บ้าง?\n\n💬 กดปุ่มด้านล่างหรือพูดคุยได้เลย!`,
+      vi: `Xin chào! Chào mừng đến với ${bizName} 😊\n\nChúng tôi có thể giúp gì?\n\n💬 Nhấn nút bên dưới hoặc trò chuyện tự nhiên nhé!`,
+      ar: `مرحباً! أهلاً بكم في ${bizName} 😊\n\nكيف يمكننا مساعدتك؟\n\n💬 اضغط على الأزرار أدناه أو تحدث بشكل طبيعي!`,
+      ru: `Здравствуйте! Добро пожаловать в ${bizName} 😊\n\nЧем мы можем помочь?\n\n💬 Нажмите кнопку ниже или просто напишите нам!`,
+      fr: `Bonjour! Bienvenue chez ${bizName} 😊\n\nComment pouvons-nous vous aider?\n\n💬 Appuyez sur un bouton ou discutez naturellement!`,
+      es: `¡Hola! Bienvenido a ${bizName} 😊\n\n¿En qué podemos ayudarte?\n\n💬 Toca un botón o chatea de forma natural!`
     };
     const payload = {
       version: '2.0',
