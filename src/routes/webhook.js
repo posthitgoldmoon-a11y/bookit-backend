@@ -773,6 +773,18 @@ async function handleMain(req, res) {
       return;
     }
 
+    // 의사 상세 소개 처리
+    if (userMessage.startsWith('의사소개:')) {
+      const doctorName = userMessage.replace('의사소개:', '').trim();
+      const lang = session.data.lang || 'ko';
+      const question = lang === 'ko' ? `${doctorName}에 대해 자세히 소개해주세요` : `Please introduce ${doctorName} in detail`;
+      session.history.push({ role: 'user', content: question });
+      const geminiRes = await callGemini(session.history, lang);
+      await sendCallback(callbackUrl, geminiRes.message,
+        [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]);
+      return;
+    }
+
     if (userMessage === '의료진보기') {
       await showDoctors(callbackUrl, session.data.lang || 'ko');
       return;
@@ -1257,7 +1269,7 @@ async function showDoctors(callbackUrl, lang) {
               title: d.title,
               description: d.desc,
               thumbnail: d.img ? { imageUrl: `${BASE_URL}/${d.img}`, fixedRatio: false } : undefined,
-              buttons: [{ action: 'message', label: l.btn, messageText: d.title + ' 의사 자세히 알려줘' }]
+              buttons: [{ action: 'message', label: l.btn, messageText: '의사소개:' + d.title }]
             }))
           }}
         ],
