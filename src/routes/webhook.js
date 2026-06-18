@@ -1177,7 +1177,10 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
             }))
           }}
         ],
-        quickReplies: [{ label: l.home, action: 'message', messageText: '처음으로' }]
+        quickReplies: [
+          { label: '🎁 무료체험 신청', action: 'message', messageText: '무료체험신청' },
+          { label: l.home, action: 'message', messageText: '처음으로' }
+        ]
       }
     };
     const res = await fetch(callbackUrl, {
@@ -1228,6 +1231,7 @@ async function sendConsultMenu(callbackUrl, lang = 'ko') {
           }}
         ],
         quickReplies: [
+          { label: '🎁 무료체험 신청', action: 'message', messageText: '무료체험신청' },
           { label: l.home, action: 'message', messageText: '처음으로' },
           { label: l.price, action: 'message', messageText: l.priceMsg }
         ]
