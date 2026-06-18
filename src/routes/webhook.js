@@ -198,6 +198,7 @@ async function sendCallback(callbackUrl, text, quickReplies = null, buttons = nu
 }
 
 const mainQuickReplies = [
+  { label: "🎁 무료체험 신청", action: "message", messageText: "무료체험신청" },
   { label: "📅 예약하기", action: "message", messageText: "예약하기" },
   { label: "💬 상담하기", action: "message", messageText: "상담하기" },
   { label: "🌍 언어선택", action: "message", messageText: "언어선택" },
@@ -217,6 +218,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
   }
   const qr = {
     ko: [
+      { label: "🎁 무료체험 신청", action: "message", messageText: "무료체험신청" },
       { label: "📅 예약하기", action: "message", messageText: "예약하기" },
       { label: "💬 상담하기", action: "message", messageText: "상담하기" },
       { label: "🌍 언어선택", action: "message", messageText: "언어선택" },
@@ -226,6 +228,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ 진료시간", action: "message", messageText: "진료시간" }
     ],
     en: [
+      { label: "🎁 Free Trial", action: "message", messageText: "무료체험신청" },
       { label: "📅 Book", action: "message", messageText: "예약하기" },
       { label: "💬 Consult", action: "message", messageText: "상담하기" },
       { label: "🌍 Language", action: "message", messageText: "언어선택" },
@@ -235,6 +238,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ Hours", action: "message", messageText: "진료시간" }
     ],
     zh: [
+      { label: "🎁 免费体验", action: "message", messageText: "무료체험신청" },
       { label: "📅 预约", action: "message", messageText: "예약하기" },
       { label: "💬 咨询", action: "message", messageText: "상담하기" },
       { label: "🌍 语言", action: "message", messageText: "언어선택" },
@@ -244,6 +248,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ 营业时间", action: "message", messageText: "진료시간" }
     ],
     ja: [
+      { label: "🎁 無料体験", action: "message", messageText: "무료체험신청" },
       { label: "📅 予約", action: "message", messageText: "예약하기" },
       { label: "💬 相談", action: "message", messageText: "상담하기" },
       { label: "🌍 言語", action: "message", messageText: "언어선택" },
@@ -673,6 +678,31 @@ async function handleMain(req, res) {
         "🌍 언어: " + lang,
         "⏰ 시간: " + new Date().toLocaleString("ko-KR", {timeZone: "Asia/Seoul"})
       ].join("\n"));
+      return;
+    }
+
+    if (userMessage === "무료체험신청") {
+      await sendCallback(callbackUrl,
+        '🎁 부킷 무료체험 신청 안내\n\n전화번호를 남겨주시면 담당자가 직접 연락드리겠습니다 😊\n\n📞 전화번호를 입력해주세요',
+        [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
+      );
+      session.data.waitingFor = 'freeTrialPhone';
+      return;
+    }
+
+    if (session.data.waitingFor === 'freeTrialPhone') {
+      const phone = userMessage.trim();
+      session.data.waitingFor = null;
+      await sendTelegram([
+        '🎁 무료체험 신청!',
+        '━━━━━━━━━━━━━━',
+        '📞 전화번호: ' + phone,
+        '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})
+      ].join('\n'));
+      await sendCallback(callbackUrl,
+        '✅ 신청이 완료됐습니다!\n\n담당자가 빠르게 연락드리겠습니다 😊',
+        [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
+      );
       return;
     }
 
