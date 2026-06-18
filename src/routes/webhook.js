@@ -779,7 +779,7 @@ async function handleMain(req, res) {
       const lang = session.data.lang || 'ko';
       const question = lang === 'ko' ? `${doctorName}에 대해 자세히 소개해주세요` : `Please introduce ${doctorName} in detail`;
       session.history.push({ role: 'user', content: question });
-      const geminiRes = await callGemini(session.history, lang);
+      const geminiRes = await chat(session.history, question, true, session.industry || 'hospital', lang);
       await sendCallback(callbackUrl, geminiRes.message,
         [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]);
       return;
