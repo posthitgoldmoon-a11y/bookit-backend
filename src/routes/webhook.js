@@ -949,6 +949,10 @@ async function handleMain(req, res) {
     }
     if (geminiReply.bookingData) {
       const d = geminiReply.bookingData;
+      // Gemini가 인식한 service를 session에 저장
+      if (d.service) session.data.service = d.service;
+      if (d.name) session.data.name = d.name;
+      if (d.phone) session.data.phone = d.phone;
       if (d.name && d.phone && d.service && d.date && d.time) {
         await sendTelegram(`📋 새 예약!\n👤 ${d.name}\n📞 ${d.phone}\n💉 ${d.service}\n📅 ${d.date} ${d.time}`);
         session.booted = true;
