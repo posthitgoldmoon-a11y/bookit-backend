@@ -610,7 +610,7 @@ async function handleMain(req, res) {
       es: { title: "📋 Seleccionar método de reserva", desc: "¡Por favor seleccione su método de reserva!", naver: "🟢 Reserva por Naver", kakao: "🟡 Reserva por KakaoTalk" }
     };
 
-    if (bookingKeywords.includes(userMessage) || userMessage.endsWith("예약하기") || userMessage.endsWith("예약")) {
+    if ((bookingKeywords.includes(userMessage) || userMessage.endsWith("예약하기") || userMessage.endsWith("예약")) && userMessage !== "카카오예약하기" && userMessage !== "네이버예약하기") {
       session.data.service = userMessage.replace(/\s*예약하기$/, "").replace(/\s*예약$/, "").replace("으로", "").trim() || session.data.service || "상담 후 결정";
       session.contactRequested = true;
       const lang = session.data.lang || 'ko';
