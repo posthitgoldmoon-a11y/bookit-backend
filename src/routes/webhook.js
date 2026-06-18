@@ -598,7 +598,7 @@ async function handleMain(req, res) {
     ];
     // 예약 방식 선택
     const bookingTypeLabels = {
-      ko: { title: "📋 예약 방법 선택", desc: "편하신 방법으로 예약해주세요!", naver: "🟢 네이버 예약", kakao: "🟡 카카오 채널 예약" },
+      ko: { title: "📋 예약 방법 선택", desc: "🟢 네이버 예약: 시술과 날짜를 직접 선택해주세요\n🟡 카카오 예약: 원하시는 시술명과 날짜를 알려주시면 직접 잡아드릴게요!", naver: "🟢 네이버 예약", kakao: "🟡 카카오 채널 예약" },
       en: { title: "📋 Select Booking Method", desc: "Please choose your preferred booking method!", naver: "🟢 Naver Booking", kakao: "🟡 KakaoTalk Booking" },
       zh: { title: "📋 选择预约方式", desc: "请选择您方便的预约方式！", naver: "🟢 Naver预约", kakao: "🟡 KakaoTalk预约" },
       ja: { title: "📋 予約方法を選択", desc: "ご希望の予約方法をお選びください！", naver: "🟢 Naver予約", kakao: "🟡 KakaoTalk予約" },
@@ -1037,7 +1037,7 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
     const industry = 'hospital';
     const items = parseCardSection(industry, '카드_예약메뉴', lang);
     const labels = {
-      ko: { text: '📅 어떤 시술로 예약하시겠어요?\n원하시는 시술을 선택해주세요!', btn: '예약하기', home: '🏠 처음으로' },
+      ko: { text: '📅 시술 종류를 둘러보세요!\n궁금한 시술을 눌러 자세한 정보를 확인하세요 😊', btn: '예약하기', home: '🏠 처음으로' },
       en: { text: '📅 Which treatment would you like to book?\nPlease select a treatment!', btn: 'Book', home: '🏠 Home' },
       zh: { text: '📅 您想预约哪种治疗?\n请选择您需要的治疗!', btn: '预约', home: '🏠 首页' },
       ja: { text: '📅 どの施術をご予約されますか?\nご希望の施術をお選びください!', btn: '予約する', home: '🏠 ホーム' },
@@ -1061,8 +1061,7 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
             type: 'basicCard',
             items: cardItems.map(i => ({
               title: i.title,
-              description: i.desc,
-              buttons: [{ action: 'message', label: l.btn, messageText: i.msg || i.title }]
+              description: i.desc
             }))
           }}
         ],
@@ -1111,8 +1110,7 @@ async function sendConsultMenu(callbackUrl, lang = 'ko') {
             type: 'basicCard',
             items: cardItems.map(i => ({
               title: i.title,
-              description: i.desc,
-              buttons: [{ action: 'message', label: l.btn, messageText: i.msg || i.title }]
+              description: i.desc
             }))
           }}
         ],
