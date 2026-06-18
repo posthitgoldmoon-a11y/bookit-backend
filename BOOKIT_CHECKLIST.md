@@ -272,3 +272,16 @@ cp /tmp/backup.js <파일경로>
 - 카카오채널예약 클릭 → 캘린더 표시
 - 날짜선택완료 → 이름 → 전화번호 → 텔레그램 알림
 - getBookingCard 카카오 버튼 webLink→message 수정
+
+## GitHub 레포 최종 매핑 (중요!)
+| 디렉토리 | GitHub 레포 | 용도 |
+|---|---|---|
+| bookit-backend | bookit-backend | 부킷메디 + 체크리스트 + 일괄배포스크립트 |
+| gourmet-backend | bookit-gourmet | 부킷고멧 |
+| beauty-backend | bookit-beauty | 부킷뷰티 |
+| donworry-backend | bookit-all | 부킷 (20개 데모) |
+
+## 중요 파일 위치
+- 체크리스트: ~/bookit-backend/BOOKIT_CHECKLIST.md
+- 일괄배포 스크립트: ~/bookit-backend/deploy_all.sh
+- 세션 시작 시 반드시 확인: cat ~/bookit-backend/BOOKIT_CHECKLIST.md
