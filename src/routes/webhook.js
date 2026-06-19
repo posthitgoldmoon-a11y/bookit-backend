@@ -604,7 +604,7 @@ async function handleMain(req, res) {
     ];
     // 예약 방식 선택
     const bookingTypeLabels = {
-      ko: { title: "📋 예약 방법 선택", desc: "🟢 네이버 예약: 시술과 날짜를 직접 선택해주세요\n🟡 카카오 예약: 원하시는 시술명과 날짜를 알려주시면 직접 잡아드릴게요!", naver: "🟢 네이버 예약", kakao: "🟡 카카오 채널 예약" },
+      ko: { title: "📋 예약 방법을 선택해 주세요", desc: "🟢 네이버 예약: 실시간 예약 현황을 확인하며 원하시는 날짜와 시간을 직접 선택하실 수 있습니다\n🟡 카카오 채널 예약: 예약 접수 후 담당자가 직접 전화드려 상담 후 예약을 확정해 드립니다", naver: "🟢 네이버 예약", kakao: "🟡 카카오 채널 예약" },
       en: { title: "📋 Select Booking Method", desc: "Please choose your preferred booking method!", naver: "🟢 Naver Booking", kakao: "🟡 KakaoTalk Booking" },
       zh: { title: "📋 选择预约方式", desc: "请选择您方便的预约方式！", naver: "🟢 Naver预约", kakao: "🟡 KakaoTalk预约" },
       ja: { title: "📋 予約方法を選択", desc: "ご希望の予約方法をお選びください！", naver: "🟢 Naver予約", kakao: "🟡 KakaoTalk予約" },
@@ -622,7 +622,7 @@ async function handleMain(req, res) {
       const lang = session.data.lang || 'ko';
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
       const contactMsgs = {
-        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊',
+        ko: '📞 예약 전 간단한 상담이 필요하시면 전화번호를 남겨주세요. 담당자가 직접 연락드려 최적의 시술과 일정을 안내해 드립니다 😊',
         en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
         zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
         ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
@@ -1014,7 +1014,7 @@ async function handleMain(req, res) {
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
       session.contactRequested = true;
       const contactMsgs = {
-        ko: '📞 전화번호를 남겨주시면 담당자가 직접 예약을 확정해 드립니다 😊',
+        ko: '📞 예약 전 간단한 상담이 필요하시면 전화번호를 남겨주세요. 담당자가 직접 연락드려 최적의 시술과 일정을 안내해 드립니다 😊',
         en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
         zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
         ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
