@@ -971,7 +971,7 @@ async function handleMain(req, res) {
           .replace(/새로 예약하시겠어요\?/g, '')
           .replace(/새로운 예약을 도와드릴까요\?/g, '')
           .replace(/다른 예약을 도와드릴까요\?/g, '')
-          .replace(/예약을 도와드릴까요\?/g, '')
+          .replace(/^예약을 도와드릴까요\?/gm, '')
           .replace(/Would you like to make a new booking\?/gi, '')
           .replace(/Would you like to book again\?/gi, '')
           .replace(/새로 예약.*?\?/g, '')
