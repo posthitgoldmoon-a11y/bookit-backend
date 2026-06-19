@@ -322,3 +322,12 @@ cp /tmp/backup.js <파일경로>
 - 체크리스트: ~/bookit-backend/BOOKIT_CHECKLIST.md
 - 일괄배포 스크립트: ~/bookit-backend/deploy_all.sh
 - 세션 시작 시 반드시: cat ~/bookit-backend/BOOKIT_CHECKLIST.md
+
+## PM2 프로세스명 매핑 (중요!)
+| PM2 이름 | 디렉토리 | 포트 |
+|---|---|---|
+| bookit | bookit-backend | 3002 |
+| donworry | donworry-backend | 3003 |
+| app | hospital-companion-backend | 3000 |
+| gourmet | gourmet-backend | 3005 |
+| beauty | beauty-backend | 3006 |
