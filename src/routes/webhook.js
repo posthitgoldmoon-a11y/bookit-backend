@@ -988,8 +988,8 @@ async function handleMain(req, res) {
     if (session.history.length > 10) session.history = session.history.slice(-10);
 
     if (geminiReply.showDoctors) {
-      await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message);
-      if (geminiReply.showBookingType) {
+      await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message, geminiReply.showBookingType);
+      if (false && geminiReply.showBookingType) {
         const lang = session.data.lang || 'ko';
         const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
         session.contactRequested = true;
@@ -1332,7 +1332,7 @@ async function sendPriceMenu(callbackUrl, lang) {
   }
 }
 
-async function showDoctors(callbackUrl, lang, prefixMessage) {
+async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false) {
   lang = lang || 'ko';
   console.log('showDoctors 시작, 언어:', lang);
   try {
@@ -1378,6 +1378,27 @@ async function showDoctors(callbackUrl, lang, prefixMessage) {
         ]
       }
     };
+    if (showBooking) {
+      const bookingLabels = {
+        ko: {
+          title: '📋 예약 방법을 선택해 주세요',
+          desc: '🟢 네이버 예약: 실시간 예약 현황을 확인하며 원하시는 날짜와 시간을 직접 선택하실 수 있습니다\n🟡 카카오 채널 예약: 예약 접수 후 담당자가 직접 전화드려 상담 후 예약을 확정해 드립니다',
+          naver: '🟢 네이버 예약',
+          kakao: '🟡 카카오 채널 예약',
+          contact: '📞 예약 전 간단한 상담이 필요하시면 전화번호를 남겨주세요. 담당자가 직접 연락드려 최적의 시술과 일정을 안내해 드립니다 😊'
+        }
+      };
+      const bl = bookingLabels[lang] || bookingLabels.ko;
+      payload.template.outputs.push({ simpleText: { text: bl.contact } });
+      payload.template.outputs.push({ basicCard: {
+        title: bl.title,
+        description: bl.desc,
+        buttons: [
+          { action: 'message', label: bl.naver, messageText: '네이버예약클릭' },
+          { action: 'message', label: bl.kakao, messageText: '카카오예약하기' }
+        ]
+      }});
+    }
     const res = await fetch(callbackUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
