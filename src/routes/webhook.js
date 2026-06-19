@@ -174,6 +174,7 @@ function extractPhone(text) {
 }
 
 async function sendCallback(callbackUrl, text, quickReplies = null, buttons = null) {
+  console.log('📤 sendCallback 전송 메시지:', JSON.stringify(text));
   // buttons가 있으면 basicCard로, 없으면 simpleText로
   let outputs;
   if (buttons) {
