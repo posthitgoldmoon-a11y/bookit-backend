@@ -1355,8 +1355,8 @@ async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false
       { title: '👨‍⚕️ 전문의', desc: '피부과 전문의', msg: '전문의로 예약하기', img: '' }
     ];
     const outputItems = [];
-    if (prefixMessage) outputItems.push({ simpleText: { text: prefixMessage } });
-    outputItems.push({ simpleText: { text: l.title } });
+    const headerText = prefixMessage ? prefixMessage + '\n\n' + l.title : l.title;
+    outputItems.push({ simpleText: { text: headerText } });
     const payload = {
       version: '2.0',
       template: {
@@ -1379,12 +1379,23 @@ async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false
       }
     };
     if (showBooking) {
-      payload.template.quickReplies = [
-        { label: '🟢 네이버 예약', action: 'message', messageText: '네이버예약클릭' },
-        { label: '🟡 카카오 채널 예약', action: 'message', messageText: '카카오예약하기' },
-        { label: '🎁 무료체험 신청', action: 'message', messageText: '무료체험신청' },
-        { label: '🏠 처음으로', action: 'message', messageText: '처음으로' }
-      ];
+      const bookingLabels = {
+        ko: {
+          title: '📋 예약 방법을 선택해 주세요',
+          desc: '🟢 네이버 예약: 실시간 예약 현황을 확인하며 원하시는 날짜와 시간을 직접 선택하실 수 있습니다\n🟡 카카오 채널 예약: 예약 접수 후 담당자가 직접 전화드려 상담 후 예약을 확정해 드립니다',
+          naver: '🟢 네이버 예약',
+          kakao: '🟡 카카오 채널 예약'
+        }
+      };
+      const bl = bookingLabels[lang] || bookingLabels.ko;
+      payload.template.outputs.push({ basicCard: {
+        title: bl.title,
+        description: bl.desc,
+        buttons: [
+          { action: 'message', label: bl.naver, messageText: '네이버예약클릭' },
+          { action: 'message', label: bl.kakao, messageText: '카카오예약하기' }
+        ]
+      }});
     }
     const res = await fetch(callbackUrl, {
       method: 'POST',
