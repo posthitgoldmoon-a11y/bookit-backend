@@ -137,6 +137,11 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
     .replace(/네이버 예약하기:.*$/gm, "")
     .replace(/카카오채널 예약하기:.*$/gm, "")
     .replace(/두 방법 중.*$/gm, "")
+    .replace(/\*\*네이버 예약하기:\*\*/g, "네이버 예약하기:")
+    .replace(/\*\*카카오채널 예약하기:\*\*/g, "카카오채널 예약하기:")
+    .replace(/네이버 예약하기:.*$/gm, "")
+    .replace(/카카오채널 예약하기:.*$/gm, "")
+    .replace(/두 방법 중.*$/gm, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 
