@@ -987,8 +987,7 @@ async function handleMain(req, res) {
     if (session.history.length > 20) session.history = session.history.slice(-20);
 
     if (geminiReply.showDoctors) {
-      if (geminiReply.message) await sendCallback(callbackUrl, geminiReply.message);
-      await showDoctors(callbackUrl, session.data.lang || 'ko');
+      await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message);
       return;
     }
     if (geminiReply.showPrice) {
@@ -1303,7 +1302,7 @@ async function sendPriceMenu(callbackUrl, lang) {
   }
 }
 
-async function showDoctors(callbackUrl, lang) {
+async function showDoctors(callbackUrl, lang, prefixMessage) {
   lang = lang || 'ko';
   console.log('showDoctors 시작, 언어:', lang);
   try {
@@ -1325,11 +1324,14 @@ async function showDoctors(callbackUrl, lang) {
     const cardItems = items.length > 0 ? items : [
       { title: '👨‍⚕️ 전문의', desc: '피부과 전문의', msg: '전문의로 예약하기', img: '' }
     ];
+    const outputItems = [];
+    if (prefixMessage) outputItems.push({ simpleText: { text: prefixMessage } });
+    outputItems.push({ simpleText: { text: l.title } });
     const payload = {
       version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: l.title } },
+          ...outputItems,
           { carousel: {
             type: 'basicCard',
             items: cardItems.map(d => ({
