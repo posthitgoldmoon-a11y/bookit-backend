@@ -110,6 +110,9 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
     }
   });
 
+  const candidate = result.response.candidates?.[0];
+  const finishReason = candidate?.finishReason;
+  console.log('🔍 Gemini finishReason:', finishReason);
   const text = result.response.text().trim();
   require("fs").appendFileSync("/home/ubuntu/gemini_debug.log", text + "\n===\n");
 
@@ -130,7 +133,16 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
     message = text.split("BOOKING_JSON:")[0].trim();
     if (!message) message = text;
   }
-  message = message.replace(/SHOW_BUTTONS:.*$/gm, "").replace(/HUMAN_AGENT_REQUEST:.*$/gm, "").replace(/SHOW_STYLISTS:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/SHOW_DOCTORS:.*$/gm, "").replace(/SHOW_CALENDAR:.*$/gm, "").replace(/SHOW_CALENDAR_RETRY:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/RESET:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/RESET:.*$/gm, "").replace(/새로 예약하시겠어요\?/g, "").replace(/새로운 예약을 도와드릴까요\?/g, "").replace(/다른 예약을 도와드릴까요\?/g, "").replace(/^예약을 도와드릴까요\?$/gm, "").replace(/Would you like to make a new booking\?/gi, "").replace(/Would you like to book again\?/gi, "").replace(/새로 예약.*?\?/g, "").trim();
+  message = message.replace(/SHOW_BUTTONS:.*$/gm, "").replace(/HUMAN_AGENT_REQUEST:.*$/gm, "").replace(/SHOW_STYLISTS:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/SHOW_DOCTORS:.*$/gm, "").replace(/SHOW_CALENDAR:.*$/gm, "").replace(/SHOW_CALENDAR_RETRY:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/SHOW_PRICE:.*$/gm, "").replace(/RESET:.*$/gm, "").replace(/SHOW_BOOKING_TYPE:.*$/gm, "").replace(/RESET:.*$/gm, "").replace(/새로 예약하시겠어요\?/g, "").replace(/새로운 예약을 도와드릴까요\?/g, "").replace(/다른 예약을 도와드릴까요\?/g, "").replace(/^예약을 도와드릴까요\?$/gm, "").replace(/Would you like to make a new booking\?/gi, "").replace(/Would you like to book again\?/gi, "").replace(/새로 예약.*?\?/g, "")
+    .replace(/네이버 예약하기:.*$/gm, "")
+    .replace(/카카오채널 예약하기:.*$/gm, "")
+    .replace(/두 방법 중.*$/gm, "")
+    .replace(/📞.*$/gm, "")
+    .replace(/📋.*$/gm, "")
+    .replace(/🟢.*$/gm, "")
+    .replace(/🟡.*$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 
   let bookingData = null;
   if (jsonMatch) {
