@@ -113,7 +113,7 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
   const text = result.response.text().trim();
   require("fs").appendFileSync("/home/ubuntu/gemini_debug.log", text + "\n===\n");
 
-  const messageMatch = text.match(/MESSAGE:\s*([\s\S]*?)(?=BOOKING_JSON:|SHOW_CALENDAR:|SHOW_BOOKING_TYPE:|SHOW_DOCTORS:|SHOW_PRICE:|HUMAN_AGENT_REQUEST:|RESET:|$)/);
+  const messageMatch = text.match(/MESSAGE:\s*([\s\S]*?)(?=\nBOOKING_JSON:|\nSHOW_CALENDAR:|\nSHOW_BOOKING_TYPE:|\nSHOW_DOCTORS:|\nSHOW_PRICE:|\nHUMAN_AGENT_REQUEST:|\nRESET:|$)/);
   const jsonMatch = text.match(/BOOKING_JSON:\s*(\{[\s\S]*\})/);
   const showCalendar = /SHOW_CALENDAR:\s*true/i.test(text);
   const humanAgentRequest = text.includes("HUMAN_AGENT_REQUEST: true");
