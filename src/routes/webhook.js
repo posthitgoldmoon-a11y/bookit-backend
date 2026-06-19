@@ -989,6 +989,35 @@ async function handleMain(req, res) {
 
     if (geminiReply.showDoctors) {
       await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message);
+      if (geminiReply.showBookingType) {
+        const lang = session.data.lang || 'ko';
+        const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
+        session.contactRequested = true;
+        const contactMsgs = {
+          ko: '📞 예약 전 간단한 상담이 필요하시면 전화번호를 남겨주세요. 담당자가 직접 연락드려 최적의 시술과 일정을 안내해 드립니다 😊'
+        };
+        const contactMsg = contactMsgs[lang] || contactMsgs.ko;
+        await fetch(callbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            version: '2.0',
+            template: {
+              outputs: [
+                { simpleText: { text: contactMsg } },
+                { basicCard: {
+                  title: bl.title,
+                  description: bl.desc,
+                  buttons: [
+                    { action: 'message', label: bl.naver, messageText: '네이버예약클릭' },
+                    { action: 'message', label: bl.kakao, messageText: '카카오예약하기' }
+                  ]
+                }}
+              ]
+            }
+          })
+        });
+      }
       return;
     }
     if (geminiReply.showPrice) {
