@@ -984,7 +984,7 @@ async function handleMain(req, res) {
     }
     session.history.push({ role: "user", content: userMessage });
     session.history.push({ role: "model", content: geminiReply.message });
-    if (session.history.length > 20) session.history = session.history.slice(-20);
+    if (session.history.length > 10) session.history = session.history.slice(-10);
 
     if (geminiReply.showDoctors) {
       await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message);
