@@ -103,11 +103,7 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
 
   const result = await model.generateContent({
     systemInstruction: finalSystemInstruction,
-    contents: contents,
-    generationConfig: {
-      maxOutputTokens: 1024,
-      temperature: 0.7
-    }
+    contents: contents
   });
 
   const text = result.response.text().trim();
