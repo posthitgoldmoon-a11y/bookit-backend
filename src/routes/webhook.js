@@ -227,7 +227,8 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "💰 가격안내", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ 의료진 보기", action: "message", messageText: "의료진보기" },
       { label: "📍 오시는 길", action: "message", messageText: "오시는길" },
-      { label: "⏰ 진료시간", action: "message", messageText: "진료시간" }
+      { label: "⏰ 진료시간", action: "message", messageText: "진료시간" },
+      { label: "🔢 웨이팅등록", action: "message", messageText: "웨이팅등록" }
     ],
     en: [
       { label: "🎁 Free Trial", action: "message", messageText: "무료체험신청" },
