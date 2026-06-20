@@ -71,7 +71,160 @@ function buildQueueCarousel(callbackUrl) {
 }
 
 // 손님용 웨이팅 처리
-async function handleWaiting(userId, utterance, callbackUrl) {
+async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
+  const t = {
+    ko: {
+      already: '이미 대기 중입니다 😊',
+      reg_title: '⏳ 웨이팅 등록',
+      reg_select: '대기 등록 방식을 선택해주세요 😊',
+      onsite: '🏪 현장 대기',
+      remote: '📱 원격 대기',
+      people_q: '몇 분이서 오셨나요? 인원을 선택해주세요 😊',
+      phone_q: '📱 전화번호를 입력해주세요\n(예: 01012345678)',
+      phone_invalid: '올바른 전화번호 형식이 아닙니다.\n01012345678 형식으로 입력해주세요.',
+      reg_done: (p, tt) => `✅ 웨이팅 등록 완료!\n\n🎫 ${p}번째 대기 중입니다\n전체 ${tt}팀 대기 중 😊\n\n입장 순서가 되면 알림을 보내드릴게요!`,
+      pos: (p, tt) => `🎫 현재 ${p}번째 대기 중입니다\n전체 ${tt}팀 대기 중 😊`,
+      cancel_ok: '대기를 취소했습니다. 다음에 또 방문해주세요 😊',
+      arriving: '곧 도착하신다니 감사합니다! 매장으로 와주세요 🏪',
+      btn_check: '🔄 순번 확인', btn_cancel: '❌ 취소할게요', btn_home: '🏠 처음으로', btn_arrive: '🏃 곧 도착이요', btn_again: '⏳ 다시 등록'
+    },
+    en: {
+      already: 'You are already in the waiting list 😊',
+      reg_title: '⏳ Waiting Registration',
+      reg_select: 'Please select your waiting type 😊',
+      onsite: '🏪 On-site',
+      remote: '📱 Remote',
+      people_q: 'How many people? Please select 😊',
+      phone_q: '📱 Please enter your phone number\n(e.g. 01012345678)',
+      phone_invalid: 'Invalid phone number.\nPlease enter in 01012345678 format.',
+      reg_done: (p, tt) => `✅ Registration Complete!\n\n🎫 You are #${p} in line\n${tt} team(s) waiting 😊\n\nWe will notify you when it is your turn!`,
+      pos: (p, tt) => `🎫 You are currently #${p} in line\n${tt} team(s) waiting 😊`,
+      cancel_ok: 'Cancelled. Hope to see you again 😊',
+      arriving: 'Thank you! Please come to the clinic 🏪',
+      btn_check: '🔄 Check Position', btn_cancel: '❌ Cancel', btn_home: '🏠 Home', btn_arrive: '🏃 On my way!', btn_again: '⏳ Register Again'
+    },
+    zh: {
+      already: '您已在等待列表中 😊',
+      reg_title: '⏳ 等候登记',
+      reg_select: '请选择等候方式 😊',
+      onsite: '🏪 现场等候',
+      remote: '📱 远程等候',
+      people_q: '请选择人数 😊',
+      phone_q: '📱 请输入您的手机号码\n(例: 01012345678)',
+      phone_invalid: '手机号码格式不正确。\n请按01012345678格式输入。',
+      reg_done: (p, tt) => `✅ 登记成功！\n\n🎫 您排在第${p}位\n共${tt}组等候中 😊\n\n轮到您时我们会通知您！`,
+      pos: (p, tt) => `🎫 您目前排在第${p}位\n共${tt}组等候中 😊`,
+      cancel_ok: '已取消。期待您下次光临 😊',
+      arriving: '感谢！请到诊所来 🏪',
+      btn_check: '🔄 查看排位', btn_cancel: '❌ 取消', btn_home: '🏠 首页', btn_arrive: '🏃 马上到！', btn_again: '⏳ 重新登记'
+    },
+    ja: {
+      already: 'すでに順番待ちリストに登録されています 😊',
+      reg_title: '⏳ ウェイティング登録',
+      reg_select: '待ち方を選択してください 😊',
+      onsite: '🏪 店頭待ち',
+      remote: '📱 リモート待ち',
+      people_q: '何名様ですか？人数を選択してください 😊',
+      phone_q: '📱 電話番号を入力してください\n(例: 01012345678)',
+      phone_invalid: '正しい電話番号の形式ではありません。\n01012345678の形式で入力してください。',
+      reg_done: (p, tt) => `✅ 登録完了！\n\n🎫 現在${p}番目です\n全${tt}組待ち中 😊\n\n順番が来たらお知らせします！`,
+      pos: (p, tt) => `🎫 現在${p}番目です\n全${tt}組待ち中 😊`,
+      cancel_ok: 'キャンセルしました。またのご来店をお待ちしております 😊',
+      arriving: 'ありがとうございます！クリニックにお越しください 🏪',
+      btn_check: '🔄 順番確認', btn_cancel: '❌ キャンセル', btn_home: '🏠 ホーム', btn_arrive: '🏃 もうすぐ到着！', btn_again: '⏳ 再登録'
+    },
+    th: {
+      already: 'คุณอยู่ในรายการรอแล้ว 😊',
+      reg_title: '⏳ ลงทะเบียนรอคิว',
+      reg_select: 'กรุณาเลือกประเภทการรอ 😊',
+      onsite: '🏪 รอที่หน้าร้าน',
+      remote: '📱 รอทางออนไลน์',
+      people_q: 'กรุณาเลือกจำนวนคน 😊',
+      phone_q: '📱 กรุณากรอกหมายเลขโทรศัพท์\n(เช่น 01012345678)',
+      phone_invalid: 'รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง\nกรุณากรอกในรูปแบบ 01012345678',
+      reg_done: (p, tt) => `✅ ลงทะเบียนสำเร็จ!\n\n🎫 คุณอยู่ลำดับที่ ${p}\nรอทั้งหมด ${tt} กลุ่ม 😊`,
+      pos: (p, tt) => `🎫 คุณอยู่ลำดับที่ ${p}\nรอทั้งหมด ${tt} กลุ่ม 😊`,
+      cancel_ok: 'ยกเลิกแล้ว หวังว่าจะพบกันใหม่ 😊',
+      arriving: 'ขอบคุณ! กรุณามาที่คลินิก 🏪',
+      btn_check: '🔄 ตรวจสอบคิว', btn_cancel: '❌ ยกเลิก', btn_home: '🏠 หน้าหลัก', btn_arrive: '🏃 กำลังมา!', btn_again: '⏳ ลงทะเบียนใหม่'
+    },
+    vi: {
+      already: 'Bạn đã có trong danh sách chờ 😊',
+      reg_title: '⏳ Đăng ký chờ',
+      reg_select: 'Vui lòng chọn hình thức chờ 😊',
+      onsite: '🏪 Chờ tại chỗ',
+      remote: '📱 Chờ từ xa',
+      people_q: 'Vui lòng chọn số người 😊',
+      phone_q: '📱 Vui lòng nhập số điện thoại\n(ví dụ: 01012345678)',
+      phone_invalid: 'Số điện thoại không hợp lệ.\nVui lòng nhập theo định dạng 01012345678.',
+      reg_done: (p, tt) => `✅ Đăng ký thành công!\n\n🎫 Bạn đang ở vị trí số ${p}\n${tt} nhóm đang chờ 😊`,
+      pos: (p, tt) => `🎫 Bạn đang ở vị trí số ${p}\n${tt} nhóm đang chờ 😊`,
+      cancel_ok: 'Đã hủy. Hẹn gặp lại 😊',
+      arriving: 'Cảm ơn! Vui lòng đến phòng khám 🏪',
+      btn_check: '🔄 Kiểm tra vị trí', btn_cancel: '❌ Hủy', btn_home: '🏠 Trang chủ', btn_arrive: '🏃 Sắp đến!', btn_again: '⏳ Đăng ký lại'
+    },
+    ar: {
+      already: 'أنت بالفعل في قائمة الانتظار 😊',
+      reg_title: '⏳ تسجيل الانتظار',
+      reg_select: 'الرجاء اختيار نوع الانتظار 😊',
+      onsite: '🏪 انتظار في المكان',
+      remote: '📱 انتظار عن بُعد',
+      people_q: 'الرجاء اختيار عدد الأشخاص 😊',
+      phone_q: '📱 الرجاء إدخال رقم هاتفك\n(مثال: 01012345678)',
+      phone_invalid: 'رقم الهاتف غير صحيح.\nالرجاء الإدخال بصيغة 01012345678.',
+      reg_done: (p, tt) => `✅ تم التسجيل بنجاح!\n\n🎫 أنت في المركز ${p}\n${tt} مجموعة في الانتظار 😊`,
+      pos: (p, tt) => `🎫 أنت حالياً في المركز ${p}\n${tt} مجموعة في الانتظار 😊`,
+      cancel_ok: 'تم الإلغاء. نأمل رؤيتك مرة أخرى 😊',
+      arriving: 'شكراً! يرجى المجيء إلى العيادة 🏪',
+      btn_check: '🔄 تحقق من الموقع', btn_cancel: '❌ إلغاء', btn_home: '🏠 الرئيسية', btn_arrive: '🏃 في الطريق!', btn_again: '⏳ التسجيل مجدداً'
+    },
+    ru: {
+      already: 'Вы уже в списке ожидания 😊',
+      reg_title: '⏳ Регистрация в очередь',
+      reg_select: 'Пожалуйста, выберите тип ожидания 😊',
+      onsite: '🏪 Ожидание на месте',
+      remote: '📱 Удалённое ожидание',
+      people_q: 'Пожалуйста, выберите количество человек 😊',
+      phone_q: '📱 Введите номер телефона\n(например: 01012345678)',
+      phone_invalid: 'Неверный формат номера телефона.\nВведите в формате 01012345678.',
+      reg_done: (p, tt) => `✅ Регистрация завершена!\n\n🎫 Вы ${p}-й в очереди\n${tt} групп ожидают 😊`,
+      pos: (p, tt) => `🎫 Вы сейчас ${p}-й в очереди\n${tt} групп ожидают 😊`,
+      cancel_ok: 'Отменено. Надеемся увидеть вас снова 😊',
+      arriving: 'Спасибо! Пожалуйста, приходите в клинику 🏪',
+      btn_check: '🔄 Проверить позицию', btn_cancel: '❌ Отмена', btn_home: '🏠 Главная', btn_arrive: '🏃 Уже иду!', btn_again: '⏳ Зарегистрироваться снова'
+    },
+    fr: {
+      already: "Vous êtes déjà sur la liste d'attente 😊",
+      reg_title: '⏳ Inscription en attente',
+      reg_select: "Veuillez sélectionner votre type d'attente 😊",
+      onsite: '🏪 Sur place',
+      remote: '📱 À distance',
+      people_q: 'Veuillez sélectionner le nombre de personnes 😊',
+      phone_q: '📱 Veuillez entrer votre numéro de téléphone\n(ex: 01012345678)',
+      phone_invalid: 'Numéro de téléphone invalide.\nVeuillez entrer au format 01012345678.',
+      reg_done: (p, tt) => `✅ Inscription réussie!\n\n🎫 Vous êtes le numéro ${p}\n${tt} groupe(s) en attente 😊`,
+      pos: (p, tt) => `🎫 Vous êtes actuellement numéro ${p}\n${tt} groupe(s) en attente 😊`,
+      cancel_ok: 'Annulé. À bientôt 😊',
+      arriving: 'Merci! Veuillez venir à la clinique 🏪',
+      btn_check: '🔄 Vérifier position', btn_cancel: '❌ Annuler', btn_home: '🏠 Accueil', btn_arrive: "🏃 J'arrive!", btn_again: "⏳ S'inscrire à nouveau"
+    },
+    es: {
+      already: 'Ya estás en la lista de espera 😊',
+      reg_title: '⏳ Registro en espera',
+      reg_select: 'Por favor selecciona el tipo de espera 😊',
+      onsite: '🏪 En el lugar',
+      remote: '📱 De forma remota',
+      people_q: 'Por favor selecciona el número de personas 😊',
+      phone_q: '📱 Por favor ingresa tu número de teléfono\n(ej: 01012345678)',
+      phone_invalid: 'Número de teléfono inválido.\nIngresa en formato 01012345678.',
+      reg_done: (p, tt) => `✅ ¡Registro completo!\n\n🎫 Estás en el puesto #${p}\n${tt} grupo(s) esperando 😊`,
+      pos: (p, tt) => `🎫 Actualmente estás en el puesto #${p}\n${tt} grupo(s) esperando 😊`,
+      cancel_ok: 'Cancelado. ¡Esperamos verte pronto! 😊',
+      arriving: '¡Gracias! Por favor ven a la clínica 🏪',
+      btn_check: '🔄 Ver posición', btn_cancel: '❌ Cancelar', btn_home: '🏠 Inicio', btn_arrive: '🏃 ¡Ya voy!', btn_again: '⏳ Registrarse de nuevo'
+    }
+  };
+  const T = t[lang] || t.ko;
   const ws = getWaitingSession(userId);
 
   // 순번 확인

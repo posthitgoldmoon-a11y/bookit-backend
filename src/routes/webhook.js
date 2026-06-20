@@ -221,7 +221,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
   const qr = {
     ko: [
       { label: "🎁 무료체험 신청", action: "message", messageText: "무료체험신청" },
-      { label: "🔢 웨이팅등록", action: "message", messageText: "웨이팅등록" },
+      { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
       { label: "📅 예약하기", action: "message", messageText: "예약하기" },
       { label: "💬 상담하기", action: "message", messageText: "상담하기" },
       { label: "🌍 언어선택", action: "message", messageText: "언어선택" },
@@ -232,6 +232,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
     ],
     en: [
       { label: "🎁 Free Trial", action: "message", messageText: "무료체험신청" },
+      { label: "⏳ Waiting", action: "message", messageText: "웨이팅등록" },
       { label: "📅 Book", action: "message", messageText: "예약하기" },
       { label: "💬 Consult", action: "message", messageText: "상담하기" },
       { label: "🌍 Language", action: "message", messageText: "언어선택" },
@@ -242,9 +243,10 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
     ],
     zh: [
       { label: "🎁 免费体验", action: "message", messageText: "무료체험신청" },
+      { label: "⏳ 等候", action: "message", messageText: "웨이팅등록" },
       { label: "📅 预约", action: "message", messageText: "예약하기" },
       { label: "💬 咨询", action: "message", messageText: "상담하기" },
-      { label: "🌍 语言", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 价格", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ 医生", action: "message", messageText: "의료진보기" },
       { label: "📍 地址", action: "message", messageText: "오시는길" },
@@ -252,18 +254,20 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
     ],
     ja: [
       { label: "🎁 無料体験", action: "message", messageText: "무료체험신청" },
+      { label: "⏳ ウェイティング", action: "message", messageText: "웨이팅등록" },
       { label: "📅 予約", action: "message", messageText: "예약하기" },
       { label: "💬 相談", action: "message", messageText: "상담하기" },
-      { label: "🌍 言語", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 料金", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ 医師", action: "message", messageText: "의료진보기" },
       { label: "📍 アクセス", action: "message", messageText: "오시는길" },
       { label: "⏰ 診療時間", action: "message", messageText: "진료시간" }
     ],
     th: [
+      { label: "⏳ รอคิว", action: "message", messageText: "웨이팅등록" },
       { label: "📅 จอง", action: "message", messageText: "예약하기" },
       { label: "💬 ปรึกษา", action: "message", messageText: "상담하기" },
-      { label: "🌍 ภาษา", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 ราคา", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ แพทย์", action: "message", messageText: "의료진보기" },
       { label: "📍 ที่อยู่", action: "message", messageText: "오시는길" },
@@ -354,7 +358,8 @@ async function handleMain(req, res) {
   try {
 
     // ─── 관리자 모드 처리 ───────────────────────────────
-    const adminResult = await handleAdmin(kakaoUserId, userMessage, callbackUrl);
+    const lang = session?.data?.lang || 'ko';
+    const adminResult = await handleAdmin(kakaoUserId, userMessage, callbackUrl, lang);
     if (adminResult) {
       await fetch(callbackUrl, {
         method: 'POST',
@@ -368,7 +373,7 @@ async function handleMain(req, res) {
     const waitingKeywords = ['웨이팅등록', '원격웨이팅', '웨이팅:현장', '웨이팅:원격', '웨이팅:순번확인', '웨이팅:취소', '웨이팅:도착'];
     const ws = waitingSession[kakaoUserId] || {};
     if (waitingKeywords.includes(userMessage) || userMessage.startsWith('웨이팅:') || userMessage.startsWith('admin:') || ws.step === 'phone' || ws.step === 'people') {
-      const waitingResult = await handleWaiting(kakaoUserId, userMessage, callbackUrl);
+      const waitingResult = await handleWaiting(kakaoUserId, userMessage, callbackUrl, session?.data?.lang || 'ko');
       if (waitingResult) {
         await fetch(callbackUrl, {
           method: 'POST',
