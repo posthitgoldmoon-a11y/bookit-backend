@@ -366,7 +366,7 @@ async function handleMain(req, res) {
     // ─── 웨이팅 처리 ───────────────────────────────
     const waitingKeywords = ['웨이팅등록', '원격웨이팅', '웨이팅:현장', '웨이팅:원격', '웨이팅:순번확인', '웨이팅:취소', '웨이팅:도착'];
     const ws = waitingSession[kakaoUserId] || {};
-    if (waitingKeywords.includes(userMessage) || userMessage.startsWith('웨이팅:') || userMessage.startsWith('admin:') || ws.step === 'phone') {
+    if (waitingKeywords.includes(userMessage) || userMessage.startsWith('웨이팅:') || userMessage.startsWith('admin:') || ws.step === 'phone' || ws.step === 'people') {
       const waitingResult = await handleWaiting(kakaoUserId, userMessage, callbackUrl);
       if (waitingResult) {
         await fetch(callbackUrl, {
