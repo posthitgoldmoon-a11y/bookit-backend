@@ -231,7 +231,6 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ 진료시간", action: "message", messageText: "진료시간" }
     ],
     en: [
-      { label: "🎁 Free Trial", action: "message", messageText: "무료체험신청" },
       { label: "⏳ Waiting", action: "message", messageText: "웨이팅등록" },
       { label: "📅 Book", action: "message", messageText: "예약하기" },
       { label: "💬 Consult", action: "message", messageText: "상담하기" },
@@ -242,7 +241,6 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ Hours", action: "message", messageText: "진료시간" }
     ],
     zh: [
-      { label: "🎁 免费体验", action: "message", messageText: "무료체험신청" },
       { label: "⏳ 等候", action: "message", messageText: "웨이팅등록" },
       { label: "📅 预约", action: "message", messageText: "예약하기" },
       { label: "💬 咨询", action: "message", messageText: "상담하기" },
@@ -253,7 +251,6 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ 营业时间", action: "message", messageText: "진료시간" }
     ],
     ja: [
-      { label: "🎁 無料体験", action: "message", messageText: "무료체험신청" },
       { label: "⏳ ウェイティング", action: "message", messageText: "웨이팅등록" },
       { label: "📅 予約", action: "message", messageText: "예약하기" },
       { label: "💬 相談", action: "message", messageText: "상담하기" },
@@ -274,45 +271,50 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ เวลา", action: "message", messageText: "진료시간" }
     ],
     vi: [
+      { label: "⏳ Chờ đợi", action: "message", messageText: "웨이팅등록" },
       { label: "📅 Đặt lịch", action: "message", messageText: "예약하기" },
       { label: "💬 Tư vấn", action: "message", messageText: "상담하기" },
-      { label: "🌍 Ngôn ngữ", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 Giá cả", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ Bác sĩ", action: "message", messageText: "의료진보기" },
       { label: "📍 Địa chỉ", action: "message", messageText: "오시는길" },
       { label: "⏰ Giờ làm", action: "message", messageText: "진료시간" }
     ],
     ar: [
+      { label: "⏳ قائمة الانتظار", action: "message", messageText: "웨이팅등록" },
       { label: "📅 حجز", action: "message", messageText: "예약하기" },
       { label: "💬 استشارة", action: "message", messageText: "상담하기" },
-      { label: "🌍 اللغة", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 الأسعار", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ الأطباء", action: "message", messageText: "의료진보기" },
       { label: "📍 الموقع", action: "message", messageText: "오시는길" },
       { label: "⏰ المواعيد", action: "message", messageText: "진료시간" }
     ],
     ru: [
+      { label: "⏳ Очередь", action: "message", messageText: "웨이팅등록" },
       { label: "📅 Запись", action: "message", messageText: "예약하기" },
       { label: "💬 Консультация", action: "message", messageText: "상담하기" },
-      { label: "🌍 Язык", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 Цены", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ Врачи", action: "message", messageText: "의료진보기" },
       { label: "📍 Адрес", action: "message", messageText: "오시는길" },
       { label: "⏰ Часы работы", action: "message", messageText: "진료시간" }
     ],
     fr: [
+      { label: "⏳ File d'attente", action: "message", messageText: "웨이팅등록" },
       { label: "📅 Réserver", action: "message", messageText: "예약하기" },
       { label: "💬 Consulter", action: "message", messageText: "상담하기" },
-      { label: "🌍 Langue", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 Tarifs", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ Médecins", action: "message", messageText: "의료진보기" },
       { label: "📍 Adresse", action: "message", messageText: "오시는길" },
       { label: "⏰ Horaires", action: "message", messageText: "진료시간" }
     ],
     es: [
+      { label: "⏳ Lista de espera", action: "message", messageText: "웨이팅등록" },
       { label: "📅 Reservar", action: "message", messageText: "예약하기" },
       { label: "💬 Consultar", action: "message", messageText: "상담하기" },
-      { label: "🌍 Idioma", action: "message", messageText: "언어선택" },
+      { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 Precios", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ Médicos", action: "message", messageText: "의료진보기" },
       { label: "📍 Dirección", action: "message", messageText: "오시는길" },
