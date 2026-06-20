@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { chat } = require('../services/gemini');
+const { handleWaiting, handleAdmin, waitingSession } = require('./waiting');
 require('dotenv').config();
 
 const sessions = {};
@@ -350,6 +351,33 @@ async function handleMain(req, res) {
   const session = getSession(kakaoUserId);
 
   try {
+
+    // ─── 관리자 모드 처리 ───────────────────────────────
+    const adminResult = await handleAdmin(kakaoUserId, userMessage, callbackUrl);
+    if (adminResult) {
+      await fetch(callbackUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(adminResult)
+      });
+      return;
+    }
+
+    // ─── 웨이팅 처리 ───────────────────────────────
+    const waitingKeywords = ['웨이팅등록', '원격웨이팅', '웨이팅:현장', '웨이팅:원격', '웨이팅:순번확인', '웨이팅:취소', '웨이팅:도착'];
+    const ws = waitingSession[kakaoUserId] || {};
+    if (waitingKeywords.includes(userMessage) || userMessage.startsWith('웨이팅:') || userMessage.startsWith('admin:') || ws.step === 'phone') {
+      const waitingResult = await handleWaiting(kakaoUserId, userMessage, callbackUrl);
+      if (waitingResult) {
+        await fetch(callbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(waitingResult)
+        });
+        return;
+      }
+    }
+
     const resetKeywords = ['처음으로', '다시', '취소', '홈', '처음'];
     if (resetKeywords.includes(userMessage)) {
       session.history = [];
