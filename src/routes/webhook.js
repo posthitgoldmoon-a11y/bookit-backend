@@ -107,7 +107,7 @@ const INDUSTRY_MAP = {
   '액티비티': 'activity', '체육시설': 'sports', '파티룸': 'partyroom',
   '네일샵': 'nail', '사진스튜디오': 'studio', '스터디카페': 'studycafe',
   '요가': 'yoga', '수영': 'swimming',
-  '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '피부과': 'hospital'
+
 };
 
 
