@@ -113,11 +113,11 @@ const INDUSTRY_MAP = {
 
 async function showDeptCarousel(callbackUrl) {
   const items = [
-    { title: '🔬 피부과', description: '레이저·보톡스·필러·리프팅', buttons: [{ action: 'message', label: '선택하기', messageText: '피부과' }] },
-    { title: '💉 성형외과', description: '눈·코·윤곽·지방·리프팅', buttons: [{ action: 'message', label: '선택하기', messageText: '성형외과' }] },
-    { title: '🔬 비뇨기과', description: '전립선·요로·남성·여성 건강', buttons: [{ action: 'message', label: '선택하기', messageText: '비뇨기과' }] },
-    { title: '🤰 산부인과', description: '산전검진·여성건강·갱년기', buttons: [{ action: 'message', label: '선택하기', messageText: '산부인과' }] },
-    { title: '💙 정신건강의학과', description: '우울·불안·수면·ADHD·상담', buttons: [{ action: 'message', label: '선택하기', messageText: '정신과' }] }
+    { title: '🔬 피부과', description: '레이저·보톡스·필러·리프팅', thumbnail: { imageUrl: `${BASE_URL}/banner_hospital.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '피부과' }] },
+    { title: '💉 성형외과', description: '눈·코·윤곽·지방·리프팅', thumbnail: { imageUrl: `${BASE_URL}/banner_plastic.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '성형외과' }] },
+    { title: '🔬 비뇨기과', description: '전립선·요로·남성·여성 건강', thumbnail: { imageUrl: `${BASE_URL}/banner_urology.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '비뇨기과' }] },
+    { title: '🤰 산부인과', description: '산전검진·여성건강·갱년기', thumbnail: { imageUrl: `${BASE_URL}/banner_obgyn.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '산부인과' }] },
+    { title: '💙 정신건강의학과', description: '우울·불안·수면·ADHD·상담', thumbnail: { imageUrl: `${BASE_URL}/banner_psychiatry.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '정신과' }] }
   ];
   await fetch(callbackUrl, {
     method: 'POST',
