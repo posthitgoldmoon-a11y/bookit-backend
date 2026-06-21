@@ -39,48 +39,42 @@ function buildQueueCarousel(callbackUrl) {
                 title: '1번 ⏳ 대기중',
                 description: '👥 2인 | 📱 010-****-1234\n🏪 현장대기',
                 buttons: [
-                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo1' },
-                  { action: 'message', label: '📋 상세보기', messageText: 'admin:상세:demo1' }
+                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo1' }
                 ]
               },
               {
                 title: '2번 ⏳ 대기중',
                 description: '👥 4인 | 📱 010-****-5678\n📱 원격대기',
                 buttons: [
-                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo2' },
-                  { action: 'message', label: '📋 상세보기', messageText: 'admin:상세:demo2' }
+                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo2' }
                 ]
               },
               {
                 title: '3번 ⏳ 대기중',
                 description: '👥 1인 | 📱 010-****-9012\n🏪 현장대기',
                 buttons: [
-                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo3' },
-                  { action: 'message', label: '📋 상세보기', messageText: 'admin:상세:demo3' }
+                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo3' }
                 ]
               },
               {
                 title: '4번 🔔 호출됨',
                 description: '👥 3인 | 📱 010-****-3456\n📱 원격대기',
                 buttons: [
-                  { action: 'message', label: '✅ 입장 완료', messageText: 'admin:입장:demo4' },
-                  { action: 'message', label: '📋 상세보기', messageText: 'admin:상세:demo4' }
+                  { action: 'message', label: '✅ 입장 완료', messageText: 'admin:입장:demo4' }
                 ]
               },
               {
                 title: '5번 ⏳ 대기중',
                 description: '👥 2인 | 📱 010-****-7890\n🏪 현장대기',
                 buttons: [
-                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo5' },
-                  { action: 'message', label: '📋 상세보기', messageText: 'admin:상세:demo5' }
+                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo5' }
                 ]
               },
               {
                 title: '6번 ⏳ 대기중',
                 description: '👥 1인 | 📱 010-****-2345\n📱 원격대기',
                 buttons: [
-                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo6' },
-                  { action: 'message', label: '📋 상세보기', messageText: 'admin:상세:demo6' }
+                  { action: 'message', label: '🔔 입장 호출', messageText: 'admin:호출:demo6' }
                 ]
               }
             ]
@@ -570,7 +564,7 @@ async function handleAdmin(userId, utterance, callbackUrl) {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `🔔 ${next.id}번 손님(${next.phoneMasked}) 호출 완료!\n\n📱 실제 서비스에서는 이 순간\n손님 카카오톡으로 입장 알림이\n자동 발송됩니다!\n\n손님 응답을 기다리는 중...` } }],
+        outputs: [{ simpleText: { text: `🔔 ${next.id}번 손님(${next.phoneMasked}) 호출 완료!\n\n📱 손님 카카오톡으로\n"다음 차례이니 입장을 준비해 주시기 바랍니다"\n알림이 자동 발송되었습니다 😊` } }],
         quickReplies: [
           { label: '🔄 현황 새로고침', action: 'message', messageText: 'admin:현황' },
           { label: '📋 상세보기', action: 'message', messageText: `admin:상세:${next.id}` }
@@ -596,7 +590,7 @@ async function handleAdmin(userId, utterance, callbackUrl) {
       return {
         version: '2.0',
         template: {
-          outputs: [{ simpleText: { text: `🔔 ${num}번 손님(${d.phone}) 호출 완료!\n\n📱 실제 서비스에서는 이 순간\n손님 카카오톡으로 입장 알림이\n자동 발송됩니다! 😊` } }],
+          outputs: [{ simpleText: { text: `🔔 ${num}번 손님(${d.phone}) 호출 완료!\n\n📱 손님 카카오톡으로\n"다음 차례이니 입장을 준비해 주시기 바랍니다" \n알림이 자동 발송되었습니다 😊` } }],
           quickReplies: [
             { label: '🔄 대기 현황', action: 'message', messageText: 'admin:현황' },
             { label: '📅 예약 현황', action: 'message', messageText: 'admin:예약' },
@@ -649,7 +643,7 @@ async function handleAdmin(userId, utterance, callbackUrl) {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `🔔 ${entry.id}번 손님(${entry.phoneMasked}) 호출 완료!\n\n📱 실제 서비스에서는 이 순간\n손님 카카오톡으로 입장 알림이\n자동 발송됩니다!` } }],
+        outputs: [{ simpleText: { text: `🔔 ${entry.id}번 손님(${entry.phoneMasked}) 호출 완료!\n\n📱 손님 카카오톡으로\n"다음 차례이니 입장을 준비해 주시기 바랍니다"\n알림이 자동 발송되었습니다 😊` } }],
         quickReplies: [
           { label: '🔄 현황 새로고침', action: 'message', messageText: 'admin:현황' }
         ]
