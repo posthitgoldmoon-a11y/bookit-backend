@@ -237,8 +237,9 @@ async function sendCallback(callbackUrl, text, quickReplies = null, buttons = nu
 
 const mainQuickReplies = [
   { label: "📩 [도입문의] 14일 무료체험", action: "message", messageText: "무료체험신청" },
-  { label: "📅 예약하기", action: "message", messageText: "예약하기" },
   { label: "💬 상담하기", action: "message", messageText: "상담하기" },
+  { label: "📅 예약하기", action: "message", messageText: "예약하기" },
+  { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
   { label: "🌍 Language", action: "message", messageText: "언어선택" },
   { label: "💰 가격안내", action: "message", messageText: "가격안내" },
   { label: "👨‍⚕️ 의료진 보기", action: "message", messageText: "의료진보기" },
@@ -258,9 +259,9 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
   const qr = {
     ko: [
       { label: "📩 [도입문의] 14일 무료체험", action: "message", messageText: "무료체험신청" },
-      { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
-      { label: "📅 예약하기", action: "message", messageText: "예약하기" },
       { label: "💬 상담하기", action: "message", messageText: "상담하기" },
+      { label: "📅 예약하기", action: "message", messageText: "예약하기" },
+      { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
       { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 가격안내", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ 의료진 보기", action: "message", messageText: "의료진보기" },
@@ -268,9 +269,9 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ 진료시간", action: "message", messageText: "진료시간" }
     ],
     en: [
-      { label: "⏳ Waiting", action: "message", messageText: "웨이팅등록" },
-      { label: "📅 Book", action: "message", messageText: "예약하기" },
       { label: "💬 Consult", action: "message", messageText: "상담하기" },
+      { label: "📅 Book", action: "message", messageText: "예약하기" },
+      { label: "⏳ Waiting", action: "message", messageText: "웨이팅등록" },
       { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 Prices", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ Doctors", action: "message", messageText: "의료진보기" },
@@ -278,9 +279,9 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ Hours", action: "message", messageText: "진료시간" }
     ],
     zh: [
-      { label: "⏳ 等候", action: "message", messageText: "웨이팅등록" },
-      { label: "📅 预约", action: "message", messageText: "예약하기" },
       { label: "💬 咨询", action: "message", messageText: "상담하기" },
+      { label: "📅 预约", action: "message", messageText: "예약하기" },
+      { label: "⏳ 等候", action: "message", messageText: "웨이팅등록" },
       { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 价格", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ 医生", action: "message", messageText: "의료진보기" },
@@ -288,9 +289,9 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
       { label: "⏰ 营业时间", action: "message", messageText: "진료시간" }
     ],
     ja: [
-      { label: "⏳ ウェイティング", action: "message", messageText: "웨이팅등록" },
-      { label: "📅 予約", action: "message", messageText: "예약하기" },
       { label: "💬 相談", action: "message", messageText: "상담하기" },
+      { label: "📅 予約", action: "message", messageText: "예약하기" },
+      { label: "⏳ ウェイティング", action: "message", messageText: "웨이팅등록" },
       { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 料金", action: "message", messageText: "가격안내" },
       { label: "👨‍⚕️ 医師", action: "message", messageText: "의료진보기" },
