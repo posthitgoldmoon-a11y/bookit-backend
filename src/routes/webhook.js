@@ -1055,6 +1055,29 @@ async function handleMain(req, res) {
       return;
     }
 
+    // 예약 의사 직접 감지
+    const bookingIntentKeywords = ['예약할게요','예약하고싶어요','예약하고 싶어요','예약부탁해요','예약 부탁해요','예약해주세요','예약 해주세요','방문하고싶어요','방문하고 싶어요','예약할게','예약하겠습니다','예약하겠어요'];
+    if (bookingIntentKeywords.some(k => userMessage.replace(/\s/g,'').includes(k.replace(/\s/g,'')))) {
+      const lang = session.data.lang || 'ko';
+      const bl = {
+        ko: { title: '📋 예약 방법을 선택해 주세요', desc: '🟢 네이버 예약: 실시간으로 날짜/시간 선택\n🟡 카카오 채널 예약: 담당자가 직접 연락드려 예약 확정', naver: '🟢 네이버 예약', kakao: '🟡 카카오 채널 예약' },
+        en: { title: '📋 Select Booking Method', desc: 'Choose your preferred booking method!', naver: '🟢 Naver Booking', kakao: '🟡 KakaoTalk Booking' }
+      };
+      const b = bl[lang] || bl.ko;
+      await fetch(callbackUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          version: '2.0',
+          template: {
+            outputs: [{ basicCard: { title: b.title, description: b.desc, buttons: [{ action: 'message', label: b.naver, messageText: '네이버예약클릭' }, { action: 'message', label: b.kakao, messageText: '카카오예약하기' }] }}],
+            quickReplies: getQuickReplies(lang, session.industry || 'hospital')
+          }
+        })
+      });
+      return;
+    }
+
     console.log('🌍 언어값:', session.data.lang, '/ 사용언어:', session.data.lang || 'ko');
     let geminiReply;
     try {
