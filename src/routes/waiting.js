@@ -590,7 +590,7 @@ async function handleAdmin(userId, utterance, callbackUrl) {
       return {
         version: '2.0',
         template: {
-          outputs: [{ simpleText: { text: `🔔 ${num}번 손님(${d.phone}) 호출 완료!\n\n📱 손님 카카오톡으로\n"다음 차례이니 입장을 준비해 주시기 바랍니다" \n알림이 자동 발송되었습니다 😊` } }],
+          outputs: [{ simpleText: { text: `🔔 ${num}번 손님(${d.phone}) 호출 완료!\n\n다음 손님에게 "다음 차례이니 입장을 준비해 주시기 바랍니다" 알림이 자동 발송되었습니다 😊` } }],
           quickReplies: [
             { label: '🔄 대기 현황', action: 'message', messageText: 'admin:현황' },
             { label: '📅 예약 현황', action: 'message', messageText: 'admin:예약' },
