@@ -65,7 +65,11 @@ const INDUSTRIES = {
     { title: '📸 사진스튜디오', desc: '소중한 순간을 담아드려요', msg: '사진스튜디오', img: 'banner_studio.jpg' },
     { title: '📚 스터디카페', desc: '집중할 수 있는 공간', msg: '스터디카페', img: 'banner_studycafe.jpg' },
     { title: '🧘 요가/필라테스', desc: '몸과 마음의 균형', msg: '요가', img: 'banner_yoga.jpg' },
-    { title: '🏊 수영/볼링', desc: '즐거운 스포츠 활동', msg: '수영', img: 'banner_swimming.jpg' }
+    { title: '🏊 수영/볼링', desc: '즐거운 스포츠 활동', msg: '수영', img: 'banner_swimming.jpg' },
+    { title: '💉 성형외과', desc: '자연스럽고 아름다운 성형', msg: '성형외과', img: 'banner_hospital.jpg' },
+    { title: '🔬 비뇨기과', desc: '전문의와 함께하는 비뇨기 건강', msg: '비뇨기과', img: 'banner_hospital.jpg' },
+    { title: '🤰 산부인과', desc: '여성 건강을 위한 전문 진료', msg: '산부인과', img: 'banner_hospital.jpg' },
+    { title: '💙 정신건강의학과', desc: '마음 건강을 위한 전문 상담', msg: '정신과', img: 'banner_hospital.jpg' }
   ],
   en: [
     { title: '🏥 Hospital Companion', desc: 'From registration to payment', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
@@ -87,7 +91,11 @@ const INDUSTRIES = {
     { title: '📸 Photo Studio', desc: 'Capture precious moments', msg: '사진스튜디오', img: 'banner_studio.jpg' },
     { title: '📚 Study Cafe', desc: 'Focus and study space', msg: '스터디카페', img: 'banner_studycafe.jpg' },
     { title: '🧘 Yoga/Pilates', desc: 'Balance body and mind', msg: '요가', img: 'banner_yoga.jpg' },
-    { title: '🏊 Swimming/Bowling', desc: 'Fun sports activities', msg: '수영', img: 'banner_swimming.jpg' }
+    { title: '🏊 Swimming/Bowling', desc: 'Fun sports activities', msg: '수영', img: 'banner_swimming.jpg' },
+    { title: '💉 Plastic Surgery', desc: 'Natural & beautiful results', msg: '성형외과', img: 'banner_hospital.jpg' },
+    { title: '🔬 Urology', desc: 'Urological health care', msg: '비뇨기과', img: 'banner_hospital.jpg' },
+    { title: '🤰 OB/GYN', desc: 'Women health specialist', msg: '산부인과', img: 'banner_hospital.jpg' },
+    { title: '💙 Psychiatry', desc: 'Mental health counseling', msg: '정신과', img: 'banner_hospital.jpg' }
   ]
 };
 
@@ -98,7 +106,8 @@ const INDUSTRY_MAP = {
   '피부관리': 'skincare', '골프': 'golf', '렌트카': 'rentcar',
   '액티비티': 'activity', '체육시설': 'sports', '파티룸': 'partyroom',
   '네일샵': 'nail', '사진스튜디오': 'studio', '스터디카페': 'studycafe',
-  '요가': 'yoga', '수영': 'swimming'
+  '요가': 'yoga', '수영': 'swimming',
+  '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry'
 };
 
 async function showIndustryCarousel(callbackUrl, lang = 'ko') {
