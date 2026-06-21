@@ -488,7 +488,8 @@ async function handleAdmin(userId, utterance, callbackUrl) {
   // 관리자 진입
   if (utterance === ADMIN_PASSWORD) {
     adminSessions.add(userId);
-    const waitingCount = waiting.getWaitingCount();
+    const realCount = waiting.getWaitingCount();
+    const waitingCount = realCount > 0 ? realCount : 6;
     return {
       version: '2.0',
       template: {
