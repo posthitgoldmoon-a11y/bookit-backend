@@ -32,6 +32,8 @@ function buildQueueCarousel(callbackUrl) {
         outputs: [{ simpleText: { text: '📋 현재 대기 중인 손님이 없습니다 😊' } }],
         quickReplies: [
           { label: '🔄 새로고침', action: 'message', messageText: 'admin:현황' },
+          { label: '📅 예약 현황', action: 'message', messageText: 'admin:예약' },
+          { label: '💬 상담 내역', action: 'message', messageText: 'admin:상담' },
           { label: '🚪 관리자 종료', action: 'message', messageText: 'admin:종료' }
         ]
       }
