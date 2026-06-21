@@ -476,7 +476,7 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
 async function handleAdmin(userId, utterance, callbackUrl) {
 
   // 관리자 진입
-  if (utterance === ADMIN_PASSWORD) {
+  if (utterance.toLowerCase() === ADMIN_PASSWORD.toLowerCase()) {
     adminSessions.add(userId);
     const realCount = waiting.getWaitingCount();
     const waitingCount = realCount > 0 ? realCount : 6;
