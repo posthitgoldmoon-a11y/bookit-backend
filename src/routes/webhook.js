@@ -200,7 +200,7 @@ async function sendCallback(callbackUrl, text, quickReplies = null, buttons = nu
 }
 
 const mainQuickReplies = [
-  { label: "🎁 무료체험 신청", action: "message", messageText: "무료체험신청" },
+  { label: "🎁 상담/체험 신청", action: "message", messageText: "무료체험신청" },
   { label: "📅 예약하기", action: "message", messageText: "예약하기" },
   { label: "💬 상담하기", action: "message", messageText: "상담하기" },
   { label: "🌍 Language", action: "message", messageText: "언어선택" },
@@ -220,7 +220,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
   }
   const qr = {
     ko: [
-      { label: "🎁 무료체험 신청", action: "message", messageText: "무료체험신청" },
+      { label: "🎁 상담/체험 신청", action: "message", messageText: "무료체험신청" },
       { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
       { label: "📅 예약하기", action: "message", messageText: "예약하기" },
       { label: "💬 상담하기", action: "message", messageText: "상담하기" },
