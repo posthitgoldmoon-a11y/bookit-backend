@@ -113,7 +113,8 @@ const INDUSTRY_MAP = {
 async function showIndustryCarousel(callbackUrl, lang = 'ko') {
   const list = INDUSTRIES[lang] || INDUSTRIES.ko;
   const row1 = list.slice(0, 10);
-  const row2 = list.slice(10);
+  const row2 = list.slice(10, 20);
+  const row3 = list.slice(20);
   const titles = {
     ko: '어떤 업종을 시연할까요? 😊\n업종을 선택해주세요!',
     en: 'Which industry would you like to demo? 😊\nPlease select!',
@@ -138,7 +139,8 @@ async function showIndustryCarousel(callbackUrl, lang = 'ko') {
         outputs: [
           { simpleText: { text: titleText } },
           { carousel: { type: 'basicCard', items: makeItems(row1) } },
-          { carousel: { type: 'basicCard', items: makeItems(row2) } }
+          { carousel: { type: 'basicCard', items: makeItems(row2) } },
+          { carousel: { type: 'basicCard', items: makeItems(row3) } }
         ]
       }
     })
