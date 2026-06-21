@@ -247,7 +247,8 @@ const mainQuickReplies = [
 
 function getQuickReplies(lang = 'ko', industry = 'hospital') {
   // 병원이 아닌 업종은 기본 퀵리플라이만
-  if (industry && industry !== 'hospital') {
+  const hospitalIndustries = ['hospital', 'plastic', 'urology', 'obgyn', 'psychiatry', 'dental'];
+  if (industry && !hospitalIndustries.includes(industry)) {
     return [
       { label: '🏠 처음으로', action: 'message', messageText: '처음으로' },
       { label: '🔄 업종변경', action: 'message', messageText: '처음으로' }
