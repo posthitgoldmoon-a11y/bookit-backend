@@ -504,7 +504,7 @@ async function handleMain(req, res) {
 
 
     // 과 선택 처리
-    const deptMap = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry' };
+    const deptMap = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '치과': 'dental' };
     if (deptMap[userMessage]) {
       session.industry = deptMap[userMessage];
       session.visited = true;
@@ -570,11 +570,11 @@ async function handleMain(req, res) {
     if (langMap[userMessage]) {
       session.data.lang = langMap[userMessage];
       if (session.data.pendingMenu === "상담하기") {
-        await sendConsultMenu(callbackUrl, session.data.lang);
+        await sendConsultMenu(callbackUrl, session.data.lang, session.industry || 'hospital');
       } else if (session.data.pendingMenu === "예약하기") {
-        await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang);
+        await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang, session.industry || 'hospital');
       } else {
-        await showWelcome(callbackUrl, session.data.lang);
+        await showWelcome(callbackUrl, session.data.lang, session.industry || 'hospital');
       }
       return;
     }
@@ -610,9 +610,9 @@ async function handleMain(req, res) {
       // 언어 기본값 ko 설정
       if (!session.data.lang) session.data.lang = 'ko';
       if (userMessage === "상담하기") {
-        await sendConsultMenu(callbackUrl, session.data.lang);
+        await sendConsultMenu(callbackUrl, session.data.lang, session.industry || 'hospital');
       } else {
-        await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang);
+        await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang, session.industry || 'hospital');
       }
       return;
       await fetch(callbackUrl, {
@@ -850,7 +850,7 @@ async function handleMain(req, res) {
     }
 
         if (userMessage === '가격안내') {
-      await sendPriceMenu(callbackUrl, session.data.lang || 'ko');
+      await sendPriceMenu(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
       return;
     }
 
@@ -932,7 +932,7 @@ async function handleMain(req, res) {
     }
 
     if (userMessage === '의료진보기') {
-      await showDoctors(callbackUrl, session.data.lang || 'ko');
+      await showDoctors(callbackUrl, session.data.lang || 'ko', null, false, session.industry || 'hospital');
       return;
     }
 
@@ -1072,7 +1072,7 @@ async function handleMain(req, res) {
     if (session.history.length > 10) session.history = session.history.slice(-10);
 
     if (geminiReply.showDoctors) {
-      await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message, geminiReply.showBookingType);
+      await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message, geminiReply.showBookingType, session.industry || 'hospital');
       if (false && geminiReply.showBookingType) {
         const lang = session.data.lang || 'ko';
         const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
@@ -1106,12 +1106,12 @@ async function handleMain(req, res) {
     }
     if (geminiReply.showPrice) {
       if (geminiReply.message) await sendCallback(callbackUrl, geminiReply.message);
-      await sendPriceMenu(callbackUrl, session.data.lang || 'ko');
+      await sendPriceMenu(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
       return;
     }
     if (geminiReply.showCalendar) {
       if (geminiReply.message) await sendCallback(callbackUrl, geminiReply.message);
-      await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang || 'ko');
+      await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang || 'ko', session.industry || 'hospital');
       return;
     }
     // 가격/설명 문의 시 showBookingType 강제 무시
@@ -1258,10 +1258,9 @@ async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
   }
 }
 
-async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
+async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko', industry = 'hospital') {
   console.log('sendBookingMenu 시작, 언어:', lang);
   try {
-    const industry = 'hospital';
     const items = parseCardSection(industry, '카드_예약메뉴', lang);
     const labels = {
       ko: { text: '📅 시술 종류를 둘러보세요!\n궁금한 시술을 눌러 자세한 정보를 확인하세요 😊', btn: '예약하기', home: '🏠 처음으로' },
@@ -1311,10 +1310,9 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko') {
   }
 }
 
-async function sendConsultMenu(callbackUrl, lang = 'ko') {
+async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') {
   console.log('sendConsultMenu 시작, 언어:', lang);
   try {
-    const industry = 'hospital';
     const items = parseCardSection(industry, '카드_상담메뉴', lang);
     const labels = {
       ko: { text: '💬 어떤 피부 고민이 있으신가요?\n아래에서 선택하시거나 직접 입력해주세요!', btn: '상담하기', home: '🏠 처음으로', price: '💰 가격안내', priceMsg: '가격안내' },
@@ -1365,11 +1363,10 @@ async function sendConsultMenu(callbackUrl, lang = 'ko') {
   }
 }
 
-async function sendPriceMenu(callbackUrl, lang) {
+async function sendPriceMenu(callbackUrl, lang, industry = 'hospital') {
   lang = lang || 'ko';
   console.log('sendPriceMenu 시작, 언어:', lang);
   try {
-    const industry = 'hospital';
     const items = parseCardSection(industry, '카드_가격메뉴', lang);
     const labels = {
       ko: { title: '💰 시술 가격 안내', btn: '🔍 자세히 알아보기' },
@@ -1416,11 +1413,10 @@ async function sendPriceMenu(callbackUrl, lang) {
   }
 }
 
-async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false) {
+async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false, industry = 'hospital') {
   lang = lang || 'ko';
   console.log('showDoctors 시작, 언어:', lang);
   try {
-    const industry = 'hospital';
     const items = parseCardSection(industry, '카드_의료진', lang);
     const labels = {
       ko: { title: '👨‍⚕️ 의료진 소개', btn: '🔍 자세히 알아보기', home: '🏠 처음으로' },
