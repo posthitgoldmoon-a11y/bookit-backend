@@ -633,15 +633,30 @@ async function handleAdmin(userId, utterance, callbackUrl) {
       version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: '📆 6월 21일 (토) 예약 상세\n─────────────────' } },
+          { simpleText: { text: '📆 6월 21일 (토) 예약 상세\n─────────────────\n총 5건' } },
           { carousel: {
             type: 'basicCard',
             items: [
-              { title: '10:00 김** ', description: '💉 레이저 토닝 1회\n📱 ***-1234\n✅ 예약확정' },
-              { title: '11:00 이** ', description: '✨ 보톡스 (이마)\n📱 ***-5678\n✅ 예약확정' },
-              { title: '13:00 박** ', description: '💋 필러 (볼)\n📱 ***-9012\n✅ 예약확정' },
-              { title: '15:00 최** ', description: '🔬 피부 상담\n📱 ***-3456\n✅ 예약확정' },
-              { title: '17:00 정** ', description: '💉 여드름 치료\n📱 ***-7890\n✅ 예약확정' }
+              {
+                title: '10:00 김미영 ✅ 예약확정',
+                description: '💉 레이저 토닝 1회\n📱 010-2345-1234\n💬 "기미 제거 목적, 첫 방문"\n👤 30대 여성'
+              },
+              {
+                title: '11:00 이준호 ✅ 예약확정',
+                description: '✨ 보톡스 (이마)\n📱 010-3456-5678\n💬 "주름 개선 원함, 재방문"\n👤 40대 남성'
+              },
+              {
+                title: '13:00 박서연 ✅ 예약확정',
+                description: '💋 필러 (볼 볼륨)\n📱 010-4567-9012\n💬 "볼 꺼짐 개선 원함, 첫 방문"\n👤 20대 여성'
+              },
+              {
+                title: '15:00 최동훈 ✅ 예약확정',
+                description: '🔬 피부 상담\n📱 010-5678-3456\n💬 "여드름 흉터 상담, 치료 방법 문의"\n👤 20대 남성'
+              },
+              {
+                title: '17:00 정하은 ✅ 예약확정',
+                description: '💉 여드름 치료\n📱 010-6789-7890\n💬 "코 주변 여드름, 재발 반복"\n👤 20대 여성'
+              }
             ]
           }}
         ],
@@ -659,13 +674,22 @@ async function handleAdmin(userId, utterance, callbackUrl) {
       version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: '📆 6월 22일 (일) 예약 상세\n─────────────────' } },
+          { simpleText: { text: '📆 6월 22일 (일) 예약 상세\n─────────────────\n총 3건' } },
           { carousel: {
             type: 'basicCard',
             items: [
-              { title: '10:30 한** ', description: '✨ 리프팅 (울쎄라)\n📱 ***-2345\n✅ 예약확정' },
-              { title: '14:00 윤** ', description: '💉 색소 레이저\n📱 ***-6789\n✅ 예약확정' },
-              { title: '16:00 강** ', description: '🔬 피부 상담\n📱 ***-0123\n⏳ 대기중' }
+              {
+                title: '10:30 한지수 ✅ 예약확정',
+                description: '✨ 리프팅 (울쎄라)\n📱 010-7890-2345\n💬 "턱선 리프팅 원함, 첫 방문"\n👤 40대 여성'
+              },
+              {
+                title: '14:00 윤재원 ✅ 예약확정',
+                description: '💉 색소 레이저\n📱 010-8901-6789\n💬 "잡티 제거, 2회차 방문"\n👤 30대 남성'
+              },
+              {
+                title: '16:00 강나래 ⏳ 대기중',
+                description: '🔬 피부 상담\n📱 010-9012-0123\n💬 "민감성 피부 트러블 상담"\n👤 20대 여성'
+              }
             ]
           }}
         ],
@@ -683,17 +707,38 @@ async function handleAdmin(userId, utterance, callbackUrl) {
       version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: '📆 6월 23일 (월) 예약 상세\n─────────────────' } },
+          { simpleText: { text: '📆 6월 23일 (월) 예약 상세\n─────────────────\n총 7건' } },
           { carousel: {
             type: 'basicCard',
             items: [
-              { title: '09:30 오** ', description: '💉 레이저 토닝 5회권\n📱 ***-1111\n✅ 예약확정' },
-              { title: '10:30 서** ', description: '✨ 보톡스 (사각턱)\n📱 ***-2222\n✅ 예약확정' },
-              { title: '11:30 문** ', description: '💋 필러 (입술)\n📱 ***-3333\n✅ 예약확정' },
-              { title: '13:30 양** ', description: '🔬 여드름 흉터 치료\n📱 ***-4444\n✅ 예약확정' },
-              { title: '14:30 손** ', description: '✨ 리프팅 (써마지)\n📱 ***-5555\n✅ 예약확정' },
-              { title: '15:30 백** ', description: '💉 제모 레이저\n📱 ***-6666\n⏳ 대기중' },
-              { title: '17:00 홍** ', description: '🔬 피부 상담\n📱 ***-7777\n✅ 예약확정' }
+              {
+                title: '09:30 오민준 ✅ 예약확정',
+                description: '💉 레이저 토닝 5회권\n📱 010-1234-1111\n💬 "기미·잡티 집중 관리, 3회차"\n👤 40대 여성'
+              },
+              {
+                title: '10:30 서지현 ✅ 예약확정',
+                description: '✨ 보톡스 (사각턱)\n📱 010-2345-2222\n💬 "얼굴 갸름하게 원함, 첫 방문"\n👤 30대 여성'
+              },
+              {
+                title: '11:30 문성민 ✅ 예약확정',
+                description: '💋 필러 (입술)\n📱 010-3456-3333\n💬 "입술 볼륨 원함, 재방문"\n👤 20대 여성'
+              },
+              {
+                title: '13:30 양희진 ✅ 예약확정',
+                description: '🔬 여드름 흉터 치료\n📱 010-4567-4444\n💬 "볼 흉터 개선, 프락셀 문의"\n👤 20대 여성'
+              },
+              {
+                title: '14:30 손태양 ✅ 예약확정',
+                description: '✨ 리프팅 (써마지)\n📱 010-5678-5555\n💬 "피부 탄력 저하, 50대"\n👤 50대 여성'
+              },
+              {
+                title: '15:30 백도현 ⏳ 대기중',
+                description: '💉 제모 레이저\n📱 010-6789-6666\n💬 "겨드랑이·다리 제모, 첫 방문"\n👤 20대 여성'
+              },
+              {
+                title: '17:00 홍수아 ✅ 예약확정',
+                description: '🔬 피부 상담\n📱 010-7890-7777\n💬 "전반적인 피부 트러블 상담"\n👤 30대 여성'
+              }
             ]
           }}
         ],
