@@ -81,8 +81,6 @@ function buildQueueCarousel(callbackUrl) {
           }}
         ],
         quickReplies: [
-          { label: '🔔 다음 손님 호출', action: 'message', messageText: 'admin:호출' },
-          { label: '🔄 새로고침', action: 'message', messageText: 'admin:현황' },
           { label: '📅 예약 현황', action: 'message', messageText: 'admin:예약' },
           { label: '🚪 관리자 종료', action: 'message', messageText: 'admin:종료' }
         ]
@@ -122,9 +120,7 @@ function buildQueueCarousel(callbackUrl) {
         { carousel: { type: 'basicCard', items } }
       ],
       quickReplies: [
-        { label: '🔔 다음 손님 호출', action: 'message', messageText: 'admin:호출' },
-        { label: '🔄 새로고침', action: 'message', messageText: 'admin:현황' },
-        { label: '🗑️ 대기열 초기화', action: 'message', messageText: 'admin:초기화' },
+        { label: '📅 예약 현황', action: 'message', messageText: 'admin:예약' },
         { label: '🚪 관리자 종료', action: 'message', messageText: 'admin:종료' }
       ]
     }
