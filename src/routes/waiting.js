@@ -45,13 +45,22 @@ function buildQueueCarousel(callbackUrl) {
     cancelled: '❌ 취소'
   };
 
-  const items = activeQueue.map(e => ({
-    title: `${e.id}번 ${statusEmoji[e.status] || e.status}`,
-    description: `👥 ${e.people}인 | 📱 ${e.phoneMasked}${e.status === 'cancelled' ? '\n❌ 이 고객님은 대기를 취소하셨습니다' : ''}`,
-    buttons: [
+  const items = activeQueue.map(e => {
+    const buttons = [
       { action: 'message', label: '📋 상세보기', messageText: `admin:상세:${e.id}` }
-    ]
-  }));
+    ];
+    if (e.status === 'waiting') {
+      buttons.unshift({ action: 'message', label: '🔔 다음 고객 호출', messageText: `admin:호출:${e.id}` });
+    }
+    if (e.status === 'called' || e.status === 'arriving') {
+      buttons.unshift({ action: 'message', label: '✅ 입장 완료', messageText: `admin:입장:${e.id}` });
+    }
+    return {
+      title: `${e.id}번 ${statusEmoji[e.status] || e.status}`,
+      description: `👥 ${e.people}인 | 📱 ${e.phoneMasked}\n${e.type === 'remote' ? '📱 원격대기' : '🏪 현장대기'}`,
+      buttons
+    };
+  });
 
   return {
     version: '2.0',
@@ -580,25 +589,115 @@ async function handleAdmin(userId, utterance, callbackUrl) {
     };
   }
 
-  // 예약 현황 (시연용 더미 데이터)
+  // 예약 현황 (시연용 더미 데이터 - 피부과)
   if (utterance === 'admin:예약') {
     return {
       version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: `📅 오늘의 예약 현황\n─────────────────\n※ 카카오채널 예약 기준\n(네이버 예약은 네이버 예약\n관리자 페이지에서 확인해주세요)` } },
+          { simpleText: { text: '📅 예약 현황\n─────────────────\n날짜를 선택하시면 상세 내역을 확인할 수 있습니다 😊' } },
           { carousel: {
             type: 'basicCard',
             items: [
-              { title: '18:00 홍** 4인', description: '🍱 프리미엄 한정식\n📱 ***-1234' },
-              { title: '19:00 김** 2인', description: '🥗 런치 한상\n📱 ***-5678' },
-              { title: '20:00 박** 6인', description: '👑 궁중 한정식\n📱 ***-9012\n🏮 프라이빗룸 요청' }
+              {
+                title: '📆 오늘 · 6월 21일 (토)',
+                description: '총 5건 예약',
+                buttons: [{ action: 'message', label: '📋 상세보기', messageText: 'admin:예약:오늘' }]
+              },
+              {
+                title: '📆 내일 · 6월 22일 (일)',
+                description: '총 3건 예약',
+                buttons: [{ action: 'message', label: '📋 상세보기', messageText: 'admin:예약:내일' }]
+              },
+              {
+                title: '📆 6월 23일 (월)',
+                description: '총 7건 예약',
+                buttons: [{ action: 'message', label: '📋 상세보기', messageText: 'admin:예약:모레' }]
+              }
             ]
           }}
         ],
         quickReplies: [
           { label: '◀ 대시보드', action: 'message', messageText: ADMIN_PASSWORD },
           { label: '⏳ 대기자 관리', action: 'message', messageText: 'admin:현황' }
+        ]
+      }
+    };
+  }
+
+  // 예약 상세 - 오늘
+  if (utterance === 'admin:예약:오늘') {
+    return {
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: '📆 6월 21일 (토) 예약 상세\n─────────────────' } },
+          { carousel: {
+            type: 'basicCard',
+            items: [
+              { title: '10:00 김** ', description: '💉 레이저 토닝 1회\n📱 ***-1234\n✅ 예약확정' },
+              { title: '11:00 이** ', description: '✨ 보톡스 (이마)\n📱 ***-5678\n✅ 예약확정' },
+              { title: '13:00 박** ', description: '💋 필러 (볼)\n📱 ***-9012\n✅ 예약확정' },
+              { title: '15:00 최** ', description: '🔬 피부 상담\n📱 ***-3456\n✅ 예약확정' },
+              { title: '17:00 정** ', description: '💉 여드름 치료\n📱 ***-7890\n✅ 예약확정' }
+            ]
+          }}
+        ],
+        quickReplies: [
+          { label: '◀ 예약 현황', action: 'message', messageText: 'admin:예약' },
+          { label: '◀ 대시보드', action: 'message', messageText: ADMIN_PASSWORD }
+        ]
+      }
+    };
+  }
+
+  // 예약 상세 - 내일
+  if (utterance === 'admin:예약:내일') {
+    return {
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: '📆 6월 22일 (일) 예약 상세\n─────────────────' } },
+          { carousel: {
+            type: 'basicCard',
+            items: [
+              { title: '10:30 한** ', description: '✨ 리프팅 (울쎄라)\n📱 ***-2345\n✅ 예약확정' },
+              { title: '14:00 윤** ', description: '💉 색소 레이저\n📱 ***-6789\n✅ 예약확정' },
+              { title: '16:00 강** ', description: '🔬 피부 상담\n📱 ***-0123\n⏳ 대기중' }
+            ]
+          }}
+        ],
+        quickReplies: [
+          { label: '◀ 예약 현황', action: 'message', messageText: 'admin:예약' },
+          { label: '◀ 대시보드', action: 'message', messageText: ADMIN_PASSWORD }
+        ]
+      }
+    };
+  }
+
+  // 예약 상세 - 모레
+  if (utterance === 'admin:예약:모레') {
+    return {
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: '📆 6월 23일 (월) 예약 상세\n─────────────────' } },
+          { carousel: {
+            type: 'basicCard',
+            items: [
+              { title: '09:30 오** ', description: '💉 레이저 토닝 5회권\n📱 ***-1111\n✅ 예약확정' },
+              { title: '10:30 서** ', description: '✨ 보톡스 (사각턱)\n📱 ***-2222\n✅ 예약확정' },
+              { title: '11:30 문** ', description: '💋 필러 (입술)\n📱 ***-3333\n✅ 예약확정' },
+              { title: '13:30 양** ', description: '🔬 여드름 흉터 치료\n📱 ***-4444\n✅ 예약확정' },
+              { title: '14:30 손** ', description: '✨ 리프팅 (써마지)\n📱 ***-5555\n✅ 예약확정' },
+              { title: '15:30 백** ', description: '💉 제모 레이저\n📱 ***-6666\n⏳ 대기중' },
+              { title: '17:00 홍** ', description: '🔬 피부 상담\n📱 ***-7777\n✅ 예약확정' }
+            ]
+          }}
+        ],
+        quickReplies: [
+          { label: '◀ 예약 현황', action: 'message', messageText: 'admin:예약' },
+          { label: '◀ 대시보드', action: 'message', messageText: ADMIN_PASSWORD }
         ]
       }
     };
