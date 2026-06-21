@@ -405,10 +405,8 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
         outputs: [{ simpleText: { text: T.reg_done(pos.position, pos.total) } }],
         quickReplies: [
           { label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' },
-          { label: '❌ 취소할게요', action: 'message', messageText: '웨이팅:취소' },
-          { label: '🏥 진료 안내', action: 'message', messageText: '상담하기' },
-          { label: '💰 가격 안내', action: 'message', messageText: '가격안내' },
-          { label: '🏠 처음으로', action: 'message', messageText: '처음으로' }
+          { label: T.btn_cancel, action: 'message', messageText: '웨이팅:취소' },
+          { label: T.btn_home, action: 'message', messageText: '처음으로' }
         ]
       }
     };
