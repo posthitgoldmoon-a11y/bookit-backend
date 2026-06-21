@@ -403,7 +403,8 @@ async function handleMain(req, res) {
       session.data = {};
       session.booted = false;
       session.visited = true;
-      await showWelcome(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
+      session.industry = null;
+      await showIndustryCarousel(callbackUrl, 'ko');
       return;
     }
 
