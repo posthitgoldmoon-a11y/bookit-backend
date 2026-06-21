@@ -434,6 +434,15 @@ async function handleMain(req, res) {
       return;
     }
 
+    // 과 선택 처리 (visited 체크보다 먼저)
+    const deptMap2 = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '치과': 'dental' };
+    if (deptMap2[userMessage]) {
+      session.industry = deptMap2[userMessage];
+      session.visited = true;
+      await showWelcome(callbackUrl, session.data.lang || 'ko', session.industry);
+      return;
+    }
+
     if (!session.visited) {
       session.visited = true;
       await showDeptCarousel(callbackUrl);
