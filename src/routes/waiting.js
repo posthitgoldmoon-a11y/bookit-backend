@@ -234,10 +234,10 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
       return {
         version: '2.0',
         template: {
-          outputs: [{ simpleText: { text: '등록된 대기 정보가 없습니다.\n웨이팅을 먼저 등록해주세요 😊' } }],
+          outputs: [{ simpleText: { text: T.already } }],
           quickReplies: [
-            { label: '⏳ 웨이팅 등록', action: 'message', messageText: '웨이팅등록' },
-            { label: '📱 원격 웨이팅', action: 'message', messageText: '원격웨이팅' }
+            { label: T.btn_again, action: 'message', messageText: '웨이팅등록' },
+            { label: T.btn_home, action: 'message', messageText: '처음으로' }
           ]
         }
       };
@@ -249,10 +249,10 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
       return {
         version: '2.0',
         template: {
-          outputs: [{ simpleText: { text: `🔔 지금 입장하실 차례입니다!\n가게로 와주세요 😊\n\n실제 서비스에서는 이 순간\n카카오톡 알림이 발송됩니다 📱` } }],
+          outputs: [{ simpleText: { text: `🔔 ${T.arriving}` } }],
           quickReplies: [
-            { label: '🏃 곧 도착이요', action: 'message', messageText: '웨이팅:도착' },
-            { label: '❌ 취소할게요', action: 'message', messageText: '웨이팅:취소' }
+            { label: T.btn_arrive, action: 'message', messageText: '웨이팅:도착' },
+            { label: T.btn_cancel, action: 'message', messageText: '웨이팅:취소' }
           ]
         }
       };
@@ -263,9 +263,9 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
       return {
         version: '2.0',
         template: {
-          outputs: [{ simpleText: { text: '대기가 취소된 상태입니다.\n다시 등록하시겠어요? 😊' } }],
+          outputs: [{ simpleText: { text: T.cancel_ok } }],
           quickReplies: [
-            { label: '⏳ 다시 등록', action: 'message', messageText: '웨이팅등록' }
+            { label: T.btn_again, action: 'message', messageText: '웨이팅등록' }
           ]
         }
       };
@@ -274,11 +274,11 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `🎫 현재 ${pos.position}번째 대기 중입니다\n전체 ${pos.total}팀 대기 중 😊\n\n입장 순서가 되면 알림을 보내드릴게요!` } }],
+        outputs: [{ simpleText: { text: T.pos(pos.position, pos.total) } }],
         quickReplies: [
-          { label: '🔄 순번 확인', action: 'message', messageText: '웨이팅:순번확인' },
-          { label: '❌ 취소할게요', action: 'message', messageText: '웨이팅:취소' },
-          { label: '🏠 처음으로', action: 'message', messageText: '처음으로' }
+          { label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' },
+          { label: T.btn_cancel, action: 'message', messageText: '웨이팅:취소' },
+          { label: T.btn_home, action: 'message', messageText: '처음으로' }
         ]
       }
     };
@@ -291,9 +291,9 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: '✅ 확인했습니다!\n잠시만 기다려주세요 😊\n곧 안내해 드리겠습니다.' } }],
+        outputs: [{ simpleText: { text: T.arriving } }],
         quickReplies: [
-          { label: '🔄 순번 확인', action: 'message', messageText: '웨이팅:순번확인' }
+          { label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' }
         ]
       }
     };
@@ -306,9 +306,9 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: '대기가 취소되었습니다.\n다음에 또 방문해주세요 😊' } }],
+        outputs: [{ simpleText: { text: T.cancel_ok } }],
         quickReplies: [
-          { label: '🏠 처음으로', action: 'message', messageText: '처음으로' }
+          { label: T.btn_home, action: 'message', messageText: '처음으로' }
         ]
       }
     };
@@ -322,10 +322,10 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
       return {
         version: '2.0',
         template: {
-          outputs: [{ simpleText: { text: `이미 ${pos?.position || '?'}번째로 대기 중입니다 😊` } }],
+          outputs: [{ simpleText: { text: T.pos(pos?.position || '?', pos?.total || '?') } }],
           quickReplies: [
-            { label: '🔄 순번 확인', action: 'message', messageText: '웨이팅:순번확인' },
-            { label: '❌ 취소할게요', action: 'message', messageText: '웨이팅:취소' }
+            { label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' },
+            { label: T.btn_cancel, action: 'message', messageText: '웨이팅:취소' }
           ]
         }
       };
@@ -333,10 +333,10 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: '⏳ 웨이팅 등록\n─────────────────\n대기 등록 방식을 선택해주세요 😊' } }],
+        outputs: [{ simpleText: { text: `${T.reg_title}\n─────────────────\n${T.reg_select}` } }],
         quickReplies: [
-          { label: '🏠 현장 대기 등록', action: 'message', messageText: '웨이팅:현장' },
-          { label: '📱 원격 대기 등록', action: 'message', messageText: '웨이팅:원격' }
+          { label: T.onsite, action: 'message', messageText: '웨이팅:현장' },
+          { label: T.remote, action: 'message', messageText: '웨이팅:원격' }
         ]
       }
     };
@@ -350,21 +350,21 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
       return {
         version: '2.0',
         template: {
-          outputs: [{ simpleText: { text: `이미 ${pos?.position || '?'}번째로 대기 중입니다 😊` } }],
+          outputs: [{ simpleText: { text: T.pos(pos?.position || '?', pos?.total || '?') } }],
           quickReplies: [
-            { label: '🔄 순번 확인', action: 'message', messageText: '웨이팅:순번확인' },
-            { label: '❌ 취소할게요', action: 'message', messageText: '웨이팅:취소' }
+            { label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' },
+            { label: T.btn_cancel, action: 'message', messageText: '웨이팅:취소' }
           ]
         }
       };
     }
     ws.step = 'people';
     ws.type = (utterance === '웨이팅:원격' || utterance === '원격웨이팅') ? 'remote' : 'onsite';
-    const typeLabel = ws.type === 'remote' ? '📱 원격 대기 등록' : '🏠 현장 대기 등록';
+    const typeLabel = ws.type === 'remote' ? T.remote : T.onsite;
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `${typeLabel}\n\n몇 분이서 오시나요? 😊` } }],
+        outputs: [{ simpleText: { text: `${typeLabel}\n\n${T.people_q}` } }],
         quickReplies: [
           '1인', '2인', '3인', '4인', '5인', '6인', '7인', '8인 이상'
         ].map(p => ({ label: p, action: 'message', messageText: `웨이팅:인원:${p}` }))
@@ -379,7 +379,7 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `${ws.people} 선택하셨습니다 😊\n\n연락처를 입력해주세요\n(예: 010-1234-5678)` } }]
+        outputs: [{ simpleText: { text: `${ws.people} ${T.phone_q}` } }]
       }
     };
   }
@@ -402,9 +402,9 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `✅ 웨이팅 등록 완료!\n\n🎫 ${pos.position}번째 대기 중입니다\n전체 ${pos.total}팀 대기 중 😊\n\n입장 순서가 되면 알림을 보내드릴게요!\n그 동안 편하게 진료 안내를 둘러보세요 🏥` } }],
+        outputs: [{ simpleText: { text: T.reg_done(pos.position, pos.total) } }],
         quickReplies: [
-          { label: '🔄 순번 확인', action: 'message', messageText: '웨이팅:순번확인' },
+          { label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' },
           { label: '❌ 취소할게요', action: 'message', messageText: '웨이팅:취소' },
           { label: '🏥 진료 안내', action: 'message', messageText: '상담하기' },
           { label: '💰 가격 안내', action: 'message', messageText: '가격안내' },
