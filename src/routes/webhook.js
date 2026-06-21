@@ -107,8 +107,32 @@ const INDUSTRY_MAP = {
   '액티비티': 'activity', '체육시설': 'sports', '파티룸': 'partyroom',
   '네일샵': 'nail', '사진스튜디오': 'studio', '스터디카페': 'studycafe',
   '요가': 'yoga', '수영': 'swimming',
-  '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry'
+  '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '피부과': 'hospital'
 };
+
+
+async function showDeptCarousel(callbackUrl) {
+  const items = [
+    { title: '🔬 피부과', description: '레이저·보톡스·필러·리프팅', buttons: [{ action: 'message', label: '선택하기', messageText: '피부과' }] },
+    { title: '💉 성형외과', description: '눈·코·윤곽·지방·리프팅', buttons: [{ action: 'message', label: '선택하기', messageText: '성형외과' }] },
+    { title: '🔬 비뇨기과', description: '전립선·요로·남성·여성 건강', buttons: [{ action: 'message', label: '선택하기', messageText: '비뇨기과' }] },
+    { title: '🤰 산부인과', description: '산전검진·여성건강·갱년기', buttons: [{ action: 'message', label: '선택하기', messageText: '산부인과' }] },
+    { title: '💙 정신건강의학과', description: '우울·불안·수면·ADHD·상담', buttons: [{ action: 'message', label: '선택하기', messageText: '정신과' }] }
+  ];
+  await fetch(callbackUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: '🏥 Bookit-Medi 시연 채널입니다!\n진료과를 선택해 주세요 😊' } },
+          { carousel: { type: 'basicCard', items } }
+        ]
+      }
+    })
+  });
+}
 
 async function showIndustryCarousel(callbackUrl, lang = 'ko') {
   const list = INDUSTRIES[lang] || INDUSTRIES.ko;
@@ -402,15 +426,15 @@ async function handleMain(req, res) {
       session.history = [];
       session.data = {};
       session.booted = false;
-      session.visited = true;
-      session.industry = session.industry || 'hospital';
-      await showWelcome(callbackUrl, 'ko', session.industry);
+      session.visited = false;
+      session.industry = null;
+      await showDeptCarousel(callbackUrl);
       return;
     }
 
     if (!session.visited) {
       session.visited = true;
-      await showWelcome(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
+      await showDeptCarousel(callbackUrl);
       return;
     }
 
@@ -475,6 +499,16 @@ async function handleMain(req, res) {
       return;
     }
     // 언어 선택
+
+
+    // 과 선택 처리
+    const deptMap = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry' };
+    if (deptMap[userMessage]) {
+      session.industry = deptMap[userMessage];
+      session.visited = true;
+      await showWelcome(callbackUrl, 'ko', session.industry);
+      return;
+    }
 
     // 업종 선택 처리
     const selectedIndustry = INDUSTRY_MAP[userMessage];
