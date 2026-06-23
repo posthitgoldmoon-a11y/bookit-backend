@@ -859,16 +859,16 @@ async function handleMain(req, res) {
       const lang = session.data.lang || 'ko';
       const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
       const hoursTexts = {
-        ko: "⏰ 진료시간 안내\n\n월~금: 09:00 - 18:00\n토요일: 09:00 - 15:00\n일/공휴일: 휴진\n\n점심시간: 13:00 - 14:00\n\n📞 전화예약: 02-1234-5678",
-        en: "⏰ Business Hours\n\nMon-Fri: 09:00 - 18:00\nSaturday: 09:00 - 15:00\nSun/Holidays: Closed\n\nLunch: 13:00 - 14:00\n\n📞 Phone: 02-1234-5678",
-        zh: "⏰ 营业时间\n\n周一至周五: 09:00 - 18:00\n周六: 09:00 - 15:00\n周日/节假日: 休息\n\n午休: 13:00 - 14:00\n\n📞 电话: 02-1234-5678",
-        ja: "⏰ 診療時間\n\n月〜金: 09:00 - 18:00\n土曜日: 09:00 - 15:00\n日/祝日: 休診\n\nランチ: 13:00 - 14:00\n\n📞 電話: 02-1234-5678",
-        th: "⏰ เวลาทำการ\n\nจ-ศ: 09:00 - 18:00\nเสาร์: 09:00 - 15:00\nอาทิตย์/วันหยุด: ปิด\n\nพักกลางวัน: 13:00 - 14:00\n\n📞 โทร: 02-1234-5678",
-        vi: "⏰ Giờ làm việc\n\nT2-T6: 09:00 - 18:00\nThứ 7: 09:00 - 15:00\nCN/Lễ: Nghỉ\n\nNghỉ trưa: 13:00 - 14:00\n\n📞 Điện thoại: 02-1234-5678",
-        ar: "⏰ ساعات العمل\n\nإثنين-جمعة: 09:00 - 18:00\nالسبت: 09:00 - 15:00\nأحد/عطلات: مغلق\n\nاستراحة الغداء: 13:00 - 14:00\n\n📞 هاتف: 02-1234-5678",
-        ru: "⏰ Часы работы\n\nПн-Пт: 09:00 - 18:00\nСуббота: 09:00 - 15:00\nВс/праздники: Закрыто\n\nОбед: 13:00 - 14:00\n\n📞 Телефон: 02-1234-5678",
-        fr: "⏰ Heures d'ouverture\n\nLun-Ven: 09:00 - 18:00\nSamedi: 09:00 - 15:00\nDim/Fériés: Fermé\n\nDéjeuner: 13:00 - 14:00\n\n📞 Tél: 02-1234-5678",
-        es: "⏰ Horario\n\nLun-Vie: 09:00 - 18:00\nSábado: 09:00 - 15:00\nDom/Festivos: Cerrado\n\nAlmuerzo: 13:00 - 14:00\n\n📞 Tel: 02-1234-5678"
+        ko: "⏰ 진료시간 안내\n\n월·화·목: 10:30 ~ 19:30\n금요일: 10:30 ~ 18:00\n토요일: 09:00 ~ 13:00\n일요일·공휴일: 휴진\n\n점심시간 (월·화·목): 12:00 ~ 13:00\n점심시간 (금): 11:00 ~ 12:00\n\n📞 전화예약: 02-6013-7522",
+        en: "⏰ Business Hours\n\nMon·Tue·Thu: 10:30 ~ 19:30\nFriday: 10:30 ~ 18:00\nSaturday: 09:00 ~ 13:00\nSun/Holidays: Closed\n\nLunch (Mon·Tue·Thu): 12:00 ~ 13:00\nLunch (Fri): 11:00 ~ 12:00\n\n📞 Phone: 02-6013-7522",
+        zh: "⏰ 营业时间\n\n周一·二·四: 10:30 ~ 19:30\n周五: 10:30 ~ 18:00\n周六: 09:00 ~ 13:00\n周日/节假日: 休息\n\n午休 (周一·二·四): 12:00 ~ 13:00\n午休 (周五): 11:00 ~ 12:00\n\n📞 电话: 02-6013-7522",
+        ja: "⏰ 診療時間\n\n月·火·木: 10:30 ~ 19:30\n金曜日: 10:30 ~ 18:00\n土曜日: 09:00 ~ 13:00\n日/祝日: 休診\n\nランチ (月·火·木): 12:00 ~ 13:00\nランチ (金): 11:00 ~ 12:00\n\n📞 電話: 02-6013-7522",
+        th: "⏰ เวลาทำการ\n\nจ·อ·พฤ: 10:30 ~ 19:30\nศุกร์: 10:30 ~ 18:00\nเสาร์: 09:00 ~ 13:00\nอาทิตย์/วันหยุด: ปิด\n\nพักกลางวัน (จ·อ·พฤ): 12:00 ~ 13:00\nพักกลางวัน (ศ): 11:00 ~ 12:00\n\n📞 โทร: 02-6013-7522",
+        vi: "⏰ Giờ làm việc\n\nT2·T3·T5: 10:30 ~ 19:30\nThứ 6: 10:30 ~ 18:00\nThứ 7: 09:00 ~ 13:00\nCN/Lễ: Nghỉ\n\nNghỉ trưa (T2·T3·T5): 12:00 ~ 13:00\nNghỉ trưa (T6): 11:00 ~ 12:00\n\n📞 Điện thoại: 02-6013-7522",
+        ar: "⏰ ساعات العمل\n\nإثنين·ثلاثاء·خميس: 10:30 ~ 19:30\nالجمعة: 10:30 ~ 18:00\nالسبت: 09:00 ~ 13:00\nأحد/عطلات: مغلق\n\nاستراحة (إثنين·ثلاثاء·خميس): 12:00 ~ 13:00\nاستراحة (جمعة): 11:00 ~ 12:00\n\n📞 هاتف: 02-6013-7522",
+        ru: "⏰ Часы работы\n\nПн·Вт·Чт: 10:30 ~ 19:30\nПятница: 10:30 ~ 18:00\nСуббота: 09:00 ~ 13:00\nВс/праздники: Закрыто\n\nОбед (Пн·Вт·Чт): 12:00 ~ 13:00\nОбед (Пт): 11:00 ~ 12:00\n\n📞 Телефон: 02-6013-7522",
+        fr: "⏰ Heures d'ouverture\n\nLun·Mar·Jeu: 10:30 ~ 19:30\nVendredi: 10:30 ~ 18:00\nSamedi: 09:00 ~ 13:00\nDim/Fériés: Fermé\n\nDéjeuner (Lun·Mar·Jeu): 12:00 ~ 13:00\nDéjeuner (Ven): 11:00 ~ 12:00\n\n📞 Tél: 02-6013-7522",
+        es: "⏰ Horario\n\nLun·Mar·Jue: 10:30 ~ 19:30\nViernes: 10:30 ~ 18:00\nSábado: 09:00 ~ 13:00\nDom/Festivos: Cerrado\n\nAlmuerzo (Lun·Mar·Jue): 12:00 ~ 13:00\nAlmuerzo (Vie): 11:00 ~ 12:00\n\n📞 Tel: 02-6013-7522"
       };
       await sendCallback(callbackUrl, hoursTexts[lang] || hoursTexts.ko,
         getQuickReplies(lang, 'dental'),
@@ -1234,7 +1234,7 @@ async function showWelcome(callbackUrl, lang = 'ko', industry = 'dental') {
             thumbnail: { imageUrl: bannerUrl, fixedRatio: false }
           }}
         ],
-        quickReplies: getQuickReplies('ko', 'dental')
+        quickReplies: getQuickReplies(lang, 'dental')
       }
     };
     const res = await fetch(callbackUrl, {
@@ -1283,9 +1283,7 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko', industry =
             }))
           }}
         ],
-        quickReplies: [
-          { label: l.home, action: 'message', messageText: '처음으로' }
-        ]
+        quickReplies: getQuickReplies(lang, 'dental')
       }
     };
     const res = await fetch(callbackUrl, {
@@ -1334,10 +1332,7 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
             }))
           }}
         ],
-        quickReplies: [
-          { label: l.home, action: 'message', messageText: '처음으로' },
-          { label: l.price, action: 'message', messageText: l.priceMsg }
-        ]
+        quickReplies: getQuickReplies(lang, 'dental')
       }
     };
     const res = await fetch(callbackUrl, {
@@ -1486,9 +1481,7 @@ async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false
             }))
           }}
         ],
-        quickReplies: [
-          { label: l.home, action: 'message', messageText: '처음으로' }
-        ]
+        quickReplies: getQuickReplies(lang, 'dental')
       }
     };
     if (showBooking) {
