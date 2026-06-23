@@ -727,7 +727,7 @@ async function handleMain(req, res) {
       const lang = session.data.lang || 'ko';
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
       const contactMsgs = {
-        ko: '',
+        ko: '예약 방법을 선택해 주세요 😊',
         en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
         zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
         ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
@@ -752,7 +752,7 @@ async function handleMain(req, res) {
                 title: bl.title,
                 description: bl.desc,
                 buttons: [
-                  { action: "message", label: bl.naver, messageText: "네이버예약클릭" },
+                  { action: "webLink", label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || "https://booking.naver.com" },
                   { action: "message", label: bl.kakao, messageText: "카카오예약하기" }
                 ]
               }}
@@ -784,6 +784,17 @@ async function handleMain(req, res) {
         "🌍 언어: " + lang,
         "⏰ 시간: " + new Date().toLocaleString("ko-KR", {timeZone: "Asia/Seoul"})
       ].join("\n"));
+      await fetch(callbackUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          version: "2.0",
+          template: {
+            outputs: [{ simpleText: { text: "네이버 예약 페이지로 이동합니다 😊" } }],
+            quickReplies: [{ action: "webLink", label: "🟢 네이버 예약하기", webLinkUrl: naverUrl }, { action: "message", label: "🏠 처음으로", messageText: "처음으로" }]
+          }
+        })
+      });
       return;
     }
 
@@ -1081,7 +1092,7 @@ async function handleMain(req, res) {
         body: JSON.stringify({
           version: '2.0',
           template: {
-            outputs: [{ basicCard: { title: b.title, description: b.desc, buttons: [{ action: 'message', label: b.naver, messageText: '네이버예약클릭' }, { action: 'message', label: b.kakao, messageText: '카카오예약하기' }] }}],
+            outputs: [{ basicCard: { title: b.title, description: b.desc, buttons: [{ action: 'webLink', label: b.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || 'https://booking.naver.com' }, { action: 'message', label: b.kakao, messageText: '카카오예약하기' }] }}],
             quickReplies: getQuickReplies(lang, session.industry || 'hospital')
           }
         })
@@ -1137,7 +1148,7 @@ async function handleMain(req, res) {
                   title: bl.title,
                   description: bl.desc,
                   buttons: [
-                    { action: 'message', label: bl.naver, messageText: '네이버예약클릭' },
+                    { action: 'webLink', label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || 'https://booking.naver.com' },
                     { action: 'message', label: bl.kakao, messageText: '카카오예약하기' }
                   ]
                 }}
@@ -1197,7 +1208,7 @@ async function handleMain(req, res) {
                   title: bl.title,
                   description: bl.desc,
                   buttons: [
-                    { action: "message", label: bl.naver, messageText: "네이버예약클릭" },
+                    { action: "webLink", label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || "https://booking.naver.com" },
                     { action: "message", label: bl.kakao, messageText: "카카오예약하기" }
                   ]
                 }
@@ -1516,7 +1527,7 @@ async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false
         title: bl.title,
         description: bl.desc,
         buttons: [
-          { action: 'message', label: bl.naver, messageText: '네이버예약클릭' },
+          { action: 'webLink', label: bl.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || 'https://booking.naver.com' },
           { action: 'message', label: bl.kakao, messageText: '카카오예약하기' }
         ]
       }});
