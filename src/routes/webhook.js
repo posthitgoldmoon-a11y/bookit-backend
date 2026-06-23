@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const sessions = {};
 const recentRequests = new Map();
-const BASE_URL = `http://${process.env.SERVER_IP}:3002`;
+const BASE_URL = `http://${process.env.SERVER_IP}:3007`;
 
 // ─── 프롬프트 파일 카드 파서 ───────────────────────────────
 function parseCardSection(industry, sectionName, lang = 'ko') {
@@ -47,56 +47,10 @@ function parseCardSection(industry, sectionName, lang = 'ko') {
 
 const INDUSTRIES = {
   ko: [
-    { title: '🏥 병원동행', desc: '접수부터 수납까지 보호자처럼', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
-    { title: '🏨 병원', desc: '전문의와 함께하는 진료 예약', msg: '병원', img: 'banner_hospital.jpg' },
-    { title: '🍽️ 식당', desc: '특별한 날을 위한 레스토랑', msg: '식당', img: 'banner_restaurant.jpg' },
-    { title: '💇 미용실', desc: '나만의 스타일을 찾아드려요', msg: '미용실', img: 'banner_beauty.jpg' },
-    { title: '🏨 숙박', desc: '편안한 휴식을 위한 숙소', msg: '숙박', img: 'banner_accommodation.jpg' },
-    { title: '💆 마사지', desc: '몸과 마음의 힐링', msg: '마사지', img: 'banner_massage.jpg' },
-    { title: '✈️ 공항택시', desc: '안전하고 편안한 공항 이동', msg: '공항택시', img: 'banner_airport_taxi.jpg' },
-    { title: '🐾 동물병원', desc: '소중한 반려동물의 건강', msg: '동물병원', img: 'banner_vet.jpg' },
-    { title: '🏯 템플스테이', desc: '마음을 치유하는 사찰 체험', msg: '템플스테이', img: 'banner_templestay.jpg' },
-    { title: '✨ 피부관리', desc: '빛나는 피부를 위한 케어', msg: '피부관리', img: 'banner_skincare.jpg' },
-    { title: '⛳ 골프', desc: '그린 위의 특별한 라운드', msg: '골프', img: 'banner_golf.jpg' },
-    { title: '🚗 렌트카', desc: '자유로운 여행을 위한 렌터카', msg: '렌트카', img: 'banner_rentcar.jpg' },
-    { title: '🧗 액티비티', desc: '짜릿한 야외 액티비티', msg: '액티비티', img: 'banner_activity.jpg' },
-    { title: '🏋️ 체육시설', desc: '건강한 몸을 위한 운동', msg: '체육시설', img: 'banner_sports.jpg' },
-    { title: '🎉 파티룸', desc: '특별한 파티를 위한 공간', msg: '파티룸', img: 'banner_partyroom.jpg' },
-    { title: '💅 네일샵', desc: '아름다운 손끝을 위한 케어', msg: '네일샵', img: 'banner_nail.jpg' },
-    { title: '📸 사진스튜디오', desc: '소중한 순간을 담아드려요', msg: '사진스튜디오', img: 'banner_studio.jpg' },
-    { title: '📚 스터디카페', desc: '집중할 수 있는 공간', msg: '스터디카페', img: 'banner_studycafe.jpg' },
-    { title: '🧘 요가/필라테스', desc: '몸과 마음의 균형', msg: '요가', img: 'banner_yoga.jpg' },
-    { title: '🏊 수영/볼링', desc: '즐거운 스포츠 활동', msg: '수영', img: 'banner_swimming.jpg' },
-    { title: '💉 성형외과', desc: '자연스럽고 아름다운 성형', msg: '성형외과', img: 'banner_hospital.jpg' },
-    { title: '🔬 비뇨기과', desc: '전문의와 함께하는 비뇨기 건강', msg: '비뇨기과', img: 'banner_hospital.jpg' },
-    { title: '🤰 산부인과', desc: '여성 건강을 위한 전문 진료', msg: '산부인과', img: 'banner_hospital.jpg' },
-    { title: '💙 정신건강의학과', desc: '마음 건강을 위한 전문 상담', msg: '정신과', img: 'banner_hospital.jpg' }
+    { title: '🦷 서울 하이엔드 치과', desc: '임플란트·교정·스케일링·충치', msg: '치과', img: 'banner_dental.jpg' }
   ],
   en: [
-    { title: '🏥 Hospital Companion', desc: 'From registration to payment', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
-    { title: '🏨 Hospital', desc: 'Medical appointment booking', msg: '병원', img: 'banner_hospital.jpg' },
-    { title: '🍽️ Restaurant', desc: 'Special dining experiences', msg: '식당', img: 'banner_restaurant.jpg' },
-    { title: '💇 Hair Salon', desc: 'Find your perfect style', msg: '미용실', img: 'banner_beauty.jpg' },
-    { title: '🏨 Accommodation', desc: 'Comfortable stay options', msg: '숙박', img: 'banner_accommodation.jpg' },
-    { title: '💆 Massage', desc: 'Healing body and mind', msg: '마사지', img: 'banner_massage.jpg' },
-    { title: '✈️ Airport Taxi', desc: 'Safe airport transfers', msg: '공항택시', img: 'banner_airport_taxi.jpg' },
-    { title: '🐾 Vet Clinic', desc: 'Pet health care', msg: '동물병원', img: 'banner_vet.jpg' },
-    { title: '🏯 Temple Stay', desc: 'Healing temple experience', msg: '템플스테이', img: 'banner_templestay.jpg' },
-    { title: '✨ Skin Care', desc: 'Glowing skin treatments', msg: '피부관리', img: 'banner_skincare.jpg' },
-    { title: '⛳ Golf', desc: 'Special rounds on the green', msg: '골프', img: 'banner_golf.jpg' },
-    { title: '🚗 Car Rental', desc: 'Freedom to explore', msg: '렌트카', img: 'banner_rentcar.jpg' },
-    { title: '🧗 Activity', desc: 'Thrilling outdoor activities', msg: '액티비티', img: 'banner_activity.jpg' },
-    { title: '🏋️ Sports Facility', desc: 'Stay fit and healthy', msg: '체육시설', img: 'banner_sports.jpg' },
-    { title: '🎉 Party Room', desc: 'Perfect party spaces', msg: '파티룸', img: 'banner_partyroom.jpg' },
-    { title: '💅 Nail Shop', desc: 'Beautiful nail care', msg: '네일샵', img: 'banner_nail.jpg' },
-    { title: '📸 Photo Studio', desc: 'Capture precious moments', msg: '사진스튜디오', img: 'banner_studio.jpg' },
-    { title: '📚 Study Cafe', desc: 'Focus and study space', msg: '스터디카페', img: 'banner_studycafe.jpg' },
-    { title: '🧘 Yoga/Pilates', desc: 'Balance body and mind', msg: '요가', img: 'banner_yoga.jpg' },
-    { title: '🏊 Swimming/Bowling', desc: 'Fun sports activities', msg: '수영', img: 'banner_swimming.jpg' },
-    { title: '💉 Plastic Surgery', desc: 'Natural & beautiful results', msg: '성형외과', img: 'banner_hospital.jpg' },
-    { title: '🔬 Urology', desc: 'Urological health care', msg: '비뇨기과', img: 'banner_hospital.jpg' },
-    { title: '🤰 OB/GYN', desc: 'Women health specialist', msg: '산부인과', img: 'banner_hospital.jpg' },
-    { title: '💙 Psychiatry', desc: 'Mental health counseling', msg: '정신과', img: 'banner_hospital.jpg' }
+    { title: '🦷 Seoul High-End Dental', desc: 'Implant·Orthodontics·Scaling·Cavity', msg: '치과', img: 'banner_dental.jpg' }
   ]
 };
 
@@ -114,12 +68,7 @@ const INDUSTRY_MAP = {
 
 async function showDeptCarousel(callbackUrl) {
   const items = [
-    { title: '🔬 피부과', description: '레이저·보톡스·필러·리프팅', thumbnail: { imageUrl: `${BASE_URL}/banner_hospital.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '피부과' }] },
-    { title: '💉 성형외과', description: '눈·코·윤곽·지방·리프팅', thumbnail: { imageUrl: `${BASE_URL}/banner_plastic.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '성형외과' }] },
-    { title: '🔬 비뇨기과', description: '전립선·요로·남성·여성 건강', thumbnail: { imageUrl: `${BASE_URL}/banner_urology.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '비뇨기과' }] },
-    { title: '🤰 산부인과', description: '산전검진·여성건강·갱년기', thumbnail: { imageUrl: `${BASE_URL}/banner_obgyn.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '산부인과' }] },
-    { title: '💙 정신건강의학과', description: '우울·불안·수면·ADHD·상담', thumbnail: { imageUrl: `${BASE_URL}/banner_psychiatry.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '정신과' }] },
-    { title: '🦷 치과', description: '임플란트·교정·스케일링·충치', thumbnail: { imageUrl: `${BASE_URL}/banner_dental.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '치과' }] }
+    { title: '🦷 서울 하이엔드 치과', description: '임플란트·교정·스케일링·충치', thumbnail: { imageUrl: `${BASE_URL}/banner_dental.jpg` }, buttons: [{ action: 'message', label: '💬 상담 시작', messageText: '치과' }] }
   ];
   await fetch(callbackUrl, {
     method: 'POST',
@@ -128,7 +77,7 @@ async function showDeptCarousel(callbackUrl) {
       version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: '🏥 Bookit-Medi 시연 채널입니다!\n진료과를 선택해 주세요 😊' } },
+          { simpleText: { text: '안녕하세요. 정확한 진단과 자세한 설명.\n서울대학교 치과대학 졸업 및 동대학원 석사·박사 과정 및 4년간의 인턴·레지던트 대학병원 수련 과정을 마친 대학병원 외래교수 출신 치과 전문의 대표원장이 진료하는 서울 하이엔드 치과입니다. 😊' } },
           { carousel: { type: 'basicCard', items } }
         ]
       }
@@ -442,7 +391,7 @@ async function handleMain(req, res) {
       session.booted = false;
       session.visited = false;
       session.industry = null;
-      await showDeptCarousel(callbackUrl);
+      await showWelcome(callbackUrl, 'ko', 'dental');
       return;
     }
 
@@ -457,7 +406,7 @@ async function handleMain(req, res) {
 
     if (!session.visited) {
       session.visited = true;
-      await showDeptCarousel(callbackUrl);
+      await showWelcome(callbackUrl, 'ko', 'dental');
       return;
     }
 
@@ -529,7 +478,7 @@ async function handleMain(req, res) {
     if (deptMap[userMessage]) {
       session.industry = deptMap[userMessage];
       session.visited = true;
-      await showWelcome(callbackUrl, 'ko', session.industry);
+      await showWelcome(callbackUrl, 'ko', 'dental');
       return;
     }
 
@@ -703,9 +652,7 @@ async function handleMain(req, res) {
       "피부분석 예약하기",
       "피부암검진 예약하기",
       // 원장 선택
-      "김연세 원장으로 예약하기",
-      "박푸르미 원장으로 예약하기",
-      "이미소 원장으로 예약하기"
+      "지용화 원장으로 예약하기"
     ];
     // 예약 방식 선택
     const bookingTypeLabels = {
@@ -890,16 +837,16 @@ async function handleMain(req, res) {
       const lang = session.data.lang || 'ko';
       const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
       const dirTexts = {
-        ko: '📍 연세푸르미피부과 오시는 길\n\n📌 서울 강남구 강남대로 123 푸르미빌딩 5층\n\n🚇 강남역 2번 출구 도보 3분\n🚗 건물 내 주차 1시간 무료\n📞 02-1234-5678',
-        en: '📍 Directions to Yonsei Purmi Dermatology\n\n📌 5F Purmi Bldg, 123 Gangnam-daero, Gangnam-gu, Seoul\n\n🚇 3 min walk from Gangnam Station Exit 2\n🚗 1 hour free parking\n📞 02-1234-5678',
-        zh: '📍 前往延世普尔美皮肤科\n\n📌 首尔江南区江南大路123号普尔美大厦5楼\n\n🚇 江南站2号出口步行3分钟\n🚗 楼内停车1小时免费\n📞 02-1234-5678',
-        ja: '📍 延世プルミ皮膚科へのアクセス\n\n📌 ソウル江南区江南大路123 プルミビル5階\n\n🚇 江南駅2番出口から徒歩3分\n🚗 館内駐車場1時間無料\n📞 02-1234-5678',
-        th: '📍 เส้นทางไป Yonsei Purmi Dermatology\n\n📌 ชั้น 5 Purmi Bldg, 123 Gangnam-daero, Seoul\n\n🚇 เดิน 3 นาทีจากทางออก 2 สถานี Gangnam\n🚗 จอดรถฟรี 1 ชั่วโมง\n📞 02-1234-5678',
-        vi: '📍 Đường đến Yonsei Purmi Dermatology\n\n📌 Tầng 5, Tòa nhà Purmi, 123 Gangnam-daero, Seoul\n\n🚇 Đi bộ 3 phút từ cửa số 2 ga Gangnam\n🚗 Đậu xe miễn phí 1 giờ\n📞 02-1234-5678',
-        ar: '📍 الاتجاهات إلى عيادة يونسي بورومي\n\n📌 الطابق 5، مبنى بورومي، 123 شارع غانغنام، سيول\n\n🚇 3 دقائق سيرًا من مخرج 2 محطة غانغنام\n🚗 ساعة واحدة مجانية للانتظار\n📞 02-1234-5678',
-        ru: '📍 Как добраться до Yonsei Purmi Dermatology\n\n📌 5 этаж, здание Purmi, 123 Gangnam-daero, Сеул\n\n🚇 3 минуты пешком от выхода 2 станции Gangnam\n🚗 Бесплатная парковка 1 час\n📞 02-1234-5678',
-        fr: '📍 Comment se rendre à Yonsei Purmi Dermatology\n\n📌 5ème étage, Purmi Bldg, 123 Gangnam-daero, Séoul\n\n🚇 3 min à pied de la sortie 2 de la station Gangnam\n🚗 1 heure de stationnement gratuit\n📞 02-1234-5678',
-        es: '📍 Cómo llegar a Yonsei Purmi Dermatology\n\n📌 Piso 5, Purmi Bldg, 123 Gangnam-daero, Seúl\n\n🚇 3 min a pie desde la salida 2 de la estación Gangnam\n🚗 1 hora de estacionamiento gratuito\n📞 02-1234-5678'
+        ko: '📍 서울 하이엔드 치과 오시는 길\n\n📌 서울시 서초구 잠원로24. 512호 (반포동, 반포자이프라자)\n\n🚇 7호선 반포역 · 9호선 사평역 · 3/7/9호선 고속버스터미널역\n🚗 건물 내 주차 1시간 30분 무료\n📞 02-6013-7522',
+        en: '📍 Directions to Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul (Banpo-dong, Banpo Xi Plaza)\n\n🚇 Line 7 Banpo St. · Line 9 Sapyeong St. · Lines 3/7/9 Express Bus Terminal St.\n🚗 1.5 hours free parking\n📞 02-6013-7522',
+        zh: '📍 首尔高端牙科 交通指南\n\n📌 首尔市瑞草区蚕院路24, 512号 (班浦洞, 班浦Xi广场)\n\n🚇 地铁7号线班浦站 · 9号线沙平站 · 3/7/9号线高速巴士客运站\n🚗 免费停车1.5小时\n📞 02-6013-7522',
+        ja: '📍 ソウルハイエンド歯科へのアクセス\n\n📌 ソウル市瑞草区蚕院路24, 512号 (盤浦洞, 盤浦Xiプラザ)\n\n🚇 7号線盤浦駅 · 9号線沙坪駅 · 3/7/9号線高速バスターミナル駅\n🚗 駐車場1時間30分無料\n📞 02-6013-7522',
+        th: '📍 ทิศทางไป Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 สาย 7 สถานี Banpo · สาย 9 สถานี Sapyeong · สาย 3/7/9 สถานี Express Bus Terminal\n🚗 จอดรถฟรี 1.5 ชั่วโมง\n📞 02-6013-7522',
+        vi: '📍 Đường đến Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Tuyến 7 ga Banpo · Tuyến 9 ga Sapyeong · Tuyến 3/7/9 ga Express Bus Terminal\n🚗 Đậu xe miễn phí 1.5 giờ\n📞 02-6013-7522',
+        ar: '📍 الاتجاهات إلى Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 خط 7 محطة Banpo · خط 9 محطة Sapyeong · خطوط 3/7/9 محطة Express Bus Terminal\n🚗 ساعة ونصف مجانية للانتظار\n📞 02-6013-7522',
+        ru: '📍 Как добраться до Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Линия 7 ст. Banpo · Линия 9 ст. Sapyeong · Линии 3/7/9 ст. Express Bus Terminal\n🚗 Бесплатная парковка 1.5 часа\n📞 02-6013-7522',
+        fr: '📍 Comment se rendre à Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Ligne 7 gare Banpo · Ligne 9 gare Sapyeong · Lignes 3/7/9 gare Express Bus Terminal\n🚗 1h30 de stationnement gratuit\n📞 02-6013-7522',
+        es: '📍 Cómo llegar a Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Línea 7 estación Banpo · Línea 9 estación Sapyeong · Líneas 3/7/9 estación Express Bus Terminal\n🚗 1.5 horas de estacionamiento gratuito\n📞 02-6013-7522'
       };
       const mapLabels = {
         ko: '🗺️ 카카오맵 보기', en: '🗺️ View on Map', zh: '🗺️ 查看地图',
@@ -1254,7 +1201,7 @@ async function handleMain(req, res) {
   }
 }
 
-async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
+async function showWelcome(callbackUrl, lang = 'ko', industry = 'dental') {
   console.log('showWelcome 시작');
   try {
     const fs = require('fs');
@@ -1292,13 +1239,12 @@ async function showWelcome(callbackUrl, lang = 'ko', industry = 'hospital') {
       template: {
         outputs: [
           { basicCard: {
-            title: `✨ ${bizName}`,
-            description: bizDesc,
+            title: bizName,
+            description: welcomeMsgs[lang] || welcomeMsgs.ko,
             thumbnail: { imageUrl: bannerUrl, fixedRatio: false }
-          }},
-          { simpleText: { text: welcomeMsgs[lang] || welcomeMsgs.ko } }
+          }}
         ],
-        quickReplies: getQuickReplies(lang, industry)
+        quickReplies: getQuickReplies('ko', 'dental')
       }
     };
     const res = await fetch(callbackUrl, {
