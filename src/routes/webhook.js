@@ -1057,7 +1057,7 @@ async function handleMain(req, res) {
 
     // 예약 의사 직접 감지
     const bookingIntentKeywords = ['예약할게요','에약할게요','예약하고싶어요','예약하고 싶어요','예약부탁해요','예약 부탁해요','예약해주세요','예약 해주세요','방문하고싶어요','방문하고 싶어요','예약할게','에약할게','예약하겠습니다','예약하겠어요','예약원해요','예약 원해요'];
-    if (bookingIntentKeywords.some(k => userMessage.replace(/\s/g,'').includes(k.replace(/\s/g,''))) || (userMessage.includes('예약') && (userMessage.includes('할게') || userMessage.includes('하겠') || userMessage.includes('해줘') || userMessage.includes('부탁') || userMessage.includes('원해') || userMessage.includes('하고싶')))) {
+    if (bookingIntentKeywords.some(k => userMessage.replace(/\s/g,'').includes(k.replace(/\s/g,''))) || ((userMessage === '예약' || userMessage === '예약요') || userMessage.includes('예약') && (userMessage.includes('할게') || userMessage.includes('하겠') || userMessage.includes('해줘') || userMessage.includes('부탁') || userMessage.includes('원해') || userMessage.includes('하고싶')))) {
       const lang = session.data.lang || 'ko';
       const bl = {
         ko: { title: '📋 예약 방법을 선택해 주세요', desc: '🟢 네이버 예약: 실시간으로 날짜/시간 선택\n🟡 카카오 채널 예약: 담당자가 직접 연락드려 예약 확정', naver: '🟢 네이버 예약', kakao: '🟡 카카오 채널 예약' },
