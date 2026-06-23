@@ -646,10 +646,26 @@ async function handleMain(req, res) {
     ];
     // 상담 키워드 (Gemini로 전달)
     const consultKeywords = [
+      // 한국어
       "검진 상담하기", "입냄새 상담하기", "치통 상담하기", "시린이 상담하기",
       "파절 상담하기", "충치 상담하기", "미백 상담하기", "심미 상담하기",
       "잇몸통증 상담하기", "잇몸부종 상담하기", "재치료 상담하기",
-      "보철물 상담하기", "외상 상담하기", "교정 상담하기"
+      "보철물 상담하기", "외상 상담하기", "교정 상담하기",
+      // English
+      "Checkup Consult", "Bad Breath Consult", "Toothache Consult", "Sensitivity Consult",
+      "Fracture Consult", "Cavity Consult", "Whitening Consult", "Aesthetics Consult",
+      "Gum Pain Consult", "Swollen Gum Consult", "Re-treatment Consult",
+      "Restoration Consult", "Injury Consult", "Orthodontics Consult",
+      // 中文
+      "洁牙咨询", "口臭咨询", "牙痛咨询", "敏感咨询",
+      "折裂咨询", "龋齿咨询", "美白咨询", "美学咨询",
+      "牙龈咨询", "肿胀咨询", "再治疗咨询",
+      "修复咨询", "外伤咨询", "矫正咨询",
+      // 日本語
+      "検診相談", "口臭相談", "歯痛相談", "知覚過敏相談",
+      "破折相談", "虫歯相談", "ホワイトニング相談", "審美相談",
+      "歯茎相談", "腫れ相談", "再治療相談",
+      "補綴相談", "外傷相談", "矯正相談"
     ];
     if (consultKeywords.includes(userMessage)) {
       const lang = session.data.lang || 'ko';

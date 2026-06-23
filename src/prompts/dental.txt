@@ -300,3 +300,51 @@ BOOKING_JSON:
 ✨ 불소도포 | 치아를 튼튼하게 만드는 시술\n3만원
 🔬 치아복구치료 | 상한 치아를 자연치아처럼 복구\n10~70만원
 😁 치아교정 | 바르고 예쁜 치아 배열\n350~950만원
+
+## 카드_상담메뉴_en
+🦷 Checkup·Scaling | Tartar removal·Gum health·Oral exam | Checkup Consult
+😤 Bad Breath | Tartar·Cavities·Gum disease | Bad Breath Consult
+🤕 Toothache | Cavities·Nerve damage·Pulpitis | Toothache Consult
+🥶 Sensitive Teeth | Hypersensitivity·Gum recession·Enamel wear | Sensitivity Consult
+💥 Broken Tooth | Fracture·Crown·Resin restoration | Fracture Consult
+🦠 Cavity | Early cavity·Root canal·Prevention | Cavity Consult
+🟡 Yellow Teeth | Discoloration·Whitening·Laminate | Whitening Consult
+😬 Smile Makeover | Braces·Laminate·Resin bonding | Aesthetics Consult
+🩸 Gum Pain | Gingivitis·Periodontitis·Surgery | Gum Pain Consult
+🫧 Swollen Gum | Abscess·Wisdom tooth·Emergency | Swollen Gum Consult
+🔧 Treated Tooth Discomfort | Secondary cavity·Restoration issue | Re-treatment Consult
+🪥 Lost Restoration | Crown·Inlay·Bridge detachment | Restoration Consult
+🚑 Dental Injury | Tooth avulsion·Fracture·Trauma | Injury Consult
+😁 Orthodontics | Braces·Clear aligner·Partial ortho | Orthodontics Consult
+
+## 카드_상담메뉴_zh
+🦷 检查·洁牙 | 去除牙石·牙龈健康·口腔检查 | 洁牙咨询
+😤 口臭 | 牙石·龋齿·牙龈疾病 | 口臭咨询
+🤕 牙痛 | 龋齿·神经损伤·牙髓炎 | 牙痛咨询
+🥶 牙齿敏感 | 过敏症·牙龈退缩·釉质磨损 | 敏感咨询
+💥 牙齿破裂 | 折裂·牙冠·树脂修复 | 折裂咨询
+🦠 龋齿 | 早期龋齿·根管治疗·预防 | 龋齿咨询
+🟡 牙齿发黄 | 变色·美白·贴面 | 美白咨询
+😬 牙齿不好看 | 矫正·贴面·树脂塑形 | 美学咨询
+🩸 牙龈疼痛 | 牙龈炎·牙周炎·手术 | 牙龈咨询
+🫧 牙龈肿胀 | 脓肿·智齿周围炎·急诊 | 肿胀咨询
+🔧 治疗过的牙不适 | 二次龋齿·修复物问题 | 再治疗咨询
+🪥 修复体脱落 | 牙冠·嵌体·桥体脱落 | 修复咨询
+🚑 牙齿受伤 | 牙齿脱出·折裂·外伤 | 外伤咨询
+😁 牙齿矫正 | 托槽·透明矫正·局部矫正 | 矫正咨询
+
+## 카드_상담메뉴_ja
+🦷 検診·スケーリング | 歯石除去·歯茎の健康·口腔検査 | 検診相談
+😤 口臭 | 歯石·虫歯·歯周病 | 口臭相談
+🤕 歯が痛い | 虫歯·神経損傷·歯髄炎 | 歯痛相談
+🥶 歯がしみる | 知覚過敏·歯茎退縮·エナメル磨耗 | 知覚過敏相談
+💥 歯が欠けた | 破折·クラウン·レジン修復 | 破折相談
+🦠 虫歯 | 初期虫歯·根管治療·予防 | 虫歯相談
+🟡 歯が黄色い | 変色·ホワイトニング·ラミネート | ホワイトニング相談
+😬 歯が気になる | 矯正·ラミネート·レジン形成 | 審美相談
+🩸 歯茎が痛い | 歯肉炎·歯周炎·手術 | 歯茎相談
+🫧 歯茎が腫れた | 膿瘍·親知らず周囲炎·応急 | 腫れ相談
+🔧 治療した歯が不快 | 二次虫歯·修復物異常 | 再治療相談
+🪥 補綴物が取れた | クラウン·インレー·ブリッジ脱落 | 補綴相談
+🚑 怪我をした | 歯の脱臼·破折·外傷 | 外傷相談
+😁 歯科矯正 | ブラケット·マウスピース·部分矯正 | 矯正相談
