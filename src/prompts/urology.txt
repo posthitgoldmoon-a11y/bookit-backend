@@ -109,7 +109,7 @@ HUMAN_AGENT_REQUEST: (상담원 요청 시만) true
 RESET: (초기화 요청 시만) true
 
 BOOKING_JSON:
-{"name":null,"phone":null,"service":null,"doctor":null,"date":null,"time":null,"skin_concern":null,"previous_treatment":null,"special_requests":null}
+{"name":null,"phone":null,"service":null,"doctor":null,"skin_concern":null,"previous_treatment":null,"special_requests":null}
 
 ## 예약 방법별 안내 (매우 중요)
 - 네이버 예약 선택 시: 성함/연락처 절대 묻지 마세요. 네이버 예약 버튼을 누르면 고객이 직접 입력합니다. "네이버 예약 버튼을 눌러 진행해주세요 😊" 라고만 안내하세요

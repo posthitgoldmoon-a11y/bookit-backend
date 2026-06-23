@@ -6,6 +6,7 @@ const { handleWaiting, handleAdmin, waitingSession } = require('./waiting');
 require('dotenv').config();
 
 const sessions = {};
+const recentRequests = new Map();
 const BASE_URL = `http://${process.env.SERVER_IP}:3002`;
 
 // ─── 프롬프트 파일 카드 파서 ───────────────────────────────
@@ -394,6 +395,16 @@ async function handleMain(req, res) {
   console.log('콜백URL:', callbackUrl);
 
   const session = getSession(kakaoUserId);
+
+  // 중복 요청 방지 (3초 안에 같은 메시지 무시)
+  const reqKey = kakaoUserId + ':' + userMessage;
+  const lastReq = recentRequests.get(reqKey);
+  if (lastReq && Date.now() - lastReq < 3000) {
+    console.log('중복 요청 무시:', userMessage);
+    return res.json({ version: '2.0', template: { outputs: [] } });
+  }
+  recentRequests.set(reqKey, Date.now());
+  setTimeout(() => recentRequests.delete(reqKey), 3000);
 
   try {
 
@@ -1082,7 +1093,7 @@ async function handleMain(req, res) {
     let geminiReply;
     try {
       geminiReply = await chat(session.history, userMessage, session.booted, session.industry || 'hospital', session.data.lang || 'ko');
-      console.log('✅ Gemini 응답:', JSON.stringify(geminiReply).substring(0, 100));
+      console.log('✅ Gemini 응답:', JSON.stringify(geminiReply).substring(0, 300));
       // 금지 문구 강제 제거
       if (geminiReply.message) {
         geminiReply.message = geminiReply.message

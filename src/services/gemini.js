@@ -105,7 +105,7 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
     systemInstruction: finalSystemInstruction,
     contents: contents,
     generationConfig: {
-      maxOutputTokens: 2048,
+      maxOutputTokens: 4096,
       temperature: 0.7
     }
   });
