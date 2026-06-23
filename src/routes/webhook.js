@@ -1,4 +1,5 @@
 const express = require('express');
+const { getClinicInfo } = require('./clinicInfo');
 const router = express.Router();
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { chat } = require('../services/gemini');
@@ -642,7 +643,7 @@ async function handleMain(req, res) {
       // 치과 시술 예약
       "스케일링 예약하기", "불소도포 예약하기",
       "치아복구치료 예약하기", "치아교정 상담하기",
-      "지용화 원장으로 예약하기"
+      ...getClinicInfo('dental').doctorKeywords
     ];
     // 상담 키워드 (Gemini로 전달)
     const consultKeywords = [
@@ -827,18 +828,9 @@ async function handleMain(req, res) {
     if (userMessage === '오시는길') {
       const lang = session.data.lang || 'ko';
       const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
-      const dirTexts = {
-        ko: '📍 서울 하이엔드 치과 오시는 길\n\n📌 서울시 서초구 잠원로24. 512호 (반포동, 반포자이프라자)\n\n🚇 7호선 반포역 · 9호선 사평역 · 3/7/9호선 고속버스터미널역\n🚗 건물 내 주차 1시간 30분 무료\n📞 02-6013-7522',
-        en: '📍 Directions to Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul (Banpo-dong, Banpo Xi Plaza)\n\n🚇 Line 7 Banpo St. · Line 9 Sapyeong St. · Lines 3/7/9 Express Bus Terminal St.\n🚗 1.5 hours free parking\n📞 02-6013-7522',
-        zh: '📍 首尔高端牙科 交通指南\n\n📌 首尔市瑞草区蚕院路24, 512号 (班浦洞, 班浦Xi广场)\n\n🚇 地铁7号线班浦站 · 9号线沙平站 · 3/7/9号线高速巴士客运站\n🚗 免费停车1.5小时\n📞 02-6013-7522',
-        ja: '📍 ソウルハイエンド歯科へのアクセス\n\n📌 ソウル市瑞草区蚕院路24, 512号 (盤浦洞, 盤浦Xiプラザ)\n\n🚇 7号線盤浦駅 · 9号線沙坪駅 · 3/7/9号線高速バスターミナル駅\n🚗 駐車場1時間30分無料\n📞 02-6013-7522',
-        th: '📍 ทิศทางไป Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 สาย 7 สถานี Banpo · สาย 9 สถานี Sapyeong · สาย 3/7/9 สถานี Express Bus Terminal\n🚗 จอดรถฟรี 1.5 ชั่วโมง\n📞 02-6013-7522',
-        vi: '📍 Đường đến Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Tuyến 7 ga Banpo · Tuyến 9 ga Sapyeong · Tuyến 3/7/9 ga Express Bus Terminal\n🚗 Đậu xe miễn phí 1.5 giờ\n📞 02-6013-7522',
-        ar: '📍 الاتجاهات إلى Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 خط 7 محطة Banpo · خط 9 محطة Sapyeong · خطوط 3/7/9 محطة Express Bus Terminal\n🚗 ساعة ونصف مجانية للانتظار\n📞 02-6013-7522',
-        ru: '📍 Как добраться до Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Линия 7 ст. Banpo · Линия 9 ст. Sapyeong · Линии 3/7/9 ст. Express Bus Terminal\n🚗 Бесплатная парковка 1.5 часа\n📞 02-6013-7522',
-        fr: '📍 Comment se rendre à Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Ligne 7 gare Banpo · Ligne 9 gare Sapyeong · Lignes 3/7/9 gare Express Bus Terminal\n🚗 1h30 de stationnement gratuit\n📞 02-6013-7522',
-        es: '📍 Cómo llegar a Seoul High-End Dental\n\n📌 512, 24 Jamwon-ro, Seocho-gu, Seoul\n\n🚇 Línea 7 estación Banpo · Línea 9 estación Sapyeong · Líneas 3/7/9 estación Express Bus Terminal\n🚗 1.5 horas de estacionamiento gratuito\n📞 02-6013-7522'
-      };
+      const clinic = getClinicInfo('dental');
+      const dirTexts = clinic.dirTexts;
+      const mapUrl = clinic.kakaoMap || 'https://map.kakao.com/?q=서울시+서초구+잠원로24+반포자이프라자';
       const mapLabels = {
         ko: '🗺️ 카카오맵 보기', en: '🗺️ View on Map', zh: '🗺️ 查看地图',
         ja: '🗺️ 地図を見る', th: '🗺️ ดูแผนที่', vi: '🗺️ Xem bản đồ',
@@ -848,7 +840,7 @@ async function handleMain(req, res) {
         dirTexts[lang] || dirTexts.ko,
         getQuickReplies(lang, 'dental'),
         [
-          { action: 'webLink', label: mapLabels[lang] || mapLabels.ko, webLinkUrl: 'https://map.kakao.com/?q=강남역피부과' },
+          { action: 'webLink', label: mapLabels[lang] || mapLabels.ko, webLinkUrl: mapUrl },
           { action: 'message', label: lt.home, messageText: '처음으로' }
         ]
       );
@@ -858,21 +850,10 @@ async function handleMain(req, res) {
     if (userMessage === '진료시간') {
       const lang = session.data.lang || 'ko';
       const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
-      const hoursTexts = {
-        ko: "⏰ 진료시간 안내\n\n월·화·목: 10:30 ~ 19:30\n금요일: 10:30 ~ 18:00\n토요일: 09:00 ~ 13:00\n일요일·공휴일: 휴진\n\n점심시간 (월·화·목): 12:00 ~ 13:00\n점심시간 (금): 11:00 ~ 12:00\n\n📞 전화예약: 02-6013-7522",
-        en: "⏰ Business Hours\n\nMon·Tue·Thu: 10:30 ~ 19:30\nFriday: 10:30 ~ 18:00\nSaturday: 09:00 ~ 13:00\nSun/Holidays: Closed\n\nLunch (Mon·Tue·Thu): 12:00 ~ 13:00\nLunch (Fri): 11:00 ~ 12:00\n\n📞 Phone: 02-6013-7522",
-        zh: "⏰ 营业时间\n\n周一·二·四: 10:30 ~ 19:30\n周五: 10:30 ~ 18:00\n周六: 09:00 ~ 13:00\n周日/节假日: 休息\n\n午休 (周一·二·四): 12:00 ~ 13:00\n午休 (周五): 11:00 ~ 12:00\n\n📞 电话: 02-6013-7522",
-        ja: "⏰ 診療時間\n\n月·火·木: 10:30 ~ 19:30\n金曜日: 10:30 ~ 18:00\n土曜日: 09:00 ~ 13:00\n日/祝日: 休診\n\nランチ (月·火·木): 12:00 ~ 13:00\nランチ (金): 11:00 ~ 12:00\n\n📞 電話: 02-6013-7522",
-        th: "⏰ เวลาทำการ\n\nจ·อ·พฤ: 10:30 ~ 19:30\nศุกร์: 10:30 ~ 18:00\nเสาร์: 09:00 ~ 13:00\nอาทิตย์/วันหยุด: ปิด\n\nพักกลางวัน (จ·อ·พฤ): 12:00 ~ 13:00\nพักกลางวัน (ศ): 11:00 ~ 12:00\n\n📞 โทร: 02-6013-7522",
-        vi: "⏰ Giờ làm việc\n\nT2·T3·T5: 10:30 ~ 19:30\nThứ 6: 10:30 ~ 18:00\nThứ 7: 09:00 ~ 13:00\nCN/Lễ: Nghỉ\n\nNghỉ trưa (T2·T3·T5): 12:00 ~ 13:00\nNghỉ trưa (T6): 11:00 ~ 12:00\n\n📞 Điện thoại: 02-6013-7522",
-        ar: "⏰ ساعات العمل\n\nإثنين·ثلاثاء·خميس: 10:30 ~ 19:30\nالجمعة: 10:30 ~ 18:00\nالسبت: 09:00 ~ 13:00\nأحد/عطلات: مغلق\n\nاستراحة (إثنين·ثلاثاء·خميس): 12:00 ~ 13:00\nاستراحة (جمعة): 11:00 ~ 12:00\n\n📞 هاتف: 02-6013-7522",
-        ru: "⏰ Часы работы\n\nПн·Вт·Чт: 10:30 ~ 19:30\nПятница: 10:30 ~ 18:00\nСуббота: 09:00 ~ 13:00\nВс/праздники: Закрыто\n\nОбед (Пн·Вт·Чт): 12:00 ~ 13:00\nОбед (Пт): 11:00 ~ 12:00\n\n📞 Телефон: 02-6013-7522",
-        fr: "⏰ Heures d'ouverture\n\nLun·Mar·Jeu: 10:30 ~ 19:30\nVendredi: 10:30 ~ 18:00\nSamedi: 09:00 ~ 13:00\nDim/Fériés: Fermé\n\nDéjeuner (Lun·Mar·Jeu): 12:00 ~ 13:00\nDéjeuner (Ven): 11:00 ~ 12:00\n\n📞 Tél: 02-6013-7522",
-        es: "⏰ Horario\n\nLun·Mar·Jue: 10:30 ~ 19:30\nViernes: 10:30 ~ 18:00\nSábado: 09:00 ~ 13:00\nDom/Festivos: Cerrado\n\nAlmuerzo (Lun·Mar·Jue): 12:00 ~ 13:00\nAlmuerzo (Vie): 11:00 ~ 12:00\n\n📞 Tel: 02-6013-7522"
-      };
+      const clinicH = getClinicInfo('dental');
+      const hoursTexts = clinicH.hoursTexts;
       await sendCallback(callbackUrl, hoursTexts[lang] || hoursTexts.ko,
-        getQuickReplies(lang, 'dental'),
-        [{ action: "message", label: lt.home, messageText: "처음으로" }]
+        getQuickReplies(lang, 'dental')
       );
       return;
     }

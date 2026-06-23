@@ -348,3 +348,41 @@ BOOKING_JSON:
 🪥 補綴物が取れた | クラウン·インレー·ブリッジ脱落 | 補綴相談
 🚑 怪我をした | 歯の脱臼·破折·外傷 | 外傷相談
 😁 歯科矯正 | ブラケット·マウスピース·部分矯正 | 矯正相談
+
+## 병원정보
+- 상호: 서울 하이엔드 치과
+- 전화: 02-6013-7522
+- 주소_ko: 서울시 서초구 잠원로24. 512호 (반포동, 반포자이프라자)
+- 주소_en: 512, 24 Jamwon-ro, Seocho-gu, Seoul (Banpo-dong, Banpo Xi Plaza)
+- 주소_zh: 首尔市瑞草区蚕院路24, 512号 (班浦洞, 班浦Xi广场)
+- 주소_ja: ソウル市瑞草区蚕院路24, 512号 (盤浦洞, 盤浦Xiプラザ)
+- 주소_th: 512, 24 Jamwon-ro, Seocho-gu, Seoul
+- 주소_vi: 512, 24 Jamwon-ro, Seocho-gu, Seoul
+- 주소_ar: 512, 24 Jamwon-ro, Seocho-gu, Seoul
+- 주소_ru: 512, 24 Jamwon-ro, Seocho-gu, Seoul
+- 주소_fr: 512, 24 Jamwon-ro, Seocho-gu, Seoul
+- 주소_es: 512, 24 Jamwon-ro, Seocho-gu, Seoul
+- 교통_ko: 7호선 반포역 · 9호선 사평역 · 3/7/9호선 고속버스터미널역
+- 교통_en: Line 7 Banpo St. · Line 9 Sapyeong St. · Lines 3/7/9 Express Bus Terminal St.
+- 교통_zh: 地铁7号线班浦站 · 9号线沙平站 · 3/7/9号线高速巴士客运站
+- 교통_ja: 7号線盤浦駅 · 9号線沙坪駅 · 3/7/9号線高速バスターミナル駅
+- 교통_th: สาย 7 สถานี Banpo · สาย 9 สถานี Sapyeong · สาย 3/7/9 สถานี Express Bus Terminal
+- 교통_vi: Tuyến 7 ga Banpo · Tuyến 9 ga Sapyeong · Tuyến 3/7/9 ga Express Bus Terminal
+- 교통_ar: خط 7 محطة Banpo · خط 9 محطة Sapyeong · خطوط 3/7/9 محطة Express Bus Terminal
+- 교통_ru: Линия 7 ст. Banpo · Линия 9 ст. Sapyeong · Линии 3/7/9 ст. Express Bus Terminal
+- 교통_fr: Ligne 7 gare Banpo · Ligne 9 gare Sapyeong · Lignes 3/7/9 gare Express Bus Terminal
+- 교통_es: Línea 7 estación Banpo · Línea 9 estación Sapyeong · Líneas 3/7/9 estación Express Bus Terminal
+- 주차: 건물 내 주차 1시간 30분 무료
+- 카카오맵: https://map.kakao.com/?q=서울시+서초구+잠원로24+반포자이프라자
+- 배너이미지: banner_dental.jpg
+
+## 진료시간
+- 월·화·목: 10:30 ~ 19:30 (점심 12:00 ~ 13:00)
+- 금요일: 10:30 ~ 18:00 (점심 11:00 ~ 12:00)
+- 토요일: 09:00 ~ 13:00
+- 일요일·공휴일: 휴무
+- 점심_월화목: 12:00 ~ 13:00
+- 점심_금: 11:00 ~ 12:00
+
+## 의사목록
+- 지용화 원장으로 예약하기
