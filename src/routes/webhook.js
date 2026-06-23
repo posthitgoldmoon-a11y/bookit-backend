@@ -639,48 +639,28 @@ async function handleMain(req, res) {
 
     // 시술 선택 → 바로 캘린더
     const bookingKeywords = [
-      // 레이저 시술
-      "레이저토닝 예약하기", "토닝 예약하기",
-      "색소레이저 예약하기", "기미제거 예약하기", "잡티제거 예약하기",
-      "제모레이저 예약하기", "제모 예약하기",
-      "피코슈어 예약하기", "피코레이저 예약하기",
-      "루비레이저 예약하기",
-      "엑셀브이 예약하기",
-      "프락셀 예약하기",
-      "CO2레이저 예약하기",
-      // 보톡스/필러
-      "보톡스 예약하기", "이마보톡스 예약하기", "사각턱보톡스 예약하기", "종아리보톡스 예약하기",
-      "승모근보톡스 예약하기",
-      "필러 예약하기", "이마필러 예약하기", "입술필러 예약하기", "코필러 예약하기",
-      "팔자주름필러 예약하기",
-      // 피부관리
-      "수분리프팅 예약하기", "수분광관리 예약하기",
-      "물광주사 예약하기",
-      "스킨부스터 예약하기",
-      "리쥬란힐러 예약하기", "리쥬란 예약하기",
-      "쥬베룩 예약하기",
-      "엑소좀 예약하기",
-      "여드름케어 예약하기", "여드름 예약하기",
-      "여드름흉터 예약하기", "흉터치료 예약하기",
-      "모공관리 예약하기", "모공축소 예약하기",
-      // 리프팅
-      "리프팅 예약하기", "실리프팅 예약하기",
-      "울쎄라 예약하기", "써마지 예약하기",
-      "포텐자 예약하기",
-      "하이코 예약하기",
-      // 성형
-      "쌍꺼풀 예약하기", "눈매교정 예약하기",
-      "코성형 예약하기",
-      "지방이식 예약하기",
-      "윤곽주사 예약하기",
-      // 기타
-      "피부클리닉 예약하기",
-      "무료상담 예약하기", "피부상담 예약하기",
-      "피부분석 예약하기",
-      "피부암검진 예약하기",
-      // 원장 선택
+      // 치과 시술 예약
+      "스케일링 예약하기", "불소도포 예약하기",
+      "치아복구치료 예약하기", "치아교정 상담하기",
       "지용화 원장으로 예약하기"
     ];
+    // 상담 키워드 (Gemini로 전달)
+    const consultKeywords = [
+      "검진 상담하기", "입냄새 상담하기", "치통 상담하기", "시린이 상담하기",
+      "파절 상담하기", "충치 상담하기", "미백 상담하기", "심미 상담하기",
+      "잇몸통증 상담하기", "잇몸부종 상담하기", "재치료 상담하기",
+      "보철물 상담하기", "외상 상담하기", "교정 상담하기"
+    ];
+    if (consultKeywords.includes(userMessage)) {
+      const lang = session.data.lang || 'ko';
+      session.data.service = userMessage.replace(' 상담하기', '');
+      session.history.push({ role: 'user', content: userMessage });
+      const geminiRes = await chat(session.history, userMessage, session.booted, 'dental', lang);
+      session.booted = true;
+      session.history.push({ role: 'model', content: geminiRes.message });
+      await sendCallback(callbackUrl, geminiRes.message, getQuickReplies(lang, 'dental'));
+      return;
+    }
     // 예약 방식 선택
     const bookingTypeLabels = {
       ko: { title: "📋 예약 방법을 선택해 주세요", desc: "🟢 네이버 예약: 실시간 예약 현황을 확인하며 원하시는 날짜와 시간을 직접 선택하실 수 있습니다\n🟡 카카오 채널 예약: 예약 접수 후 담당자가 직접 전화드려 상담 후 예약을 확정해 드립니다", naver: "🟢 네이버 예약", kakao: "🟡 카카오 채널 예약" },
@@ -1382,8 +1362,7 @@ async function sendTreatmentMenu(callbackUrl, lang = 'ko') {
             type: 'basicCard',
             items: items.map(item => ({
               title: item.title,
-              description: item.desc,
-              buttons: [{ action: 'message', label: l.btn, messageText: item.msg }]
+              description: item.desc
             }))
           }}
         ],
