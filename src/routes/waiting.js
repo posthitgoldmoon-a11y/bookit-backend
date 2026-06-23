@@ -415,28 +415,29 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
         }
       };
     }
-    ws.step = 'people';
+    ws.step = 'privacy';
+    ws.people = '1인';
     ws.type = (utterance === '웨이팅:원격' || utterance === '원격웨이팅') ? 'remote' : 'onsite';
     const typeLabel = ws.type === 'remote' ? T.remote : T.onsite;
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `${typeLabel}\n\n${T.people_q}` } }],
+        outputs: [{ simpleText: { text: `${typeLabel}\n\n📋 개인정보 수집 및 이용 동의\n\n대기 등록을 위해 전화번호를 수집합니다.\n수집된 정보는 대기 순번 안내 목적으로만 사용되며, 이용 완료 후 즉시 삭제됩니다.\n\n동의하시겠습니까?` } }],
         quickReplies: [
-          '1인', '2인', '3인', '4인', '5인', '6인', '7인', '8인 이상'
-        ].map(p => ({ label: p, action: 'message', messageText: `웨이팅:인원:${p}` }))
+          { label: '✅ 동의합니다', action: 'message', messageText: '웨이팅:동의' },
+          { label: '❌ 동의안함', action: 'message', messageText: '처음으로' }
+        ]
       }
     };
   }
 
-  // 인원 선택
-  if (utterance.startsWith('웨이팅:인원:')) {
-    ws.people = utterance.replace('웨이팅:인원:', '');
+  // 개인정보 동의
+  if (utterance === '웨이팅:동의') {
     ws.step = 'phone';
     return {
       version: '2.0',
       template: {
-        outputs: [{ simpleText: { text: `${ws.people} ${T.phone_q}` } }]
+        outputs: [{ simpleText: { text: T.phone_q } }]
       }
     };
   }

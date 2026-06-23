@@ -126,7 +126,7 @@ async function showIndustryCarousel(callbackUrl, lang = 'ko') {
 
 function getSession(userId) {
   if (!sessions[userId]) {
-    sessions[userId] = { history: [], data: {}, booted: false, visited: false, industry: null };
+    sessions[userId] = { history: [], data: {}, booted: false, visited: true, industry: 'dental' };
   }
   return sessions[userId];
 }
@@ -173,7 +173,13 @@ async function sendCallback(callbackUrl, text, quickReplies = null, buttons = nu
     version: "2.0",
     template: { outputs }
   };
-  if (quickReplies) body.template.quickReplies = quickReplies;
+  if (quickReplies) {
+    body.template.quickReplies = quickReplies;
+  } else {
+    body.template.quickReplies = [
+      { label: '🏠 처음으로', action: 'message', messageText: '처음으로' }
+    ];
+  }
   try {
     const res = await fetch(callbackUrl, {
       method: 'POST',
@@ -209,6 +215,7 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
     ko: [
       { label: "💬 상담하기", action: "message", messageText: "상담하기" },
       { label: "📅 예약하기", action: "message", messageText: "예약하기" },
+      { label: "🦷 시술종류", action: "message", messageText: "시술종류" },
       { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
       { label: "🌍 Language", action: "message", messageText: "언어선택" },
       { label: "💰 가격안내", action: "message", messageText: "가격안내" },
@@ -387,8 +394,8 @@ async function handleMain(req, res) {
       session.history = [];
       session.data = {};
       session.booted = false;
-      session.visited = false;
-      session.industry = null;
+      session.visited = true;
+      session.industry = 'dental';
       await showWelcome(callbackUrl, 'ko', 'dental');
       return;
     }
@@ -537,13 +544,9 @@ async function handleMain(req, res) {
     };
     if (langMap[userMessage]) {
       session.data.lang = langMap[userMessage];
-      if (session.data.pendingMenu === "상담하기") {
-        await sendConsultMenu(callbackUrl, session.data.lang, session.industry || 'hospital');
-      } else if (session.data.pendingMenu === "예약하기") {
-        await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang, session.industry || 'hospital');
-      } else {
-        await showWelcome(callbackUrl, session.data.lang, session.industry || 'hospital');
-      }
+      session.industry = 'dental';
+      session.visited = true;
+      await showWelcome(callbackUrl, session.data.lang, 'dental');
       return;
     }
 
@@ -573,15 +576,41 @@ async function handleMain(req, res) {
       return;
     }
 
-    if (userMessage === "예약하기" || userMessage === "상담하기") {
-      session.data.pendingMenu = userMessage;
-      // 언어 기본값 ko 설정
+    if (userMessage === "예약하기" || userMessage === "상담하기" || userMessage === "시술종류") {
       if (!session.data.lang) session.data.lang = 'ko';
+      const lang = session.data.lang || 'ko';
       if (userMessage === "상담하기") {
-        await sendConsultMenu(callbackUrl, session.data.lang, session.industry || 'hospital');
-      } else {
-        await sendBookingMenu(callbackUrl, kakaoUserId, session.data.lang, session.industry || 'hospital');
+        await sendConsultMenu(callbackUrl, lang, 'dental');
+        return;
       }
+      if (userMessage === "시술종류") {
+        await sendTreatmentMenu(callbackUrl, lang);
+        return;
+      }
+      // 예약하기 → 바로 네이버/카카오 선택
+      const bl = {
+        ko: { title: '📋 예약 방법을 선택해 주세요', desc: '🟢 네이버 예약: 실시간 예약 현황을 확인하며 원하시는 날짜와 시간을 직접 선택하실 수 있습니다\n🟡 카카오 채널 예약: 예약 접수 후 담당자가 직접 전화드려 상담 후 예약을 확정해 드립니다', naver: '🟢 네이버 예약', kakao: '🟡 카카오 채널 예약' },
+        en: { title: '📋 Select Booking Method', desc: '🟢 Naver: Select date/time in real-time\n🟡 KakaoTalk: Staff will call to confirm', naver: '🟢 Naver Booking', kakao: '🟡 KakaoTalk Booking' }
+      };
+      const b = bl[lang] || bl.ko;
+      await fetch(callbackUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          version: '2.0',
+          template: {
+            outputs: [{ basicCard: {
+              title: b.title,
+              description: b.desc,
+              buttons: [
+                { action: 'webLink', label: b.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || 'https://booking.naver.com' },
+                { action: 'message', label: b.kakao, messageText: '카카오예약하기' }
+              ]
+            }}],
+            quickReplies: getQuickReplies(lang, 'dental')
+          }
+        })
+      });
       return;
       await fetch(callbackUrl, {
         method: 'POST',
@@ -795,7 +824,7 @@ async function handleMain(req, res) {
     }
 
         if (userMessage === '가격안내') {
-      await sendPriceMenu(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
+      await sendPriceMenu(callbackUrl, session.data.lang || 'ko', 'dental');
       return;
     }
 
@@ -821,7 +850,7 @@ async function handleMain(req, res) {
       };
       await sendCallback(callbackUrl,
         dirTexts[lang] || dirTexts.ko,
-        getQuickReplies(lang, session.industry || 'hospital'),
+        getQuickReplies(lang, 'dental'),
         [
           { action: 'webLink', label: mapLabels[lang] || mapLabels.ko, webLinkUrl: 'https://map.kakao.com/?q=강남역피부과' },
           { action: 'message', label: lt.home, messageText: '처음으로' }
@@ -846,7 +875,7 @@ async function handleMain(req, res) {
         es: "⏰ Horario\n\nLun-Vie: 09:00 - 18:00\nSábado: 09:00 - 15:00\nDom/Festivos: Cerrado\n\nAlmuerzo: 13:00 - 14:00\n\n📞 Tel: 02-1234-5678"
       };
       await sendCallback(callbackUrl, hoursTexts[lang] || hoursTexts.ko,
-        getQuickReplies(lang, session.industry || 'hospital'),
+        getQuickReplies(lang, 'dental'),
         [{ action: "message", label: lt.home, messageText: "처음으로" }]
       );
       return;
@@ -877,7 +906,7 @@ async function handleMain(req, res) {
     }
 
     if (userMessage === '의료진보기') {
-      await showDoctors(callbackUrl, session.data.lang || 'ko', null, false, session.industry || 'hospital');
+      await showDoctors(callbackUrl, session.data.lang || 'ko', null, false, 'dental');
       return;
     }
 
@@ -1006,7 +1035,7 @@ async function handleMain(req, res) {
           version: '2.0',
           template: {
             outputs: [{ basicCard: { title: b.title, description: b.desc, buttons: [{ action: 'webLink', label: b.naver, webLinkUrl: process.env.NAVER_BOOKING_URL || 'https://booking.naver.com' }, { action: 'message', label: b.kakao, messageText: '카카오예약하기' }] }}],
-            quickReplies: getQuickReplies(lang, session.industry || 'hospital')
+            quickReplies: getQuickReplies(lang, 'dental')
           }
         })
       });
@@ -1040,7 +1069,7 @@ async function handleMain(req, res) {
     if (session.history.length > 10) session.history = session.history.slice(-10);
 
     if (geminiReply.showDoctors) {
-      await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message, geminiReply.showBookingType, session.industry || 'hospital');
+      await showDoctors(callbackUrl, session.data.lang || 'ko', geminiReply.message, geminiReply.showBookingType, 'dental');
       if (false && geminiReply.showBookingType) {
         const lang = session.data.lang || 'ko';
         const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
@@ -1074,7 +1103,7 @@ async function handleMain(req, res) {
     }
     if (geminiReply.showPrice) {
       if (geminiReply.message) await sendCallback(callbackUrl, geminiReply.message);
-      await sendPriceMenu(callbackUrl, session.data.lang || 'ko', session.industry || 'hospital');
+      await sendPriceMenu(callbackUrl, session.data.lang || 'ko', 'dental');
       return;
     }
     if (geminiReply.showCalendar) {
@@ -1327,6 +1356,52 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
   }
 }
 
+async function sendTreatmentMenu(callbackUrl, lang = 'ko') {
+  console.log('sendTreatmentMenu 시작, 언어:', lang);
+  try {
+    const items = parseCardSection('dental', '카드_시술메뉴', lang);
+    const labels = {
+      ko: { title: '🦷 시술 안내', btn: '📅 예약하기' },
+      en: { title: '🦷 Treatments', btn: '📅 Book' },
+      zh: { title: '🦷 治疗项目', btn: '📅 预约' },
+      ja: { title: '🦷 施術案内', btn: '📅 予約する' },
+      th: { title: '🦷 การรักษา', btn: '📅 จอง' },
+      vi: { title: '🦷 Dịch vụ', btn: '📅 Đặt lịch' },
+      ar: { title: '🦷 العلاجات', btn: '📅 حجز' },
+      ru: { title: '🦷 Процедуры', btn: '📅 Записаться' },
+      fr: { title: '🦷 Soins', btn: '📅 Réserver' },
+      es: { title: '🦷 Tratamientos', btn: '📅 Reservar' }
+    };
+    const l = labels[lang] || labels.ko;
+    const payload = {
+      version: '2.0',
+      template: {
+        outputs: [
+          { simpleText: { text: l.title } },
+          { carousel: {
+            type: 'basicCard',
+            items: items.map(item => ({
+              title: item.title,
+              description: item.desc,
+              buttons: [{ action: 'message', label: l.btn, messageText: item.msg }]
+            }))
+          }}
+        ],
+        quickReplies: getQuickReplies(lang, 'dental')
+      }
+    };
+    const res = await fetch(callbackUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const resText = await res.text();
+    console.log('sendTreatmentMenu 응답:', res.status, resText);
+  } catch(e) {
+    console.error('sendTreatmentMenu 오류:', e.message);
+  }
+}
+
 async function sendPriceMenu(callbackUrl, lang, industry = 'hospital') {
   lang = lang || 'ko';
   console.log('sendPriceMenu 시작, 언어:', lang);
@@ -1379,7 +1454,7 @@ async function sendPriceMenu(callbackUrl, lang, industry = 'hospital') {
 
 async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false, industry = 'hospital') {
   lang = lang || 'ko';
-  console.log('showDoctors 시작, 언어:', lang);
+  console.log('showDoctors 시작, 언어:', lang, 'industry:', industry);
   try {
     const items = parseCardSection(industry, '카드_의료진', lang);
     const labels = {
