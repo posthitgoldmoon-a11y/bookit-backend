@@ -186,7 +186,6 @@ async function sendCallback(callbackUrl, text, quickReplies = null, buttons = nu
 }
 
 const mainQuickReplies = [
-  { label: "📩 [도입문의] 14일 무료체험", action: "message", messageText: "무료체험신청" },
   { label: "💬 상담하기", action: "message", messageText: "상담하기" },
   { label: "📅 예약하기", action: "message", messageText: "예약하기" },
   { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
@@ -208,7 +207,6 @@ function getQuickReplies(lang = 'ko', industry = 'hospital') {
   }
   const qr = {
     ko: [
-      { label: "📩 [도입문의] 14일 무료체험", action: "message", messageText: "무료체험신청" },
       { label: "💬 상담하기", action: "message", messageText: "상담하기" },
       { label: "📅 예약하기", action: "message", messageText: "예약하기" },
       { label: "⏳ 웨이팅등록", action: "message", messageText: "웨이팅등록" },
@@ -745,38 +743,6 @@ async function handleMain(req, res) {
       return;
     }
 
-    if (userMessage === "무료체험신청") {
-      await sendCallback(callbackUrl,
-        '📩 [도입문의] 14일 무료체험 신청\n\n전화번호를 남겨주시면 담당자가 직접 연락드리겠습니다 😊\n\n📞 전화번호를 입력해주세요',
-        [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
-      );
-      session.data.waitingFor = 'freeTrialPhone';
-      return;
-    }
-
-    if (session.data.waitingFor === 'freeTrialPhone') {
-      const phone = userMessage.trim().replace(/[\s\-]/g, '');
-      const phoneRegex = /^01[0-9]{8,9}$/;
-      if (!phoneRegex.test(phone)) {
-        await sendCallback(callbackUrl,
-          '📞 올바른 전화번호 형식으로 입력해주세요\n\n예시: 010-1234-5678',
-          [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
-        );
-        return;
-      }
-      session.data.waitingFor = null;
-      await sendTelegram([
-        '📩 [도입문의] 14일 무료체험 신청!',
-        '━━━━━━━━━━━━━━',
-        '📞 전화번호: ' + phone,
-        '⏰ 시간: ' + new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})
-      ].join('\n'));
-      await sendCallback(callbackUrl,
-        '✅ 신청이 완료됐습니다!\n\n담당자가 빠르게 연락드리겠습니다 😊',
-        [{ label: '🏠 처음으로', action: 'message', messageText: '처음으로' }]
-      );
-      return;
-    }
 
     if (userMessage === "카카오예약하기") {
       const serviceNames = {
@@ -1188,7 +1154,6 @@ async function handleMain(req, res) {
     const lt2 = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
     await sendCallback(callbackUrl, geminiReply.message,
       [
-        { label: '📩 [도입문의] 14일 무료체험', action: 'message', messageText: '무료체험신청' },
         { label: lt2.home, action: "message", messageText: "처음으로" }
       ]
     );
@@ -1294,7 +1259,6 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko', industry =
           }}
         ],
         quickReplies: [
-          { label: '📩 [도입문의] 14일 무료체험', action: 'message', messageText: '무료체험신청' },
           { label: l.home, action: 'message', messageText: '처음으로' }
         ]
       }
@@ -1346,7 +1310,6 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
           }}
         ],
         quickReplies: [
-          { label: '📩 [도입문의] 14일 무료체험', action: 'message', messageText: '무료체험신청' },
           { label: l.home, action: 'message', messageText: '처음으로' },
           { label: l.price, action: 'message', messageText: l.priceMsg }
         ]
@@ -1454,7 +1417,6 @@ async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false
           }}
         ],
         quickReplies: [
-          { label: '📩 [도입문의] 14일 무료체험', action: 'message', messageText: '무료체험신청' },
           { label: l.home, action: 'message', messageText: '처음으로' }
         ]
       }
