@@ -890,7 +890,7 @@ async function handleMain(req, res) {
     if (userMessage === '날짜선택완료') {
       const lt = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
       try {
-        const r = await fetch(`http://localhost:3002/calendar-result/${kakaoUserId}`);
+        const r = await fetch(`http://localhost:3007/calendar-result/${kakaoUserId}`);
         const data = await r.json();
         if (!data.success || !data.datetime) {
           await sendCallback(callbackUrl, lt.calError,
@@ -899,14 +899,79 @@ async function handleMain(req, res) {
           return;
         }
         session.data.date = data.datetime;
-        session.waitingFor = 'name';
+        session.waitingFor = 'privacy';
         const dateMsg = lt.dateSelected(data.datetime);
         session.history.push({ role: "user", content: `날짜 ${data.datetime} 선택` });
         session.history.push({ role: "model", content: dateMsg });
-        await sendCallback(callbackUrl, dateMsg, [{ label: lt.home, action: "message", messageText: "처음으로" }]);
+        const privacyMsgs = {
+          ko: '📋 개인정보 수집 및 이용 동의\n\n예약 진행을 위해 성함과 연락처를 수집합니다.\n수집된 정보는 예약 확인 및 안내 목적으로만 사용되며, 예약 완료 후 즉시 파기됩니다.\n\n동의하시겠습니까?',
+          en: '📋 Privacy Policy Agreement\n\nWe collect your name and contact for reservation.\nThis information is used only for reservation confirmation and will be deleted immediately after.\n\nDo you agree?',
+          zh: '📋 个人信息收集同意\n\n预约需要收集您的姓名和联系方式。\n仅用于预约确认，完成后立即删除。\n\n您同意吗？',
+          ja: '📋 個人情報収集同意\n\nご予約のためにお名前と連絡先を収集します。\n予約確認のみに使用し、完了後即時削除します。\n\n同意されますか？',
+          th: '📋 ความยินยอมในการเก็บข้อมูลส่วนบุคคล\n\nเราเก็บชื่อและข้อมูลติดต่อเพื่อการจอง\nใช้เพื่อยืนยันการจองเท่านั้น\n\nคุณยินยอมหรือไม่?',
+          vi: '📋 Đồng ý thu thập thông tin cá nhân\n\nChúng tôi thu thập tên và liên lạc để đặt lịch.\nChỉ dùng để xác nhận đặt lịch, xóa ngay sau đó.\n\nBạn có đồng ý không?',
+          ar: '📋 موافقة على جمع البيانات الشخصية\n\nنجمع اسمك وجهة الاتصال للحجز.\nتُستخدم فقط لتأكيد الحجز وتُحذف فوراً بعد ذلك.\n\nهل توافق؟',
+          ru: '📋 Согласие на сбор персональных данных\n\nМы собираем ваше имя и контакт для записи.\nИспользуется только для подтверждения записи.\n\nВы согласны?',
+          fr: '📋 Accord de confidentialité\n\nNous collectons votre nom et contact pour la réservation.\nUtilisé uniquement pour la confirmation, supprimé après.\n\nÊtes-vous d\'accord?',
+          es: '📋 Acuerdo de privacidad\n\nRecopilamos su nombre y contacto para la reserva.\nSolo para confirmación, eliminado después.\n\n¿Está de acuerdo?'
+        };
+        const privacyMsg = privacyMsgs[session.data.lang || 'ko'] || privacyMsgs.ko;
+        const agreeLabels = { ko:'✅ 동의합니다', en:'✅ I Agree', zh:'✅ 我同意', ja:'✅ 同意します', th:'✅ ยินยอม', vi:'✅ Đồng ý', ar:'✅ أوافق', ru:'✅ Согласен', fr:'✅ J\'accepte', es:'✅ Acepto' };
+        const disagreeLabels = { ko:'❌ 동의 안함', en:'❌ Decline', zh:'❌ 不同意', ja:'❌ 同意しない', th:'❌ ไม่ยินยอม', vi:'❌ Từ chối', ar:'❌ أرفض', ru:'❌ Отказываюсь', fr:'❌ Refuser', es:'❌ Rechazar' };
+        const lang2 = session.data.lang || 'ko';
+        await sendCallback(callbackUrl, privacyMsg, [
+          { label: agreeLabels[lang2] || agreeLabels.ko, action: 'message', messageText: '개인정보동의' },
+          { label: disagreeLabels[lang2] || disagreeLabels.ko, action: 'message', messageText: '개인정보거부' },
+          { label: lt.home, action: 'message', messageText: '처음으로' }
+        ]);
       } catch(e) {
         await sendCallback(callbackUrl, lt.error);
       }
+      return;
+    }
+
+    // 개인정보 동의 처리
+    if (userMessage === '개인정보동의') {
+      session.waitingFor = 'name';
+      const lang = session.data.lang || 'ko';
+      const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
+      const nameMsgs = {
+        ko: '✅ 동의해 주셔서 감사합니다!\n\n고객님 성함을 알려주세요 😊',
+        en: '✅ Thank you for agreeing!\n\nPlease tell us your name 😊',
+        zh: '✅ 感谢您的同意！\n\n请告诉我们您的姓名 😊',
+        ja: '✅ ご同意ありがとうございます！\n\nお名前を教えてください 😊',
+        th: '✅ ขอบคุณที่ยินยอม!\n\nกรุณาบอกชื่อของคุณ 😊',
+        vi: '✅ Cảm ơn bạn đã đồng ý!\n\nVui lòng cho biết tên của bạn 😊',
+        ar: '✅ شكراً لموافقتك!\n\nالرجاء إخبارنا باسمك 😊',
+        ru: '✅ Спасибо за согласие!\n\nПожалуйста, сообщите ваше имя 😊',
+        fr: '✅ Merci pour votre accord!\n\nVeuillez nous indiquer votre nom 😊',
+        es: '✅ ¡Gracias por su acuerdo!\n\nPor favor indíquenos su nombre 😊'
+      };
+      await sendCallback(callbackUrl, nameMsgs[lang] || nameMsgs.ko,
+        [{ label: lt.home, action: 'message', messageText: '처음으로' }]
+      );
+      return;
+    }
+
+    if (userMessage === '개인정보거부') {
+      session.waitingFor = null;
+      session.data.date = null;
+      const lang = session.data.lang || 'ko';
+      const refuseMsgs = {
+        ko: '개인정보 수집에 동의하지 않으셔서 예약을 진행할 수 없습니다.\n\n다른 도움이 필요하시면 말씀해 주세요 😊',
+        en: 'Reservation cannot proceed without consent.\n\nPlease let us know if you need other assistance 😊',
+        zh: '未同意收集个人信息，无法继续预约。\n\n如需其他帮助请告知 😊',
+        ja: '個人情報収集に同意いただけなかったため、予約を進められません。\n\n他にご用件があればお知らせください 😊',
+        th: 'ไม่สามารถดำเนินการจองได้หากไม่ยินยอม\n\nหากต้องการความช่วยเหลืออื่นโปรดแจ้ง 😊',
+        vi: 'Không thể tiếp tục đặt lịch khi không đồng ý.\n\nHãy cho biết nếu cần hỗ trợ khác 😊',
+        ar: 'لا يمكن المتابعة بدون موافقة.\n\nأخبرنا إذا كنت بحاجة لمساعدة أخرى 😊',
+        ru: 'Без согласия запись невозможна.\n\nДайте знать если нужна другая помощь 😊',
+        fr: 'Impossible de continuer sans accord.\n\nFaites-nous savoir si vous avez besoin d\'autre aide 😊',
+        es: 'No se puede continuar sin acuerdo.\n\nHáganos saber si necesita otra ayuda 😊'
+      };
+      await sendCallback(callbackUrl, refuseMsgs[lang] || refuseMsgs.ko,
+        getQuickReplies(lang, 'dental')
+      );
       return;
     }
 
@@ -1101,7 +1166,7 @@ async function handleMain(req, res) {
       const bl = bookingTypeLabels[lang] || bookingTypeLabels.ko;
       session.contactRequested = true;
       const contactMsgs = {
-        ko: '',
+        ko: '📅 예약 방법을 선택해 주세요 😊',
         en: '📞 Leave your phone number and our staff will confirm your reservation directly 😊 (Optional)',
         zh: '📞 留下您的电话号码，工作人员将直接为您确认预约 😊（可选）',
         ja: '📞 電話番号をお知らせいただければ、担当者が直接予約を確定いたします 😊（任意）',
@@ -1260,7 +1325,7 @@ async function sendBookingMenu(callbackUrl, kakaoUserId, lang = 'ko', industry =
             items: cardItems.map(i => ({
               title: i.title,
               description: i.desc,
-              buttons: [{ action: 'message', label: '🔍 자세히 알아보기', messageText: i.title + ' 설명해줘' }]
+              buttons: [{ action: 'message', label: l.btn_detail || '🔍 자세히 알아보기', messageText: i.title + ' 설명해줘' }]
             }))
           }}
         ],
@@ -1284,16 +1349,16 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
   try {
     const items = parseCardSection(industry, '카드_상담메뉴', lang);
     const labels = {
-      ko: { text: '💬 어떤 피부 고민이 있으신가요?\n아래에서 선택하시거나 직접 입력해주세요!', btn: '상담하기', home: '🏠 처음으로', price: '💰 가격안내', priceMsg: '가격안내' },
-      en: { text: '💬 What is your skin concern?\nPlease select or type directly!', btn: 'Consult', home: '🏠 Home', price: '💰 Prices', priceMsg: '가격안내' },
-      zh: { text: '💬 您有什么皮肤问题?\n请选择或直接输入!', btn: '咨询', home: '🏠 首页', price: '💰 价格', priceMsg: '가격안내' },
-      ja: { text: '💬 お肌のお悩みは何ですか?\n下記から選択またはご入力ください!', btn: '相談する', home: '🏠 ホーム', price: '💰 料金', priceMsg: '가격안내' },
-      th: { text: '💬 คุณมีปัญหาผิวอะไร?\nเลือกหรือพิมพ์ได้เลย!', btn: 'ปรึกษา', home: '🏠 หน้าหลัก', price: '💰 ราคา', priceMsg: '가격안내' },
-      vi: { text: '💬 Bạn có vấn đề về da gì?\nHãy chọn hoặc nhập trực tiếp!', btn: 'Tư vấn', home: '🏠 Trang chủ', price: '💰 Giá', priceMsg: '가격안내' },
-      ar: { text: '💬 ما هي مشكلة بشرتك?\nالرجاء الاختيار أو الكتابة مباشرة!', btn: 'استشارة', home: '🏠 الرئيسية', price: '💰 الأسعار', priceMsg: '가격안내' },
-      ru: { text: '💬 Какая у вас проблема с кожей?\nВыберите или напишите напрямую!', btn: 'Консультация', home: '🏠 Главная', price: '💰 Цены', priceMsg: '가격안내' },
-      fr: { text: '💬 Quel est votre problème de peau?\nVeuillez sélectionner ou saisir directement!', btn: 'Consulter', home: '🏠 Accueil', price: '💰 Tarifs', priceMsg: '가격안내' },
-      es: { text: '💬 ¿Cuál es su problema de piel?\n¡Selecciona o escribe directamente!', btn: 'Consultar', home: '🏠 Inicio', price: '💰 Precios', priceMsg: '가격안내' }
+      ko: { text: '💬 어떤 치아 고민이 있으신가요?\n아래에서 선택하시거나 직접 입력해주세요!', btn: '상담하기', btn_detail: '🔍 자세히 알아보기', home: '🏠 처음으로', price: '💰 가격안내', priceMsg: '가격안내' },
+      en: { text: '💬 What is your dental concern?\nPlease select or type directly!', btn: 'Consult', btn_detail: '🔍 Learn More', home: '🏠 Home', price: '💰 Prices', priceMsg: '가격안내' },
+      zh: { text: '💬 您有什么牙齿问题?\n请选择或直接输入!', btn: '咨询', btn_detail: '🔍 了解更多', home: '🏠 首页', price: '💰 价格', priceMsg: '가격안내' },
+      ja: { text: '💬 歯のお悩みは何ですか?\n下記から選択またはご入力ください!', btn: '相談する', btn_detail: '🔍 詳しく見る', home: '🏠 ホーム', price: '💰 料金', priceMsg: '가격안내' },
+      th: { text: '💬 คุณมีปัญหาเกี่ยวกับฟันอะไร?\nเลือกหรือพิมพ์ได้เลย!', btn: 'ปรึกษา', btn_detail: '🔍 ดูเพิ่มเติม', home: '🏠 หน้าหลัก', price: '💰 ราคา', priceMsg: '가격안내' },
+      vi: { text: '💬 Bạn có vấn đề về răng gì?\nHãy chọn hoặc nhập trực tiếp!', btn: 'Tư vấn', btn_detail: '🔍 Xem thêm', home: '🏠 Trang chủ', price: '💰 Giá', priceMsg: '가격안내' },
+      ar: { text: '💬 ما هي مشكلة أسنانك?\nالرجاء الاختيار أو الكتابة مباشرة!', btn: 'استشارة', btn_detail: '🔍 معرفة المزيد', home: '🏠 الرئيسية', price: '💰 الأسعار', priceMsg: '가격안내' },
+      ru: { text: '💬 Какая у вас проблема с зубами?\nВыберите или напишите напрямую!', btn: 'Консультация', btn_detail: '🔍 Подробнее', home: '🏠 Главная', price: '💰 Цены', priceMsg: '가격안내' },
+      fr: { text: '💬 Quel est votre problème dentaire?\nVeuillez sélectionner ou saisir directement!', btn: 'Consulter', btn_detail: '🔍 En savoir plus', home: '🏠 Accueil', price: '💰 Tarifs', priceMsg: '가격안내' },
+      es: { text: '💬 ¿Cuál es su problema dental?\n¡Selecciona o escribe directamente!', btn: 'Consultar', btn_detail: '🔍 Saber más', home: '🏠 Inicio', price: '💰 Precios', priceMsg: '가격안내' }
     };
     const l = labels[lang] || labels.ko;
     const cardItems = items.length > 0 ? items : [
@@ -1309,7 +1374,7 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
             items: cardItems.map(i => ({
               title: i.title,
               description: i.desc,
-              buttons: [{ action: 'message', label: '🔍 자세히 알아보기', messageText: i.title + ' 설명해줘' }]
+              buttons: [{ action: 'message', label: l.btn_detail || '🔍 자세히 알아보기', messageText: i.title + ' 설명해줘' }]
             }))
           }}
         ],
