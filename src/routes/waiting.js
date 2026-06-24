@@ -334,11 +334,38 @@ async function handleWaiting(userId, utterance, callbackUrl, lang = 'ko') {
         outputs: [{ simpleText: { text: T.pos(pos.position, pos.total) } }],
         quickReplies: [
           { label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' },
+          { label: '⏩ 순번미루기', action: 'message', messageText: '웨이팅:순번미루기' },
           { label: T.btn_cancel, action: 'message', messageText: '웨이팅:취소' },
           { label: T.btn_home, action: 'message', messageText: '처음으로' }
         ]
       }
     };
+  }
+
+  // 순번 미루기 선택
+  if (utterance === '웨이팅:순번미루기') {
+    return {
+      version: '2.0',
+      template: {
+        outputs: [{ simpleText: { text: '몇 번째 뒤로 미루시겠어요?' } }],
+        quickReplies: [
+          { label: '3번째 뒤로', action: 'message', messageText: '웨이팅:미루기:3' },
+          { label: '5번째 뒤로', action: 'message', messageText: '웨이팅:미루기:5' },
+          { label: '10번째 뒤로', action: 'message', messageText: '웨이팅:미루기:10' },
+          { label: T.btn_home, action: 'message', messageText: '처음으로' }
+        ]
+      }
+    };
+  }
+
+  // 순번 미루기 실행
+  if (utterance.startsWith('웨이팅:미루기:')) {
+    const n = parseInt(utterance.split(':')[2]);
+    const result = waiting.moveBack(userId, n);
+    if (!result) {
+      return { version: '2.0', template: { outputs: [{ simpleText: { text: '대기 중인 순번이 없어요.' } }], quickReplies: [{ label: T.btn_home, action: 'message', messageText: '처음으로' }] } };
+    }
+    return { version: '2.0', template: { outputs: [{ simpleText: { text: n + '번째 뒤로 미뤄졌어요! 현재 내 순번: ' + result.position + '번째 / 전체 ' + result.total + '명' } }], quickReplies: [{ label: T.btn_check, action: 'message', messageText: '웨이팅:순번확인' }, { label: T.btn_home, action: 'message', messageText: '처음으로' }] } };
   }
 
   // 도착 응답

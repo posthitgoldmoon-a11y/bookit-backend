@@ -94,6 +94,25 @@ function getWaitingCount() {
   return waitingQueue.filter(e => e.status === 'waiting').length;
 }
 
+
+// 순번 미루기 (n번째 뒤로)
+function moveBack(userId, n) {
+  const activeQueue = waitingQueue.filter(e => e.status !== 'cancelled');
+  const myIdx = activeQueue.findIndex(e => e.userId === userId);
+  if (myIdx === -1) return null;
+  const entry = activeQueue[myIdx];
+  const newIdx = Math.min(myIdx + n, activeQueue.length - 1);
+  // 실제 waitingQueue에서 위치 변경
+  const realIdx = waitingQueue.indexOf(entry);
+  const targetEntry = activeQueue[newIdx];
+  const targetRealIdx = waitingQueue.indexOf(targetEntry);
+  waitingQueue.splice(realIdx, 1);
+  waitingQueue.splice(targetRealIdx, 0, entry);
+  const newPos = waitingQueue.filter(e => e.status !== 'cancelled').findIndex(e => e.userId === userId) + 1;
+  const total = waitingQueue.filter(e => e.status !== 'cancelled').length;
+  return { position: newPos, total };
+}
+
 module.exports = {
   register,
   registerWithUserId,
@@ -106,5 +125,6 @@ module.exports = {
   cancelByPhone,
   cancelByUserId,
   resetQueue,
-  getWaitingCount
+  getWaitingCount,
+  moveBack
 };
