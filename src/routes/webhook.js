@@ -968,7 +968,7 @@ async function handleMain(req, res) {
         dirTexts[lang] || dirTexts.ko,
         getQuickReplies(lang, session.industry || 'hospital'),
         [
-          { action: 'webLink', label: mapLabels[lang] || mapLabels.ko, webLinkUrl: 'https://map.kakao.com/?q=강남역피부과' },
+          { action: 'webLink', label: mapLabels[lang] || mapLabels.ko, webLinkUrl: mapUrls[session.industry] || mapUrls.default },
           { action: 'message', label: lt.home, messageText: '처음으로' }
         ]
       );
