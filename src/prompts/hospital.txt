@@ -336,8 +336,8 @@ BOOKING_JSON:
 ✨ 리프팅·스킨케어 | 수분광 1회 80,000원 / 5회 350,000원\n물광주사 150,000원\n피부암검진 50,000원
 
 ## 카드_의료진
-김연세 원장 | 피부과 전문의 20년\n레이저·여드름 전문\n강남 피부과 1위 | 김연세원장
-이수진 원장 | 피부과 전문의 15년\n안티에이징·미백 전문\n피부 재생 전문 | 이수진원장
+김연세 원장 | 피부과 전문의 20년\n레이저·여드름 전문\n강남 피부과 1위 | 김연세원장 | doctor_3.jpg
+이수진 원장 | 피부과 전문의 15년\n안티에이징·미백 전문\n피부 재생 전문 | 이수진원장 | doctor_7.jpg
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin

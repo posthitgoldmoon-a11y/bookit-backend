@@ -351,8 +351,8 @@ BOOKING_JSON:
 집단 치료 상담 후 결정
 
 ## 카드_의료진
-오현준 원장 | 정신건강의학과 전문의 20년\n우울·불안 전문\n강남 정신건강 1위 | 오현준원장
-신예진 원장 | 정신건강의학과 전문의 15년\n수면·스트레스 전문\nADHD·공황 전문 | 신예진원장
+오현준 원장 | 정신건강의학과 전문의 20년\n우울·불안 전문\n강남 정신건강 1위 | 오현준원장 | doctor_15.jpg
+신예진 원장 | 정신건강의학과 전문의 15년\n수면·스트레스 전문\nADHD·공황 전문 | 신예진원장 | doctor_19.jpg
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin

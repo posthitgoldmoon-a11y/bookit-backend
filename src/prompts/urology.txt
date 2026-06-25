@@ -351,8 +351,8 @@ BOOKING_JSON:
 치료 비용 별도
 
 ## 카드_의료진
-김태양 원장 | 비뇨기과 전문의 20년\n전립선·요로 전문\n강남 비뇨기과 1위 | 김태양원장
-정민석 원장 | 비뇨기과 전문의 15년\n남성 건강 전문\n남성 수술 전문 | 정민석원장
+김태양 원장 | 비뇨기과 전문의 20년\n전립선·요로 전문\n강남 비뇨기과 1위 | 김태양원장 | doctor_5.jpg
+정민석 원장 | 비뇨기과 전문의 15년\n남성 건강 전문\n남성 수술 전문 | 정민석원장 | doctor_11.jpg
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin

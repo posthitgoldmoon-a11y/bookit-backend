@@ -351,8 +351,8 @@ BOOKING_JSON:
 피임 시술 상담 후 결정
 
 ## 카드_의료진
-윤서연 원장 | 산부인과 전문의 20년\n임신·출산 전문\n강남 산부인과 1위 | 윤서연원장
-강미래 원장 | 산부인과 전문의 15년\n여성 건강 전문\n난임·갱년기 전문 | 강미래원장
+윤서연 원장 | 산부인과 전문의 20년\n임신·출산 전문\n강남 산부인과 1위 | 윤서연원장 | doctor_13.jpg
+강미래 원장 | 산부인과 전문의 15년\n여성 건강 전문\n난임·갱년기 전문 | 강미래원장 | doctor_17.jpg
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin
