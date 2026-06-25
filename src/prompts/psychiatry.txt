@@ -373,6 +373,6 @@ BOOKING_JSON:
 ✨ Lifting & Skincare | Moisture care 1session ₩80,000 / 5sessions ₩350,000\nSkin booster ₩150,000\nSkin cancer screening ₩50,000
 
 ## 카드_의료진_en
-Dr. Kim Yonsei | Dermatologist 20 years\nLaser treatment specialist\n#1 laser clinic in Gangnam | Book with Dr. Kim | doctor_1.jpg
-Dr. Park Purumi | Dermatologist 15 years\nAcne & scar specialist\nBotox & filler expert | Book with Dr. Park | doctor_2.jpg
-Dr. Lee Miso | Dermatologist 10 years\nAnti-aging & lifting specialist\nSkin care expert | Book with Dr. Lee | doctor_3.jpg
+Dr. Oh Hyunjun | Psychiatrist 20 years\nDepression·Anxiety specialist\n#1 psychiatry in Gangnam | 오현준원장 | doctor_15.jpg
+Dr. Shin Yejin | Psychiatrist 15 years\nSleep·Stress specialist\nADHD·Panic disorder expert | 신예진원장 | doctor_19.jpg
+
