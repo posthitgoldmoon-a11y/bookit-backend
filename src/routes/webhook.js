@@ -48,7 +48,7 @@ function parseCardSection(industry, sectionName, lang = 'ko') {
 const INDUSTRIES = {
   ko: [
     { title: '🏥 병원동행', desc: '접수부터 수납까지 보호자처럼', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
-    { title: '🏨 병원', desc: '전문의와 함께하는 진료 예약', msg: '병원', img: 'banner_hospital.jpg' },
+    { title: '🏨 병원', desc: '전문의와 함께하는 진료 예약', msg: '병원', img: 'banner_obesity_v2.jpg' },
     { title: '🍽️ 식당', desc: '특별한 날을 위한 레스토랑', msg: '식당', img: 'banner_restaurant.jpg' },
     { title: '💇 미용실', desc: '나만의 스타일을 찾아드려요', msg: '미용실', img: 'banner_beauty.jpg' },
     { title: '🏨 숙박', desc: '편안한 휴식을 위한 숙소', msg: '숙박', img: 'banner_accommodation.jpg' },
@@ -67,15 +67,15 @@ const INDUSTRIES = {
     { title: '📚 스터디카페', desc: '집중할 수 있는 공간', msg: '스터디카페', img: 'banner_studycafe.jpg' },
     { title: '🧘 요가/필라테스', desc: '몸과 마음의 균형', msg: '요가', img: 'banner_yoga.jpg' },
     { title: '🏊 수영/볼링', desc: '즐거운 스포츠 활동', msg: '수영', img: 'banner_swimming.jpg' },
-    { title: '💉 성형외과', desc: '자연스럽고 아름다운 성형', msg: '성형외과', img: 'banner_hospital.jpg' },
-    { title: '🔬 비뇨기과', desc: '전문의와 함께하는 비뇨기 건강', msg: '비뇨기과', img: 'banner_hospital.jpg' },
-    { title: '🤰 산부인과', desc: '여성 건강을 위한 전문 진료', msg: '산부인과', img: 'banner_hospital.jpg' },
-    { title: '💙 정신건강의학과', desc: '마음 건강을 위한 전문 상담', msg: '정신과', img: 'banner_hospital.jpg' },
-    { title: '⚖️ 365mc 비만클리닉', desc: '지방흡입·람스·비만치료 전문', msg: '365mc', img: 'banner_hospital.jpg' }
+    { title: '💉 성형외과', desc: '자연스럽고 아름다운 성형', msg: '성형외과', img: 'banner_obesity_v2.jpg' },
+    { title: '🔬 비뇨기과', desc: '전문의와 함께하는 비뇨기 건강', msg: '비뇨기과', img: 'banner_obesity_v2.jpg' },
+    { title: '🤰 산부인과', desc: '여성 건강을 위한 전문 진료', msg: '산부인과', img: 'banner_obesity_v2.jpg' },
+    { title: '💙 정신건강의학과', desc: '마음 건강을 위한 전문 상담', msg: '정신과', img: 'banner_obesity_v2.jpg' },
+    { title: '⚖️ 365mc 비만클리닉', desc: '지방흡입·람스·비만치료 전문', msg: '365mc', img: 'banner_obesity_v2.jpg' }
   ],
   en: [
     { title: '🏥 Hospital Companion', desc: 'From registration to payment', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
-    { title: '🏨 Hospital', desc: 'Medical appointment booking', msg: '병원', img: 'banner_hospital.jpg' },
+    { title: '🏨 Hospital', desc: 'Medical appointment booking', msg: '병원', img: 'banner_obesity_v2.jpg' },
     { title: '🍽️ Restaurant', desc: 'Special dining experiences', msg: '식당', img: 'banner_restaurant.jpg' },
     { title: '💇 Hair Salon', desc: 'Find your perfect style', msg: '미용실', img: 'banner_beauty.jpg' },
     { title: '🏨 Accommodation', desc: 'Comfortable stay options', msg: '숙박', img: 'banner_accommodation.jpg' },
@@ -94,11 +94,11 @@ const INDUSTRIES = {
     { title: '📚 Study Cafe', desc: 'Focus and study space', msg: '스터디카페', img: 'banner_studycafe.jpg' },
     { title: '🧘 Yoga/Pilates', desc: 'Balance body and mind', msg: '요가', img: 'banner_yoga.jpg' },
     { title: '🏊 Swimming/Bowling', desc: 'Fun sports activities', msg: '수영', img: 'banner_swimming.jpg' },
-    { title: '💉 Plastic Surgery', desc: 'Natural & beautiful results', msg: '성형외과', img: 'banner_hospital.jpg' },
-    { title: '🔬 Urology', desc: 'Urological health care', msg: '비뇨기과', img: 'banner_hospital.jpg' },
-    { title: '🤰 OB/GYN', desc: 'Women health specialist', msg: '산부인과', img: 'banner_hospital.jpg' },
-    { title: '💙 Psychiatry', desc: 'Mental health counseling', msg: '정신과', img: 'banner_hospital.jpg' },
-    { title: '⚖️ 365mc Obesity Clinic', desc: 'Liposuction·LAMS·Obesity Care', msg: '365mc', img: 'banner_hospital.jpg' }
+    { title: '💉 Plastic Surgery', desc: 'Natural & beautiful results', msg: '성형외과', img: 'banner_obesity_v2.jpg' },
+    { title: '🔬 Urology', desc: 'Urological health care', msg: '비뇨기과', img: 'banner_obesity_v2.jpg' },
+    { title: '🤰 OB/GYN', desc: 'Women health specialist', msg: '산부인과', img: 'banner_obesity_v2.jpg' },
+    { title: '💙 Psychiatry', desc: 'Mental health counseling', msg: '정신과', img: 'banner_obesity_v2.jpg' },
+    { title: '⚖️ 365mc Obesity Clinic', desc: 'Liposuction·LAMS·Obesity Care', msg: '365mc', img: 'banner_obesity_v2.jpg' }
   ]
 };
 
@@ -123,7 +123,7 @@ async function showDeptCarousel(callbackUrl) {
     { title: '🤰 산부인과', description: '산전검진·여성건강·갱년기', thumbnail: { imageUrl: `${BASE_URL}/banner_obgyn.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '산부인과' }] },
     { title: '💙 정신건강의학과', description: '우울·불안·수면·ADHD·상담', thumbnail: { imageUrl: `${BASE_URL}/banner_psychiatry.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '정신과' }] },
     { title: '🦷 치과', description: '임플란트·교정·스케일링·충치', thumbnail: { imageUrl: `${BASE_URL}/banner_dental.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '치과' }] },
-    { title: '⚖️ 365mc 비만클리닉', description: '지방흡입·람스·비만치료 전문', thumbnail: { imageUrl: `${BASE_URL}/banner_hospital.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '365mc' }] }
+    { title: '⚖️ 365mc 비만클리닉', description: '지방흡입·람스·비만치료 전문', thumbnail: { imageUrl: `${BASE_URL}/banner_obesity_v2.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '365mc' }] }
   ];
   await fetch(callbackUrl, {
     method: 'POST',
