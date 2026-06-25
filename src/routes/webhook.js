@@ -220,7 +220,7 @@ async function sendCallback(callbackUrl, text, quickReplies = null, buttons = nu
   // buttons가 있으면 basicCard로, 없으면 simpleText로
   let outputs;
   if (buttons) {
-    outputs = [{ basicCard: { title: text, buttons: buttons } }];
+    outputs = [{ basicCard: { description: text, buttons: buttons } }];
   } else {
     outputs = [{ simpleText: { text } }];
   }
