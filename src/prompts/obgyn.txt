@@ -353,7 +353,6 @@ BOOKING_JSON:
 ## 카드_의료진
 윤서연 원장 | 산부인과 전문의 20년\n임신·출산 전문\n강남 산부인과 1위 | 윤서연원장
 강미래 원장 | 산부인과 전문의 15년\n여성 건강 전문\n난임·갱년기 전문 | 강미래원장
-임지은 원장 | 산부인과 전문의 10년\n청소년 여성 건강\n여성 전문 | 임지은원장
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin

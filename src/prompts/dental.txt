@@ -353,7 +353,6 @@ BOOKING_JSON:
 ## 카드_의료진
 송재원 원장 | 치과 전문의 20년\n임플란트·보철 전문\n강남 임플란트 1위 | 송재원원장
 나윤아 원장 | 치과 전문의 15년\n교정·미백 전문\n투명교정 전문 | 나윤아원장
-조민혁 원장 | 치과 전문의 10년\n소아·일반 치과\n통증 없는 치료 | 조민혁원장
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin

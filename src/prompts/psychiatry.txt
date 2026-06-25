@@ -353,7 +353,6 @@ BOOKING_JSON:
 ## 카드_의료진
 오현준 원장 | 정신건강의학과 전문의 20년\n우울·불안 전문\n강남 정신건강 1위 | 오현준원장
 신예진 원장 | 정신건강의학과 전문의 15년\n수면·스트레스 전문\nADHD·공황 전문 | 신예진원장
-류승우 원장 | 정신건강의학과 전문의 10년\n청소년·가족 상담\n심리치료 전문 | 류승우원장
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin

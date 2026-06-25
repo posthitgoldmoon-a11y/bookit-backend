@@ -353,7 +353,6 @@ BOOKING_JSON:
 ## 카드_의료진
 이준호 원장 | 성형외과 전문의 20년\n눈·코 성형 전문\n강남 성형 1위 | 이준호원장
 최수연 원장 | 성형외과 전문의 15년\n윤곽·지방 전문\n자연스러운 성형 추구 | 최수연원장
-박지훈 원장 | 성형외과 전문의 10년\n가슴·바디 성형 전문\n여성 성형 전문 | 박지훈원장
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin

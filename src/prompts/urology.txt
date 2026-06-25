@@ -353,7 +353,6 @@ BOOKING_JSON:
 ## 카드_의료진
 김태양 원장 | 비뇨기과 전문의 20년\n전립선·요로 전문\n강남 비뇨기과 1위 | 김태양원장
 정민석 원장 | 비뇨기과 전문의 15년\n남성 건강 전문\n남성 수술 전문 | 정민석원장
-한소희 원장 | 비뇨기과 전문의 10년\n여성 비뇨기 전문\n방광·골반 전문 | 한소희원장
 
 ## 카드_상담메뉴_en
 🔬 Skin Consultation | Acne·Pigmentation·Wrinkles\nPersonalized skin solution | Please consult about my skin
