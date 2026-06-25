@@ -1483,6 +1483,14 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
         { title: '🦷 임플란트가 필요하다', desc: '결손치·임플란트\n임플란트 상담', msg: '증상상담:임플란트가 필요하다' },
         { title: '🟡 치아가 누렇다', desc: '치아변색·미백\n미백 치료 상담', msg: '증상상담:치아가 누렇다' },
       ],
+      obesity: [
+        { title: '🍔 복부 살이 고민이다', desc: '복부·뱃살·내장지방\n지방흡입·람스 상담', msg: '증상상담:복부 살이 고민이다' },
+        { title: '💪 팔뚝이 굵어서 고민이다', desc: '팔뚝 지방·살\n람스·지방흡입 상담', msg: '증상상담:팔뚝이 굵어서 고민이다' },
+        { title: '🦵 허벅지가 두꺼워서 고민이다', desc: '허벅지·종아리 지방\n람스·지방흡입 상담', msg: '증상상담:허벅지가 두꺼워서 고민이다' },
+        { title: '😓 다이어트를 해도 살이 안 빠진다', desc: '국소지방·요요\n비수술 람스 상담', msg: '증상상담:다이어트를 해도 살이 안 빠진다' },
+        { title: '👗 옷 입을 때 특정 부위가 신경 쓰인다', desc: '체형교정·바디라인\n부위별 지방제거', msg: '증상상담:옷 입을 때 특정 부위가 신경 쓰인다' },
+        { title: '🔬 수술 없이 지방을 빼고 싶다', desc: '비수술 람스\n10분 시술·절개 없음', msg: '증상상담:수술 없이 지방을 빼고 싶다' },
+      ],
     };
 
     const industryTitles = {
@@ -1493,6 +1501,7 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
         obgyn: '어떤 여성 건강 고민이 있으신가요?',
         psychiatry: '어떤 마음 건강 고민이 있으신가요?',
         dental: '어떤 치아 고민이 있으신가요?',
+        obesity: '어떤 체형·비만 고민이 있으신가요?',
       }
     };
 
