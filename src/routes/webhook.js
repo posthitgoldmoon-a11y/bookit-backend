@@ -927,9 +927,23 @@ async function handleMain(req, res) {
     if (userMessage === '오시는길') {
       const lang = session.data.lang || 'ko';
       const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
-      const dirTexts = {
-        ko: '📍 연세푸르미피부과 오시는 길\n\n📌 서울 강남구 강남대로 123 푸르미빌딩 5층\n\n🚇 강남역 2번 출구 도보 3분\n🚗 건물 내 주차 1시간 무료\n📞 02-1234-5678',
-        en: '📍 Directions to Yonsei Purmi Dermatology\n\n📌 5F Purmi Bldg, 123 Gangnam-daero, Gangnam-gu, Seoul\n\n🚇 3 min walk from Gangnam Station Exit 2\n🚗 1 hour free parking\n📞 02-1234-5678',
+      const industry = session.industry || 'hospital';
+      const dirData = {
+        obesity: {
+          ko: '📍 365mc 강남본점 오시는 길\n\n📌 서울시 강남구 도산대로 118 신사빌딩 2층\n(KT대리점 옆 건물 2층)\n\n🚇 지하철 3호선 신사역 1번 출구 직진 도보 1분\n🚗 민영주차장 이용 (30분 미만 100% 지원)\n📞 02-2039-5850',
+          en: '📍 Directions to 365mc Gangnam Main Branch\n\n📌 2F Sinsa Bldg, 118 Dosan-daero, Gangnam-gu, Seoul\n(Next to KT store, 2nd floor)\n\n🚇 1 min walk from Sinsa Station Exit 1 (Line 3)\n🚗 Private parking available (under 30min 100% supported)\n📞 02-2039-5850',
+          zh: '📍 前往365mc江南本店\n\n📌 首尔江南区道山大路118号新沙大厦2楼\n\n🚇 地铁3号线新沙站1号出口步行1分钟\n🚗 民营停车场（30分钟内100%支持）\n📞 02-2039-5850',
+          ja: '📍 365mc 江南本店へのアクセス\n\n📌 ソウル江南区道山大路118 新沙ビル2階\n\n🚇 地下鉄3号線新沙駅1番出口から徒歩1分\n🚗 民営駐車場利用可（30分未満100%サポート）\n📞 02-2039-5850',
+          th: '📍 เส้นทางไป 365mc สาขา Gangnam\n\n📌 ชั้น 2 Sinsa Bldg, 118 Dosan-daero, Seoul\n\n🚇 เดิน 1 นาทีจากทางออก 1 สถานี Sinsa (สาย 3)\n🚗 ที่จอดรถเอกชน (ฟรีภายใน 30 นาที)\n📞 02-2039-5850',
+          vi: '📍 Đường đến 365mc Chi nhánh Gangnam\n\n📌 Tầng 2, Tòa nhà Sinsa, 118 Dosan-daero, Seoul\n\n🚇 Đi bộ 1 phút từ cửa số 1 ga Sinsa (Tuyến 3)\n🚗 Bãi đỗ xe tư nhân (miễn phí dưới 30 phút)\n📞 02-2039-5850',
+          ar: '📍 الاتجاهات إلى 365mc فرع غانغنام\n\n📌 الطابق 2، مبنى سينسا، 118 دوسان-داييرو، سيول\n\n🚇 دقيقة واحدة سيرًا من مخرج 1 محطة سينسا (خط 3)\n🚗 موقف سيارات خاص (مجاني أقل من 30 دقيقة)\n📞 02-2039-5850',
+          ru: '📍 Как добраться до 365mc Gangnam\n\n📌 2 этаж, здание Sinsa, 118 Dosan-daero, Сеул\n\n🚇 1 минута пешком от выхода 1 станции Sinsa (линия 3)\n🚗 Частная парковка (бесплатно до 30 минут)\n📞 02-2039-5850',
+          fr: '📍 Comment se rendre à 365mc Gangnam\n\n📌 2ème étage, Sinsa Bldg, 118 Dosan-daero, Séoul\n\n🚇 1 min à pied de la sortie 1 de la station Sinsa (ligne 3)\n🚗 Parking privé (gratuit moins de 30 min)\n📞 02-2039-5850',
+          es: '📍 Cómo llegar a 365mc Gangnam\n\n📌 Piso 2, Sinsa Bldg, 118 Dosan-daero, Seúl\n\n🚇 1 min a pie desde la salida 1 de la estación Sinsa (línea 3)\n🚗 Estacionamiento privado (gratis menos de 30 min)\n📞 02-2039-5850',
+        },
+        default: {
+          ko: '📍 연세푸르미피부과 오시는 길\n\n📌 서울 강남구 강남대로 123 푸르미빌딩 5층\n\n🚇 강남역 2번 출구 도보 3분\n🚗 건물 내 주차 1시간 무료\n📞 02-1234-5678',
+          en: '📍 Directions to Yonsei Purmi Dermatology\n\n📌 5F Purmi Bldg, 123 Gangnam-daero, Gangnam-gu, Seoul\n\n🚇 3 min walk from Gangnam Station Exit 2\n🚗 1 hour free parking\n📞 02-1234-5678',
         zh: '📍 前往延世普尔美皮肤科\n\n📌 首尔江南区江南大路123号普尔美大厦5楼\n\n🚇 江南站2号出口步行3分钟\n🚗 楼内停车1小时免费\n📞 02-1234-5678',
         ja: '📍 延世プルミ皮膚科へのアクセス\n\n📌 ソウル江南区江南大路123 プルミビル5階\n\n🚇 江南駅2番出口から徒歩3分\n🚗 館内駐車場1時間無料\n📞 02-1234-5678',
         th: '📍 เส้นทางไป Yonsei Purmi Dermatology\n\n📌 ชั้น 5 Purmi Bldg, 123 Gangnam-daero, Seoul\n\n🚇 เดิน 3 นาทีจากทางออก 2 สถานี Gangnam\n🚗 จอดรถฟรี 1 ชั่วโมง\n📞 02-1234-5678',
@@ -937,7 +951,13 @@ async function handleMain(req, res) {
         ar: '📍 الاتجاهات إلى عيادة يونسي بورومي\n\n📌 الطابق 5، مبنى بورومي، 123 شارع غانغنام، سيول\n\n🚇 3 دقائق سيرًا من مخرج 2 محطة غانغنام\n🚗 ساعة واحدة مجانية للانتظار\n📞 02-1234-5678',
         ru: '📍 Как добраться до Yonsei Purmi Dermatology\n\n📌 5 этаж, здание Purmi, 123 Gangnam-daero, Сеул\n\n🚇 3 минуты пешком от выхода 2 станции Gangnam\n🚗 Бесплатная парковка 1 час\n📞 02-1234-5678',
         fr: '📍 Comment se rendre à Yonsei Purmi Dermatology\n\n📌 5ème étage, Purmi Bldg, 123 Gangnam-daero, Séoul\n\n🚇 3 min à pied de la sortie 2 de la station Gangnam\n🚗 1 heure de stationnement gratuit\n📞 02-1234-5678',
-        es: '📍 Cómo llegar a Yonsei Purmi Dermatology\n\n📌 Piso 5, Purmi Bldg, 123 Gangnam-daero, Seúl\n\n🚇 3 min a pie desde la salida 2 de la estación Gangnam\n🚗 1 hora de estacionamiento gratuito\n📞 02-1234-5678'
+          es: '📍 Cómo llegar a Yonsei Purmi Dermatology\n\n📌 Piso 5, Purmi Bldg, 123 Gangnam-daero, Seúl\n\n🚇 3 min a pie desde la salida 2 de la estación Gangnam\n🚗 1 hora de estacionamiento gratuito\n📞 02-1234-5678',
+        }
+      };
+      const dirTexts = dirData[industry] || dirData.default;
+      const mapUrls = {
+        obesity: 'https://map.kakao.com/?q=365mc+강남본점',
+        default: 'https://map.kakao.com/?q=강남역피부과'
       };
       const mapLabels = {
         ko: '🗺️ 카카오맵 보기', en: '🗺️ View on Map', zh: '🗺️ 查看地图',
@@ -957,19 +977,35 @@ async function handleMain(req, res) {
 
     if (userMessage === '진료시간') {
       const lang = session.data.lang || 'ko';
+      const industry = session.industry || 'hospital';
       const lt = LANG_TEXTS[lang] || LANG_TEXTS.ko;
-      const hoursTexts = {
-        ko: "⏰ 진료시간 안내\n\n월~금: 09:00 - 18:00\n토요일: 09:00 - 15:00\n일/공휴일: 휴진\n\n점심시간: 13:00 - 14:00\n\n📞 전화예약: 02-1234-5678",
-        en: "⏰ Business Hours\n\nMon-Fri: 09:00 - 18:00\nSaturday: 09:00 - 15:00\nSun/Holidays: Closed\n\nLunch: 13:00 - 14:00\n\n📞 Phone: 02-1234-5678",
-        zh: "⏰ 营业时间\n\n周一至周五: 09:00 - 18:00\n周六: 09:00 - 15:00\n周日/节假日: 休息\n\n午休: 13:00 - 14:00\n\n📞 电话: 02-1234-5678",
-        ja: "⏰ 診療時間\n\n月〜金: 09:00 - 18:00\n土曜日: 09:00 - 15:00\n日/祝日: 休診\n\nランチ: 13:00 - 14:00\n\n📞 電話: 02-1234-5678",
-        th: "⏰ เวลาทำการ\n\nจ-ศ: 09:00 - 18:00\nเสาร์: 09:00 - 15:00\nอาทิตย์/วันหยุด: ปิด\n\nพักกลางวัน: 13:00 - 14:00\n\n📞 โทร: 02-1234-5678",
-        vi: "⏰ Giờ làm việc\n\nT2-T6: 09:00 - 18:00\nThứ 7: 09:00 - 15:00\nCN/Lễ: Nghỉ\n\nNghỉ trưa: 13:00 - 14:00\n\n📞 Điện thoại: 02-1234-5678",
-        ar: "⏰ ساعات العمل\n\nإثنين-جمعة: 09:00 - 18:00\nالسبت: 09:00 - 15:00\nأحد/عطلات: مغلق\n\nاستراحة الغداء: 13:00 - 14:00\n\n📞 هاتف: 02-1234-5678",
-        ru: "⏰ Часы работы\n\nПн-Пт: 09:00 - 18:00\nСуббота: 09:00 - 15:00\nВс/праздники: Закрыто\n\nОбед: 13:00 - 14:00\n\n📞 Телефон: 02-1234-5678",
-        fr: "⏰ Heures d'ouverture\n\nLun-Ven: 09:00 - 18:00\nSamedi: 09:00 - 15:00\nDim/Fériés: Fermé\n\nDéjeuner: 13:00 - 14:00\n\n📞 Tél: 02-1234-5678",
-        es: "⏰ Horario\n\nLun-Vie: 09:00 - 18:00\nSábado: 09:00 - 15:00\nDom/Festivos: Cerrado\n\nAlmuerzo: 13:00 - 14:00\n\n📞 Tel: 02-1234-5678"
+      const hoursData = {
+        obesity: {
+          ko: '⏰ 365mc 강남본점 진료시간\n\n월·화·목·금: 11:00 ~ 20:00\n수요일: 11:00 ~ 19:00\n토요일: 10:00 ~ 15:00\n일요일·공휴일: 휴진\n\n📞 02-2039-5850',
+          en: '⏰ 365mc Gangnam Hours\n\nMon·Tue·Thu·Fri: 11:00 ~ 20:00\nWednesday: 11:00 ~ 19:00\nSaturday: 10:00 ~ 15:00\nSun/Holidays: Closed\n\n📞 02-2039-5850',
+          zh: '⏰ 365mc江南本店诊疗时间\n\n周一·二·四·五: 11:00 ~ 20:00\n周三: 11:00 ~ 19:00\n周六: 10:00 ~ 15:00\n周日/节假日: 休息\n\n📞 02-2039-5850',
+          ja: '⏰ 365mc 江南本店 診療時間\n\n月·火·木·金: 11:00 ~ 20:00\n水曜日: 11:00 ~ 19:00\n土曜日: 10:00 ~ 15:00\n日/祝日: 休診\n\n📞 02-2039-5850',
+          th: '⏰ เวลาทำการ 365mc Gangnam\n\nจ·อ·พฤ·ศ: 11:00 ~ 20:00\nพุธ: 11:00 ~ 19:00\nเสาร์: 10:00 ~ 15:00\nอาทิตย์/วันหยุด: ปิด\n\n📞 02-2039-5850',
+          vi: '⏰ Giờ làm việc 365mc Gangnam\n\nT2·T3·T5·T6: 11:00 ~ 20:00\nThứ 4: 11:00 ~ 19:00\nThứ 7: 10:00 ~ 15:00\nCN/Lễ: Nghỉ\n\n📞 02-2039-5850',
+          ar: '⏰ ساعات عمل 365mc غانغنام\n\nإثنين·ثلاثاء·خميس·جمعة: 11:00 ~ 20:00\nأربعاء: 11:00 ~ 19:00\nسبت: 10:00 ~ 15:00\nأحد/عطلات: مغلق\n\n📞 02-2039-5850',
+          ru: '⏰ Часы работы 365mc Gangnam\n\nПн·Вт·Чт·Пт: 11:00 ~ 20:00\nСреда: 11:00 ~ 19:00\nСуббота: 10:00 ~ 15:00\nВс/праздники: Закрыто\n\n📞 02-2039-5850',
+          fr: '⏰ Horaires 365mc Gangnam\n\nLun·Mar·Jeu·Ven: 11:00 ~ 20:00\nMercredi: 11:00 ~ 19:00\nSamedi: 10:00 ~ 15:00\nDim/Fériés: Fermé\n\n📞 02-2039-5850',
+          es: '⏰ Horario 365mc Gangnam\n\nLun·Mar·Jue·Vie: 11:00 ~ 20:00\nMiércoles: 11:00 ~ 19:00\nSábado: 10:00 ~ 15:00\nDom/Festivos: Cerrado\n\n📞 02-2039-5850',
+        },
+        default: {
+          ko: '⏰ 진료시간 안내\n\n월~금: 09:00 - 18:00\n토요일: 09:00 - 15:00\n일/공휴일: 휴진\n\n점심시간: 13:00 - 14:00\n\n📞 전화예약: 02-1234-5678',
+          en: '⏰ Business Hours\n\nMon-Fri: 09:00 - 18:00\nSaturday: 09:00 - 15:00\nSun/Holidays: Closed\n\nLunch: 13:00 - 14:00\n\n📞 Phone: 02-1234-5678',
+          zh: '⏰ 营业时间\n\n周一至周五: 09:00 - 18:00\n周六: 09:00 - 15:00\n周日/节假日: 休息\n\n午休: 13:00 - 14:00\n\n📞 电话: 02-1234-5678',
+          ja: '⏰ 診療時間\n\n月〜金: 09:00 - 18:00\n土曜日: 09:00 - 15:00\n日/祝日: 休診\n\nランチ: 13:00 - 14:00\n\n📞 電話: 02-1234-5678',
+          th: '⏰ เวลาทำการ\n\nจ-ศ: 09:00 - 18:00\nเสาร์: 09:00 - 15:00\nอาทิตย์/วันหยุด: ปิด\n\nพักกลางวัน: 13:00 - 14:00\n\n📞 โทร: 02-1234-5678',
+          vi: '⏰ Giờ làm việc\n\nT2-T6: 09:00 - 18:00\nThứ 7: 09:00 - 15:00\nCN/Lễ: Nghỉ\n\nNghỉ trưa: 13:00 - 14:00\n\n📞 Điện thoại: 02-1234-5678',
+          ar: '⏰ ساعات العمل\n\nإثنين-جمعة: 09:00 - 18:00\nالسبت: 09:00 - 15:00\nأحد/عطلات: مغلق\n\nاستراحة الغداء: 13:00 - 14:00\n\n📞 هاتف: 02-1234-5678',
+          ru: '⏰ Часы работы\n\nПн-Пт: 09:00 - 18:00\nСуббота: 09:00 - 15:00\nВс/праздники: Закрыто\n\nОбед: 13:00 - 14:00\n\n📞 Телефон: 02-1234-5678',
+          fr: "⏰ Heures d'ouverture\n\nLun-Ven: 09:00 - 18:00\nSamedi: 09:00 - 15:00\nDim/Fériés: Fermé\n\nDéjeuner: 13:00 - 14:00\n\n📞 Tél: 02-1234-5678",
+          es: '⏰ Horario\n\nLun-Vie: 09:00 - 18:00\nSábado: 09:00 - 15:00\nDom/Festivos: Cerrado\n\nAlmuerzo: 13:00 - 14:00\n\n📞 Tel: 02-1234-5678',
+        }
       };
+      const hoursTexts = hoursData[industry] || hoursData.default;
       await sendCallback(callbackUrl, hoursTexts[lang] || hoursTexts.ko,
         getQuickReplies(lang, session.industry || 'hospital'),
         [{ action: "message", label: lt.home, messageText: "처음으로" }]
