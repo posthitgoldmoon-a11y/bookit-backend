@@ -1502,18 +1502,64 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
         psychiatry: '어떤 마음 건강 고민이 있으신가요?',
         dental: '어떤 치아 고민이 있으신가요?',
         obesity: '어떤 체형·비만 고민이 있으신가요?',
+      },
+      en: {
+        hospital: 'What skin concerns do you have?',
+        plastic: 'What cosmetic concerns do you have?',
+        urology: 'What urological symptoms do you have?',
+        obgyn: "What women's health concerns do you have?",
+        psychiatry: 'What mental health concerns do you have?',
+        dental: 'What dental concerns do you have?',
+        obesity: 'What body shape or weight concerns do you have?',
+      },
+      zh: {
+        hospital: '您有哪些皮肤烦恼？',
+        plastic: '您有哪些整形烦恼？',
+        urology: '您有哪些泌尿科症状？',
+        obgyn: '您有哪些女性健康烦恼？',
+        psychiatry: '您有哪些心理健康烦恼？',
+        dental: '您有哪些牙齿烦恼？',
+        obesity: '您有哪些体型或肥胖烦恼？',
+      },
+      ja: {
+        hospital: 'どんなお肌のお悩みがありますか？',
+        plastic: 'どんな美容整形のお悩みがありますか？',
+        urology: 'どんな泌尿器科の症状がありますか？',
+        obgyn: 'どんな女性の健康の悩みがありますか？',
+        psychiatry: 'どんなメンタルヘルスの悩みがありますか？',
+        dental: 'どんな歯のお悩みがありますか？',
+        obesity: 'どんな体型・肥満の悩みがありますか？',
+      },
+      th: {
+        hospital: 'คุณมีปัญหาผิวหนังอะไร?',
+        plastic: 'คุณมีปัญหาด้านความงามอะไร?',
+        urology: 'คุณมีอาการระบบทางเดินปัสสาวะอะไร?',
+        obgyn: 'คุณมีปัญหาสุขภาพสตรีอะไร?',
+        psychiatry: 'คุณมีปัญหาสุขภาพจิตอะไร?',
+        dental: 'คุณมีปัญหาฟันอะไร?',
+        obesity: 'คุณมีปัญหาด้านรูปร่างหรือน้ำหนักอะไร?',
+      },
+      vi: {
+        hospital: 'Bạn có vấn đề gì về da?',
+        plastic: 'Bạn có vấn đề gì về thẩm mỹ?',
+        urology: 'Bạn có triệu chứng tiết niệu gì?',
+        obgyn: 'Bạn có vấn đề sức khỏe phụ nữ gì?',
+        psychiatry: 'Bạn có vấn đề sức khỏe tâm thần gì?',
+        dental: 'Bạn có vấn đề răng miệng gì?',
+        obesity: 'Bạn có vấn đề về vóc dáng hoặc cân nặng gì?',
       }
     };
 
     const cardItems = symptomMap[industry] || symptomMap.hospital;
     const titleText = (industryTitles[lang] || industryTitles.ko)[industry] || '어떤 고민이 있으신가요?';
-    const btnLabel = lang === 'ko' ? '🔍 자세히 알아보기' : lang === 'en' ? '🔍 Learn More' : lang === 'zh' ? '🔍 了解更多' : lang === 'ja' ? '🔍 詳しく見る' : '🔍 자세히 알아보기';
+    const btnLabels2 = { ko: '🔍 자세히 알아보기', en: '🔍 Learn More', zh: '🔍 了解更多', ja: '🔍 詳しく見る', th: '🔍 ดูเพิ่มเติม', vi: '🔍 Xem thêm', ar: '🔍 معرفة المزيد', ru: '🔍 Подробнее', fr: '🔍 En savoir plus', es: '🔍 Saber más' };
+    const btnLabel = btnLabels2[lang] || btnLabels2.ko;
 
     const payload = {
       version: '2.0',
       template: {
         outputs: [
-          { simpleText: { text: '💬 ' + titleText + '\n증상을 선택해주세요!' } },
+          { simpleText: { text: '💬 ' + titleText + '\n' + (lang === 'en' ? 'Please select your symptom!' : lang === 'zh' ? '请选择您的症状！' : lang === 'ja' ? '症状を選択してください！' : lang === 'th' ? 'กรุณาเลือกอาการ!' : lang === 'vi' ? 'Vui lòng chọn triệu chứng!' : '증상을 선택해주세요!') } },
           { carousel: {
             type: 'basicCard',
             items: cardItems.map(i => ({
