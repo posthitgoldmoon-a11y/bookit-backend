@@ -1794,11 +1794,10 @@ async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false
       es: { title: '👨‍⚕️ Nuestros médicos', btn: '🔍 Saber más', home: '🏠 Inicio' }
     };
     const l = labels[lang] || labels.ko;
-    const cardItems = items.length > 0 ? items : [
-      { title: '👨‍⚕️ 전문의', desc: '피부과 전문의', msg: '전문의로 예약하기', img: '' }
-    ];
+    const cardItems = items;
     const outputItems = [];
-    const headerText = prefixMessage ? prefixMessage + '\n\n' + l.title : l.title;
+    const doctorTitleMap = { ko: { hospital: '👨‍⚕️ 피부과 의료진', plastic: '👨‍⚕️ 성형외과 의료진', urology: '👨‍⚕️ 비뇨기과 의료진', obgyn: '👨‍⚕️ 산부인과 의료진', psychiatry: '👨‍⚕️ 정신건강의학과 의료진', dental: '👨‍⚕️ 치과 의료진', obesity: '👨‍⚕️ 365mc 의료진' }, en: { hospital: '👨‍⚕️ Dermatology Doctors', plastic: '👨‍⚕️ Plastic Surgery Doctors', urology: '👨‍⚕️ Urology Doctors', obgyn: '👨‍⚕️ OB/GYN Doctors', psychiatry: '👨‍⚕️ Psychiatry Doctors', dental: '👨‍⚕️ Dental Doctors', obesity: '👨‍⚕️ 365mc Doctors' }, zh: { hospital: '👨‍⚕️ 皮肤科医师', plastic: '👨‍⚕️ 整形外科医师', urology: '👨‍⚕️ 泌尿科医师', obgyn: '👨‍⚕️ 妇产科医师', psychiatry: '👨‍⚕️ 精神科医师', dental: '👨‍⚕️ 牙科医师', obesity: '👨‍⚕️ 365mc医师' }, ja: { hospital: '👨‍⚕️ 皮膚科医師', plastic: '👨‍⚕️ 美容外科医師', urology: '👨‍⚕️ 泌尿器科医師', obgyn: '👨‍⚕️ 産婦人科医師', psychiatry: '👨‍⚕️ 精神科医師', dental: '👨‍⚕️ 歯科医師', obesity: '👨‍⚕️ 365mc医師' } };
+    const headerText = prefixMessage ? prefixMessage + '\n\n' + (doctorTitleMap[lang]||doctorTitleMap.ko)[industry]||l.title : (doctorTitleMap[lang]||doctorTitleMap.ko)[industry]||l.title;
     outputItems.push({ simpleText: { text: headerText } });
     const payload = {
       version: '2.0',
