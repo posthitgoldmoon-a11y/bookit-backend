@@ -1020,7 +1020,7 @@ async function handleMain(req, res) {
       const symptom = userMessage.replace('증상상담:', '').trim();
       const industryName = {
         hospital: '피부과', plastic: '성형외과', urology: '비뇨기과',
-        obgyn: '산부인과', psychiatry: '정신건강의학과', dental: '치과'
+        obgyn: '산부인과', psychiatry: '정신건강의학과', dental: '치과', obesity: '비만클리닉'
       }[session.industry || 'hospital'] || '병원';
       const question = lang === 'ko'
         ? `환자가 "${symptom}" 증상을 호소하고 있습니다. ${industryName} 전문의 관점에서 이 증상의 원인, 치료 방법, 주의사항을 친절하게 안내해주세요.`
