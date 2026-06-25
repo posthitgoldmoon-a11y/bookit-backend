@@ -1685,6 +1685,14 @@ async function sendConsultMenu(callbackUrl, lang = 'ko', industry = 'hospital') 
     };
     const symptomMap = (symptomMapAll[lang] || symptomMapAll.ko);
     const cardItems = symptomMap[industry] || symptomMap.hospital;
+    const industryTitles = {
+      ko: { hospital: '어떤 피부 고민이 있으신가요?', plastic: '어떤 성형 고민이 있으신가요?', urology: '어떤 비뇨기 증상이 있으신가요?', obgyn: '어떤 여성 건강 고민이 있으신가요?', psychiatry: '어떤 마음 건강 고민이 있으신가요?', dental: '어떤 치아 고민이 있으신가요?', obesity: '어떤 체형·비만 고민이 있으신가요?' },
+      en: { hospital: 'What skin concerns do you have?', plastic: 'What cosmetic concerns do you have?', urology: 'What urological symptoms do you have?', obgyn: 'What women health concerns do you have?', psychiatry: 'What mental health concerns do you have?', dental: 'What dental concerns do you have?', obesity: 'What body shape or weight concerns do you have?' },
+      zh: { hospital: '您有哪些皮肤烦恼？', plastic: '您有哪些整形烦恼？', urology: '您有哪些泌尿科症状？', obgyn: '您有哪些女性健康烦恼？', psychiatry: '您有哪些心理健康烦恼？', dental: '您有哪些牙齿烦恼？', obesity: '您有哪些体型或肥胖烦恼？' },
+      ja: { hospital: 'どんなお肌のお悩みがありますか？', plastic: 'どんな美容整形のお悩みがありますか？', urology: 'どんな泌尿器科の症状がありますか？', obgyn: 'どんな女性の健康の悩みがありますか？', psychiatry: 'どんなメンタルヘルスの悩みがありますか？', dental: 'どんな歯のお悩みがありますか？', obesity: 'どんな体型・肥満の悩みがありますか？' },
+      th: { hospital: 'คุณมีปัญหาผิวหนังอะไร?', plastic: 'คุณมีปัญหาด้านความงามอะไร?', urology: 'คุณมีอาการระบบทางเดินปัสสาวะอะไร?', obgyn: 'คุณมีปัญหาสุขภาพสตรีอะไร?', psychiatry: 'คุณมีปัญหาสุขภาพจิตอะไร?', dental: 'คุณมีปัญหาฟันอะไร?', obesity: 'คุณมีปัญหาด้านรูปร่างหรือน้ำหนักอะไร?' },
+      vi: { hospital: 'Bạn có vấn đề da nào?', plastic: 'Bạn có vấn đề thẩm mỹ nào?', urology: 'Bạn có triệu chứng tiết niệu nào?', obgyn: 'Bạn có vấn đề sức khỏe phụ nữ nào?', psychiatry: 'Bạn có vấn đề sức khỏe tâm thần nào?', dental: 'Bạn có vấn đề răng miệng nào?', obesity: 'Bạn có vấn đề vóc dáng hoặc cân nặng nào?' },
+    };
     const titleText = (industryTitles[lang] || industryTitles.ko)[industry] || '어떤 고민이 있으신가요?';
     const btnLabels2 = { ko: '🔍 자세히 알아보기', en: '🔍 Learn More', zh: '🔍 了解更多', ja: '🔍 詳しく見る', th: '🔍 ดูเพิ่มเติม', vi: '🔍 Xem thêm', ar: '🔍 معرفة المزيد', ru: '🔍 Подробнее', fr: '🔍 En savoir plus', es: '🔍 Saber más' };
     const btnLabel = btnLabels2[lang] || btnLabels2.ko;

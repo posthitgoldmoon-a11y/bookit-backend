@@ -91,3 +91,48 @@
 김대겸 병원장 | 복부·팔·허벅지·지방이식\n여유증 전문 | 김대겸원장
 손지혁 원장 | 복부·팔·얼굴\n고도지방흡입 전문 | 손지혁원장
 양인정 원장 | 가정의학과 전문의\n강남본점 람스센터 | 양인정원장
+
+## 카드_가격메뉴_en
+LAMS (Non-surgical) | Local anesthesia·No incision·10 min\nPrice varies by area & bottles | 람스
+Liposuction Surgery | Abdomen·Arms·Thighs·Calves·Face\nCustom quote by area | 지방흡입
+Unlimited LAMS Package | Unlimited LAMS sessions\nOptimized for long-term care | 무한람스
+Heopagori Program | Lipo+Fat Transfer Body Line\nDramatic body transformation | 허파고리
+Fat Stem Cell Treatment | Fat Stem Cell Center\nAdvanced regenerative medicine | 지방줄기세포
+Obesity Drug Treatment | Appetite suppressant·Fat dissolving\nPrescription program | 비만약물치료
+
+## 카드_가격메뉴_zh
+LAMS（非手术） | 局部麻醉·无切口·10分钟\n按部位和瓶数报价 | 람스
+吸脂手术 | 腹部·手臂·大腿·小腿·面部\n按部位定制报价 | 지방흡입
+无限LAMS套餐 | 无限次LAMS疗程\n长期管理最优方案 | 무한람스
+허파고리项目 | 吸脂+脂肪移植塑形\n戏剧性体型变化 | 허파고리
+脂肪干细胞治疗 | 脂肪干细胞中心\n先进再生医学 | 지방줄기세포
+肥胖药物治疗 | 食欲抑制剂·脂肪分解注射\n专业处方程序 | 비만약물치료
+
+## 카드_가격메뉴_ja
+LAMS（非手術） | 局所麻酔·切開なし·10分\n部位・ボトル数により異なる | 람스
+脂肪吸引手術 | 腹部·腕·太もも·ふくらはぎ·顔\n部位別カスタム見積もり | 지방흡입
+無制限LAMSパッケージ | 無制限LAMSコース\n長期ケアに最適 | 무한람스
+허파고리プログラム | 脂肪吸引+移植ボディライン\nドラマチックな体型変化 | 허파고리
+脂肪幹細胞治療 | 脂肪幹細胞センター\n先端再生医療 | 지방줄기세포
+肥満薬物治療 | 食欲抑制剤·脂肪分解注射\n専門医処方プログラム | 비만약물치료
+
+## 카드_의료진_en
+Dr. Lee Seon-ho (CEO) | Founder of 365mc\nTop authority in obesity treatment | 이선호원장
+Dr. Kim Jeong-eun | Creator of LAMS\nHead doctor of Gangnam branch | 김정은원장
+Dr. Kim Dae-gyeom | Abdomen·Arms·Thighs·Fat transfer\nGynecomastia specialist | 김대겸원장
+Dr. Son Ji-hyeok | Abdomen·Arms·Face\nHigh-volume liposuction specialist | 손지혁원장
+Dr. Yang In-jeong | Family medicine specialist\nGangnam LAMS Center | 양인정원장
+
+## 카드_의료진_zh
+李善浩院长（CEO） | 365mc创始人\n国内肥胖治疗最高权威 | 이선호원장
+金贞恩院长 | LAMS创始人\n江南本店代表院长 | 김정은원장
+金大谦院长 | 腹部·手臂·大腿·脂肪移植\n女性化乳房专家 | 김대겸원장
+孙志赫院长 | 腹部·手臂·面部\n高度吸脂专家 | 손지혁원장
+梁仁晶院长 | 家庭医学科专科医生\n江南LAMS中心 | 양인정원장
+
+## 카드_의료진_ja
+イ・ソンホ院長（CEO） | 365mc創設者\n国内肥満治療最高権威 | 이선호원장
+キム・ジョンウン院長 | LAMS創始者\n江南本店代表院長 | 김정은원장
+キム・デギョム院長 | 腹部·腕·太もも·脂肪移植\n女性化乳房専門 | 김대겸원장
+ソン・ジヒョク院長 | 腹部·腕·顔\n高度脂肪吸引専門 | 손지혁원장
+ヤン・インジョン院長 | 家庭医学科専門医\n江南LAMSセンター | 양인정원장
