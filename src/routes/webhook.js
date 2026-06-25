@@ -1809,7 +1809,7 @@ async function showDoctors(callbackUrl, lang, prefixMessage, showBooking = false
             items: cardItems.map(d => ({
               title: d.title,
               description: d.desc,
-              thumbnail: d.img ? { imageUrl: `${BASE_URL}/${d.img}`, fixedRatio: false } : undefined,
+              thumbnail: d.img ? { imageUrl: `${BASE_URL}/${d.img}`, fixedRatio: true } : undefined,
               buttons: [{ action: 'message', label: l.btn, messageText: '의사소개:' + d.title }]
             }))
           }}
