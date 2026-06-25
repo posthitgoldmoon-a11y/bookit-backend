@@ -22,7 +22,10 @@ function getSystemPrompt(industry, booted, lang = 'ko') {
       fr: 'Le client a terminé sa réservation. Veuillez répondre aimablement à toute question supplémentaire en français.',
       es: 'El cliente ha completado la reserva. Por favor, responda amablemente a cualquier consulta adicional en español.'
     };
-    return `${bootedMsg[lang] || bootedMsg.ko}
+    const relatedInstr = lang === 'ko'
+      ? '\n\n답변 후 반드시 환자가 궁금해할 관련 질문 3개를 아래 형식으로 추가하세요 (각 질문 14자 이내):\nRELATED_QUESTIONS:\n- 질문1\n- 질문2\n- 질문3'
+      : '\n\nAfter your answer, add 3 related questions (max 14 chars each):\nRELATED_QUESTIONS:\n- q1\n- q2\n- q3';
+    return `${bootedMsg[lang] || bootedMsg.ko}${relatedInstr}
 
 ## 절대 금지 (반드시 준수)
 - "새로 예약하시겠어요?" 절대 사용 금지
@@ -101,8 +104,15 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
     ? langSystemInstruction[lang] + '\n\n' + systemPrompt 
     : systemPrompt;
 
+  // 관련 질문 지시 추가
+  const relatedInstruction = lang === 'ko'
+    ? '\n\n답변 후 반드시 환자가 궁금해할 관련 질문 3개를 아래 형식으로 추가하세요 (각 질문 14자 이내):\nRELATED_QUESTIONS:\n- 질문1\n- 질문2\n- 질문3'
+    : '\n\nAfter your answer, add 3 related questions the patient might ask (max 14 chars each):\nRELATED_QUESTIONS:\n- question1\n- question2\n- question3';
+
+  const finalSystemInstruction2 = finalSystemInstruction + relatedInstruction;
+
   const result = await model.generateContent({
-    systemInstruction: finalSystemInstruction,
+    systemInstruction: finalSystemInstruction2,
     contents: contents,
     generationConfig: {
       maxOutputTokens: 4096,
@@ -116,7 +126,18 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
   const text = result.response.text().trim();
   require("fs").appendFileSync("/home/ubuntu/gemini_debug.log", text + "\n===\n");
 
-  const messageMatch = text.match(/MESSAGE:\s*([\s\S]*?)(?=\nBOOKING_JSON:|\nSHOW_CALENDAR:|\nSHOW_BOOKING_TYPE:|\nSHOW_DOCTORS:|\nSHOW_PRICE:|\nHUMAN_AGENT_REQUEST:|\nRESET:|$)/);
+  // RELATED_QUESTIONS 파싱
+  const relatedMatch = text.match(/RELATED_QUESTIONS:\s*([\s\S]*?)(?=\n[A-Z_]+:|$)/);
+  let relatedQuestions = [];
+  if (relatedMatch) {
+    relatedQuestions = relatedMatch[1].trim().split("\n")
+      .map(q => q.replace(/^[-*\d.]+\s*/, "").trim())
+      .filter(q => q.length > 0)
+      .slice(0, 3);
+  }
+  const msgClean = text.replace(/RELATED_QUESTIONS:[\s\S]*/i, "").trim();
+
+  const messageMatch = msgClean.match(/MESSAGE:\s*([\s\S]*?)(?=\nBOOKING_JSON:|\nSHOW_CALENDAR:|\nSHOW_BOOKING_TYPE:|\nSHOW_DOCTORS:|\nSHOW_PRICE:|\nHUMAN_AGENT_REQUEST:|\nRESET:|$)/);
   const jsonMatch = text.match(/BOOKING_JSON:\s*(\{[\s\S]*\})/);
   const showCalendar = /SHOW_CALENDAR:\s*true/i.test(text);
   const humanAgentRequest = text.includes("HUMAN_AGENT_REQUEST: true");
@@ -170,9 +191,20 @@ async function chat(conversationHistory, userMessage, booted = false, industry =
     }
   }
 
+  // 관련 질문 파싱
+  // message에서 RELATED_QUESTIONS 이하 제거
+
+  if (relatedMatch) {
+    relatedQuestions = relatedMatch[1].trim().split('\n')
+      .map(q => q.replace(/^[-*\d.]+\s*/, '').trim())
+      .filter(q => q.length > 0)
+      .slice(0, 3);
+  }
+
+  console.log('🔍 relatedQuestions:', JSON.stringify(relatedQuestions));
+  console.log('🔍 relatedMatch:', relatedMatch ? relatedMatch[0].substring(0,100) : 'null');
   return { message, bookingData, showCalendar, showCalendarRetry, humanAgentRequest, reset,
-    showPrice,
-    showDoctors, showBookingType };
+    showPrice, showDoctors, showBookingType, relatedQuestions };
 }
 
 module.exports = { chat };

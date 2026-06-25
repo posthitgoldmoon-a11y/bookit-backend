@@ -70,7 +70,8 @@ const INDUSTRIES = {
     { title: '💉 성형외과', desc: '자연스럽고 아름다운 성형', msg: '성형외과', img: 'banner_hospital.jpg' },
     { title: '🔬 비뇨기과', desc: '전문의와 함께하는 비뇨기 건강', msg: '비뇨기과', img: 'banner_hospital.jpg' },
     { title: '🤰 산부인과', desc: '여성 건강을 위한 전문 진료', msg: '산부인과', img: 'banner_hospital.jpg' },
-    { title: '💙 정신건강의학과', desc: '마음 건강을 위한 전문 상담', msg: '정신과', img: 'banner_hospital.jpg' }
+    { title: '💙 정신건강의학과', desc: '마음 건강을 위한 전문 상담', msg: '정신과', img: 'banner_hospital.jpg' },
+    { title: '⚖️ 365mc 비만클리닉', desc: '지방흡입·람스·비만치료 전문', msg: '365mc', img: 'banner_hospital.jpg' }
   ],
   en: [
     { title: '🏥 Hospital Companion', desc: 'From registration to payment', msg: '병원동행', img: 'banner_hospital_companion.jpg' },
@@ -96,7 +97,8 @@ const INDUSTRIES = {
     { title: '💉 Plastic Surgery', desc: 'Natural & beautiful results', msg: '성형외과', img: 'banner_hospital.jpg' },
     { title: '🔬 Urology', desc: 'Urological health care', msg: '비뇨기과', img: 'banner_hospital.jpg' },
     { title: '🤰 OB/GYN', desc: 'Women health specialist', msg: '산부인과', img: 'banner_hospital.jpg' },
-    { title: '💙 Psychiatry', desc: 'Mental health counseling', msg: '정신과', img: 'banner_hospital.jpg' }
+    { title: '💙 Psychiatry', desc: 'Mental health counseling', msg: '정신과', img: 'banner_hospital.jpg' },
+    { title: '⚖️ 365mc Obesity Clinic', desc: 'Liposuction·LAMS·Obesity Care', msg: '365mc', img: 'banner_hospital.jpg' }
   ]
 };
 
@@ -108,7 +110,8 @@ const INDUSTRY_MAP = {
   '액티비티': 'activity', '체육시설': 'sports', '파티룸': 'partyroom',
   '네일샵': 'nail', '사진스튜디오': 'studio', '스터디카페': 'studycafe',
   '요가': 'yoga', '수영': 'swimming',
-
+  '365mc': 'obesity',
+  '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '치과': 'dental'
 };
 
 
@@ -119,7 +122,8 @@ async function showDeptCarousel(callbackUrl) {
     { title: '🔬 비뇨기과', description: '전립선·요로·남성·여성 건강', thumbnail: { imageUrl: `${BASE_URL}/banner_urology.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '비뇨기과' }] },
     { title: '🤰 산부인과', description: '산전검진·여성건강·갱년기', thumbnail: { imageUrl: `${BASE_URL}/banner_obgyn.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '산부인과' }] },
     { title: '💙 정신건강의학과', description: '우울·불안·수면·ADHD·상담', thumbnail: { imageUrl: `${BASE_URL}/banner_psychiatry.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '정신과' }] },
-    { title: '🦷 치과', description: '임플란트·교정·스케일링·충치', thumbnail: { imageUrl: `${BASE_URL}/banner_dental.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '치과' }] }
+    { title: '🦷 치과', description: '임플란트·교정·스케일링·충치', thumbnail: { imageUrl: `${BASE_URL}/banner_dental.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '치과' }] },
+    { title: '⚖️ 365mc 비만클리닉', description: '지방흡입·람스·비만치료 전문', thumbnail: { imageUrl: `${BASE_URL}/banner_hospital.jpg` }, buttons: [{ action: 'message', label: '선택하기', messageText: '365mc' }] }
   ];
   await fetch(callbackUrl, {
     method: 'POST',
@@ -250,7 +254,7 @@ const mainQuickReplies = [
 
 function getQuickReplies(lang = 'ko', industry = 'hospital') {
   // 병원이 아닌 업종은 기본 퀵리플라이만
-  const hospitalIndustries = ['hospital', 'plastic', 'urology', 'obgyn', 'psychiatry', 'dental'];
+  const hospitalIndustries = ['hospital', 'plastic', 'urology', 'obgyn', 'psychiatry', 'dental', 'obesity'];
   if (industry && !hospitalIndustries.includes(industry)) {
     return [
       { label: '🏠 처음으로', action: 'message', messageText: '처음으로' },
@@ -481,7 +485,7 @@ async function handleMain(req, res) {
     }
 
     // 과 선택 처리 (visited 체크보다 먼저)
-    const deptMap2 = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '치과': 'dental' };
+    const deptMap2 = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '치과': 'dental', '365mc': 'obesity' };
     if (deptMap2[userMessage]) {
       session.industry = deptMap2[userMessage];
       session.visited = true;
@@ -559,7 +563,7 @@ async function handleMain(req, res) {
 
 
     // 과 선택 처리
-    const deptMap = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '치과': 'dental' };
+    const deptMap = { '피부과': 'hospital', '성형외과': 'plastic', '비뇨기과': 'urology', '산부인과': 'obgyn', '정신과': 'psychiatry', '치과': 'dental', '365mc': 'obesity' };
     if (deptMap[userMessage]) {
       session.industry = deptMap[userMessage];
       session.visited = true;
@@ -988,7 +992,12 @@ async function handleMain(req, res) {
       session.history.push({ role: 'user', content: question });
       const geminiRes = await chat(session.history, question, true, session.industry || 'hospital', lang);
       session.history.push({ role: 'model', content: geminiRes.message });
-      await sendCallback(callbackUrl, geminiRes.message, getQuickReplies(lang, session.industry || 'hospital'));
+      let symMsg = geminiRes.message;
+      if (geminiRes.relatedQuestions && geminiRes.relatedQuestions.length > 0) {
+        const hdr = lang === 'ko' ? '\n\n💡 이런 질문은 어떠세요?' : '\n\n💡 You might also ask:';
+        symMsg = symMsg + hdr + '\n' + geminiRes.relatedQuestions.map(q => '• ' + q).join('\n');
+      }
+      await sendCallback(callbackUrl, symMsg, getQuickReplies(lang, session.industry || 'hospital'));
       return;
     }
     if (userMessage.startsWith('가격소개:')) {
@@ -997,7 +1006,12 @@ async function handleMain(req, res) {
       const question = lang === 'ko' ? `${itemName} 가격과 상세 정보를 알려주세요` : `Please provide price and details for ${itemName}`;
       session.history.push({ role: 'user', content: question });
       const geminiRes = await chat(session.history, question, true, session.industry || 'hospital', lang);
-      await sendCallback(callbackUrl, geminiRes.message, getQuickReplies(lang, session.industry || 'hospital'));
+      const relatedHdr = { ko: '\n\n💡 이런 질문은 어떠세요?', en: '\n\n💡 You might also ask:', zh: '\n\n💡 您可能还想问：', ja: '\n\n💡 こんな질문はいかがですか？' };
+      let msg = geminiRes.message;
+      if (geminiRes.relatedQuestions && geminiRes.relatedQuestions.length > 0) {
+        msg = msg + (relatedHdr[lang] || relatedHdr.ko) + '\n' + geminiRes.relatedQuestions.map(q => '• ' + q).join('\n');
+      }
+      await sendCallback(callbackUrl, msg, getQuickReplies(lang, session.industry || 'hospital'));
       return;
     }
 
@@ -1007,7 +1021,12 @@ async function handleMain(req, res) {
       const question = lang === 'ko' ? `${doctorName}에 대해 자세히 소개해주세요` : `Please introduce ${doctorName} in detail`;
       session.history.push({ role: 'user', content: question });
       const geminiRes = await chat(session.history, question, true, session.industry || 'hospital', lang);
-      await sendCallback(callbackUrl, geminiRes.message, getQuickReplies(lang, session.industry || 'hospital'));
+      const relatedHdr = { ko: '\n\n💡 이런 질문은 어떠세요?', en: '\n\n💡 You might also ask:', zh: '\n\n💡 您可能还想问：', ja: '\n\n💡 こんな질문はいかがですか？' };
+      let msg = geminiRes.message;
+      if (geminiRes.relatedQuestions && geminiRes.relatedQuestions.length > 0) {
+        msg = msg + (relatedHdr[lang] || relatedHdr.ko) + '\n' + geminiRes.relatedQuestions.map(q => '• ' + q).join('\n');
+      }
+      await sendCallback(callbackUrl, msg, getQuickReplies(lang, session.industry || 'hospital'));
       return;
     }
 
@@ -1286,9 +1305,28 @@ async function handleMain(req, res) {
     }
 
     const lt2 = LANG_TEXTS[session.data.lang] || LANG_TEXTS.ko;
+    // 관련 질문을 메시지 텍스트에 추가
+    let finalMessage = geminiReply.message;
+    if (geminiReply.relatedQuestions && geminiReply.relatedQuestions.length > 0) {
+      const lang = session.data.lang || 'ko';
+      const headers = {
+        ko: '\n\n💡 이런 질문은 어떠세요?',
+        en: '\n\n💡 You might also ask:',
+        zh: '\n\n💡 您可能还想问：',
+        ja: '\n\n💡 こんな質문はいかがですか？',
+        th: '\n\n💡 คุณอาจสนใจถามว่า:',
+        vi: '\n\n💡 Bạn có thể hỏi thêm:',
+        ar: '\n\n💡 قد تسأل أيضاً:',
+        ru: '\n\n💡 Вы также можете спросить:',
+        fr: '\n\n💡 Vous pourriez aussi demander:',
+        es: '\n\n💡 También puedes preguntar:'
+      };
+      const header = headers[lang] || headers.ko;
+      const questions = geminiReply.relatedQuestions.map(q => '• ' + q).join('\n');
+      finalMessage = finalMessage + header + '\n' + questions;
+    }
     const finalQr = getQuickReplies(session.data.lang || 'ko', session.industry || 'hospital');
-    console.log('🔍 finalQr 개수:', finalQr.length, '/ 목록:', finalQr.map(r=>r.label).join(', '));
-    await sendCallback(callbackUrl, geminiReply.message, finalQr);
+    await sendCallback(callbackUrl, finalMessage, finalQr);
 
   } catch(err) {
     console.error('❌ 전체오류:', err.message);
